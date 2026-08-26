@@ -1,7 +1,5 @@
 #import <UIKit/UIKit.h>
 
-#import <react/renderer/components/RNLiveMarkdownSpec/Props.h>
-
 NS_ASSUME_NONNULL_BEGIN
 
 @interface RCTMarkdownStyle : NSObject
@@ -32,8 +30,6 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic) UIColor *mentionReportColor;
 @property (nonatomic) UIColor *mentionReportBackgroundColor;
 @property (nonatomic) CGFloat mentionReportBorderRadius;
-
-- (instancetype)initWithStruct:(const facebook::react::MarkdownTextInputDecoratorViewMarkdownStyleStruct &)style;
 
 @end
 

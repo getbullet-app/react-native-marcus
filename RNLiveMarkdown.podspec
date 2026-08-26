@@ -23,10 +23,30 @@ Pod::Spec.new do |s|
   s.license      = package["license"]
   s.authors      = package["author"]
 
-  s.platforms    = { :ios => "11.0", :visionos => "1.0" }
+  s.platforms    = { :ios => "16.0", :visionos => "1.0" }
   s.source       = { :git => "https://github.com/expensify/react-native-live-markdown.git", :tag => "#{s.version}" }
 
-  s.source_files = "apple/**/*.{h,m,mm}", "cpp/**/*.{h,cpp}"
+  s.source_files = "apple/**/*.{h,m,mm,cpp,swift}", "cpp/**/*.{h,cpp}"
+
+  s.swift_version = "5.9"
+
+  # Headers that pull in C++ (Fabric, JSI, or the standard library). Swift's
+  # importer parses headers in Objective-C mode, so anything reachable from the
+  # generated umbrella must be parseable as plain Objective-C. Marking these
+  # private keeps them out of the umbrella while leaving them importable from
+  # the .mm/.cpp sources that actually need them.
+  s.private_header_files = [
+    "apple/LiveMarkdownModule.h",
+    "apple/MarkdownSwiftInterop.h",
+    "apple/MarkdownTextInputDecoratorComponentView.h",
+    "apple/MarkdownTextInputDecoratorShadowNode.h",
+    "apple/RCTMarkdownStyle+Codegen.h",
+    "apple/RCTTextInputComponentView+Markdown.h",
+    "cpp/MarkdownGlobal.h",
+    "cpp/MarkdownWorkletParser.h",
+    "cpp/RuntimeDecorator.h",
+    "cpp/react/renderer/components/RNLiveMarkdownSpec/*.h",
+  ]
 
   s.dependency "RNWorklets"
 

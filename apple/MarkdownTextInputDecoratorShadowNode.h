@@ -49,11 +49,17 @@ private:
   static YogaLayoutableShadowNode &
   shadowNodeFromContext(YGNodeConstRef yogaNode);
 
-  // Persisted RCTMarkdownUtils instance shared across shadow node clones so
-  // that MarkdownParser's one-entry memo cache (keyed on text + parserId)
-  // survives repeated Yoga measure callbacks instead of being discarded on
-  // every call to applyMarkdownFormattingToTextInputState.
-  mutable std::shared_ptr<void> markdownUtils_;
+  // Defined in the Objective-C++ half of this class; wraps RCTFontSizeMultiplier
+  // so the Yoga measure connector can stay in plain C++.
+  static Float fontSizeMultiplier();
+
+  // Persisted MarkdownParser, shared across shadow node clones so its memo
+  // cache (keyed on text + parser id) survives repeated Yoga measure callbacks
+  // instead of being discarded on every call.
+  //
+  // Held as shared_ptr<void> because this header is also included from the pure
+  // C++ half of the class, which cannot name an Objective-C type.
+  mutable std::shared_ptr<void> markdownParser_;
 };
 
 } // namespace react
