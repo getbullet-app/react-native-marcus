@@ -15,7 +15,6 @@
 #include <memory>
 
 #import "RCTMarkdownStyle+Codegen.h"
-#import <RNLiveMarkdown/MarkdownParser.h>
 #import <RNLiveMarkdown/MarkdownSwiftInterop.h>
 
 namespace facebook {
@@ -106,15 +105,13 @@ void MarkdownTextInputDecoratorShadowNode::applyMarkdownFormattingToTextInputSta
   const auto defaultNSTextAttributes =
       RCTNSTextAttributesFromTextAttributes(defaultTextAttributes);
 
-  // Lazily create and persist the parser so its memo cache survives repeated
-  // Yoga measure callbacks instead of being discarded on every call.
-  if (!markdownParser_) {
-    MarkdownParser *freshParser = [[MarkdownParser alloc] init];
-    markdownParser_ = std::shared_ptr<void>(
-        (__bridge_retained void *)freshParser, [](void *p) { CFRelease(p); });
+  // The parser is shared process-wide, so its cache survives the cloning that
+  // happens during layout without this node having to hold on to it.
+  MarkdownParser *parser = [MarkdownParser sharedParser];
+
+  if (!needsRemeasure_) {
     needsRemeasure_ = std::make_shared<std::atomic_bool>(false);
   }
-  MarkdownParser *parser = (__bridge MarkdownParser *)markdownParser_.get();
 
   RCTMarkdownStyle *markdownStyle =
       [[RCTMarkdownStyle alloc] initWithStruct:decoratorProps.markdownStyle];

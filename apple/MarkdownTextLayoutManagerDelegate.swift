@@ -27,14 +27,11 @@ import UIKit
     guard let paragraph = textElement as? NSTextParagraph else { return plain() }
     let attributedString = paragraph.attributedString
 
-    var mentions: [RCTMarkdownTextBackgroundWithRange] = []
+    var mentions: [MarkdownTextBackgroundWithRange] = []
     attributedString.enumerateAttribute(.liveMarkdownTextBackground,
                                         in: NSRange(location: 0, length: attributedString.length)) { value, range, _ in
-      guard let textBackground = value as? RCTMarkdownTextBackground else { return }
-      let withRange = RCTMarkdownTextBackgroundWithRange()
-      withRange.textBackground = textBackground
-      withRange.range = range
-      mentions.append(withRange)
+      guard let textBackground = value as? MarkdownTextBackground else { return }
+      mentions.append(MarkdownTextBackgroundWithRange(textBackground: textBackground, range: range))
     }
 
     guard depth != nil || !mentions.isEmpty else { return plain() }

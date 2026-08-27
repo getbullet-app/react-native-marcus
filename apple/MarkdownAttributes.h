@@ -11,7 +11,7 @@ NS_ASSUME_NONNULL_BEGIN
 FOUNDATION_EXPORT const NSAttributedStringKey RCTLiveMarkdownTextAttributeName
     NS_SWIFT_NAME(liveMarkdownText);
 
-// Carries an RCTMarkdownTextBackground for mention pills, drawn by the layout
+// Carries a MarkdownTextBackground for mention pills, drawn by the layout
 // fragment rather than by NSBackgroundColorAttributeName.
 FOUNDATION_EXPORT const NSAttributedStringKey RCTLiveMarkdownTextBackgroundAttributeName
     NS_SWIFT_NAME(liveMarkdownTextBackground);

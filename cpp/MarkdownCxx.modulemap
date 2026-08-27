@@ -1,0 +1,8 @@
+// Exposes the pure-C++ parser to Swift. Kept separate from the pod's generated
+// Objective-C umbrella, which Swift parses in Objective-C mode and therefore
+// cannot contain any C++.
+module MarkdownCxx {
+  header "MarkdownWorkletParser.h"
+  requires cplusplus
+  export *
+}

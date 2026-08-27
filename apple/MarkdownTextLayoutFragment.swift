@@ -10,7 +10,7 @@ final class MarkdownTextLayoutFragment: NSTextLayoutFragment {
 
   var markdownStyle: RCTMarkdownStyle?
   var depth: Int = 0
-  var mentions: [RCTMarkdownTextBackgroundWithRange] = []
+  var mentions: [MarkdownTextBackgroundWithRange] = []
 
   // MARK: - NSTextLayoutFragment
 
@@ -62,7 +62,8 @@ final class MarkdownTextLayoutFragment: NSTextLayoutFragment {
       if lineRange.length == 0 { continue }
 
       let lineBounds = lineFragment.typographicBounds
-      let lineEndLocation = lineFragment.locationForCharacter(at: lineRange.length)
+      // Absolute index into the source string, not a fragment-relative offset.
+      let lineEndLocation = lineFragment.locationForCharacter(at: NSMaxRange(lineRange))
 
       while mentionIndex < mentions.count,
             NSMaxRange(mentions[mentionIndex].range) <= lineRange.location {

@@ -81,10 +81,14 @@ using namespace facebook::react;
     _decorator.parserId = @(newViewProps.parserId);
   }
 
-  // TODO: if (oldViewProps.markdownStyle != newViewProps.markdownStyle)
+  // Codegen only emits operator== for the markdownStyle struct under
+  // RN_SERIALIZABLE_STATE, which is not defined on iOS, so there is no cheap way
+  // to tell whether the style actually changed. Rebuilding it and re-formatting
+  // on every props update is wasteful -- Fabric emits one whenever the props
+  // object is recreated -- but hand-written equality over ~27 fields would rot
+  // silently the moment a style prop is added.
   _decorator.markdownStyle = [[RCTMarkdownStyle alloc] initWithStruct:newViewProps.markdownStyle];
 
-  // TODO: call applyNewStyles only if needed
   [_decorator applyNewStyles];
 
   [super updateProps:props oldProps:oldProps];

@@ -1,19 +1,7 @@
 #import <RNLiveMarkdown/RCTMarkdownUtils.h>
-#import <RNLiveMarkdown/MarkdownParser.h>
 #import <RNLiveMarkdown/MarkdownSwiftInterop.h>
 
-@implementation RCTMarkdownUtils {
-  MarkdownParser *_markdownParser;
-}
-
-- (instancetype)init
-{
-  if (self = [super init]) {
-    _markdownParser = [MarkdownParser new];
-  }
-
-  return self;
-}
+@implementation RCTMarkdownUtils
 
 - (void)applyMarkdownFormatting:(nonnull NSMutableAttributedString *)attributedString
       withDefaultTextAttributes:(nonnull NSDictionary<NSAttributedStringKey, id> *)defaultTextAttributes
@@ -24,7 +12,7 @@
     return;
   }
 
-  NSArray<MarkdownRange *> *markdownRanges = [_markdownParser parse:attributedString.string
+  NSArray<MarkdownRange *> *markdownRanges = [[MarkdownParser sharedParser] parse:attributedString.string
                                                        withParserId:_parserId];
 
   [MarkdownFormatter formatAttributedString:attributedString

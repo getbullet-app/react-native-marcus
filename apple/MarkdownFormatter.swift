@@ -150,7 +150,7 @@ import UIKit
                                    borderRadius: CGFloat) {
     attributedString.addAttribute(.foregroundColor, value: color, range: range)
 
-    let textBackground = RCTMarkdownTextBackground()
+    let textBackground = MarkdownTextBackground()
     textBackground.color = backgroundColor
     textBackground.borderRadius = borderRadius
     attributedString.addAttribute(.liveMarkdownTextBackground, value: textBackground, range: range)

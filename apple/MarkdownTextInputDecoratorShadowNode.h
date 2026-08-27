@@ -56,18 +56,11 @@ private:
   // so the Yoga measure connector can stay in plain C++.
   static Float fontSizeMultiplier();
 
-  // Persisted MarkdownParser, shared across shadow node clones so its memo
-  // cache (keyed on text + parser id) survives repeated Yoga measure callbacks
-  // instead of being discarded on every call.
-  //
-  // Held as shared_ptr<void> because this header is also included from the pure
-  // C++ half of the class, which cannot name an Objective-C type.
-  mutable std::shared_ptr<void> markdownParser_;
 
   // Set from any thread when a background parse finishes. The next
   // overwriteMeasureCallbackConnector() marks the child's Yoga node dirty so it
-  // is measured again, this time with markdown applied. Shared across clones
-  // alongside markdownParser_.
+  // is measured again, this time with markdown applied. Shared across clones so
+  // a parse that lands mid-layout is not lost.
   mutable std::shared_ptr<std::atomic_bool> needsRemeasure_;
 };
 

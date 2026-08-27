@@ -10,11 +10,6 @@ namespace livemarkdown {
 
 ParseResult parseMarkdown(const std::string &utf8Text, size_t textLengthUtf16,
                           int parserId) {
-  const auto store = [](std::vector<MarkdownRange> ranges,
-                        std::string schemaError) {
-    return ParseResult{std::move(ranges), std::move(schemaError)};
-  };
-
   const auto &markdownRuntime = getMarkdownRuntime();
   jsi::Runtime &rt = markdownRuntime->getJSIRuntime();
 
@@ -23,7 +18,7 @@ ParseResult parseMarkdown(const std::string &utf8Text, size_t textLengthUtf16,
     markdownWorklet = getMarkdownWorklet(parserId);
   } catch (const std::out_of_range &) {
     // Parser was never registered, or was already unregistered.
-    return store({}, "");
+    return {};
   }
 
   const auto &input = jsi::String::createFromUtf8(rt, utf8Text);
@@ -33,7 +28,7 @@ ParseResult parseMarkdown(const std::string &utf8Text, size_t textLengthUtf16,
     output = markdownRuntime->runGuarded(markdownWorklet, input);
   } catch (const jsi::JSError &) {
     // Skip formatting; runGuarded will have surfaced the error in LogBox.
-    return store({}, "");
+    return {};
   }
 
   std::vector<MarkdownRange> ranges;
@@ -61,10 +56,10 @@ ParseResult parseMarkdown(const std::string &utf8Text, size_t textLengthUtf16,
       ranges.push_back(MarkdownRange{std::move(type), start, length, depth});
     }
   } catch (const jsi::JSError &error) {
-    return store({}, error.getMessage());
+    return {{}, error.getMessage()};
   }
 
-  return store(std::move(ranges), "");
+  return {std::move(ranges), ""};
 }
 
 } // namespace livemarkdown

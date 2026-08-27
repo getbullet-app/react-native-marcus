@@ -2191,7 +2191,7 @@ SPEC CHECKSUMS:
   ReactCodegen: e5d55b301414d3cb48738d6630b434e59cf5cc57
   ReactCommon: 7dfc3250793bf36cf221096ff59e1179e13eef7f
   ReactNativeDependencies: fcf7acf10b1593b02e19627499b25fa5ad989313
-  RNLiveMarkdown: b2e420ac9db2fd73a2256ebae54e53c5d9a68692
+  RNLiveMarkdown: d3b12795679b9aca03ee3b5a8caabeb03c1840f4
   RNWorklets: 11cdcf91d9f88e2d6f22ae70e3ea68a64e72cfcf
   Yoga: 77dfa8673de2874e1855002ae59c68b8be9b007b
 

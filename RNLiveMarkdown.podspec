@@ -59,7 +59,12 @@ Pod::Spec.new do |s|
     ].join(' '),
   }
 
-  s.pod_target_xcconfig = { "HEADER_SEARCH_PATHS" => "\"$(PODS_TARGET_SRCROOT)/cpp\"" }
+  s.pod_target_xcconfig = {
+    "HEADER_SEARCH_PATHS" => "\"$(PODS_TARGET_SRCROOT)/cpp\"",
+    # Lets the Swift parser call into the pure-C++ worklet parser directly.
+    "OTHER_SWIFT_FLAGS" => "$(inherited) -cxx-interoperability-mode=default -Xcc -std=c++20 " +
+      "-Xcc -fmodule-map-file=\"$(PODS_TARGET_SRCROOT)/cpp/MarkdownCxx.modulemap\"",
+  }
 
   install_modules_dependencies(s)
 

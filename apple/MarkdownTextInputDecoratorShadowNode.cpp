@@ -27,12 +27,10 @@ MarkdownTextInputDecoratorShadowNode::MarkdownTextInputDecoratorShadowNode(
     ShadowNode const &sourceShadowNode,
     ShadowNodeFragment const &fragment)
     : ConcreteViewShadowNode(sourceShadowNode, fragment) {
-  // Carry the persisted parser over from the source node so its memo cache
-  // survives the frequent cloning that happens during layout and re-render
-  // cycles.
+  // Carry the re-measure flag over from the node being cloned. It has to be set
+  // before makeChildNodeMutable() below, which is what reads it.
   const auto &source =
       static_cast<const MarkdownTextInputDecoratorShadowNode &>(sourceShadowNode);
-  markdownParser_ = source.markdownParser_;
   needsRemeasure_ = source.needsRemeasure_;
 
   initialize();
