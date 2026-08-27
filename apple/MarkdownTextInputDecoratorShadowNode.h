@@ -8,6 +8,9 @@
 #include <react/renderer/components/view/ConcreteViewShadowNode.h>
 #include <react/renderer/core/LayoutContext.h>
 
+#include <atomic>
+#include <memory>
+
 namespace facebook {
 namespace react {
 
@@ -60,6 +63,12 @@ private:
   // Held as shared_ptr<void> because this header is also included from the pure
   // C++ half of the class, which cannot name an Objective-C type.
   mutable std::shared_ptr<void> markdownParser_;
+
+  // Set from any thread when a background parse finishes. The next
+  // overwriteMeasureCallbackConnector() marks the child's Yoga node dirty so it
+  // is measured again, this time with markdown applied. Shared across clones
+  // alongside markdownParser_.
+  mutable std::shared_ptr<std::atomic_bool> needsRemeasure_;
 };
 
 } // namespace react

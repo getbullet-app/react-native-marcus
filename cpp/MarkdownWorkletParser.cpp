@@ -8,22 +8,11 @@
 namespace expensify {
 namespace livemarkdown {
 
-ParseResult MarkdownWorkletParser::parse(const std::string &utf8Text,
-                                         size_t textLengthUtf16,
-                                         int parserId) {
-  std::lock_guard<std::mutex> lock(mutex_);
-
-  if (hasCachedResult_ && cachedParserId_ == parserId && cachedText_ == utf8Text) {
-    return ParseResult{cachedRanges_, "", true};
-  }
-
-  const auto store = [&](std::vector<MarkdownRange> ranges,
-                         std::string schemaError) {
-    cachedText_ = utf8Text;
-    cachedParserId_ = parserId;
-    cachedRanges_ = std::move(ranges);
-    hasCachedResult_ = true;
-    return ParseResult{cachedRanges_, std::move(schemaError), false};
+ParseResult parseMarkdown(const std::string &utf8Text, size_t textLengthUtf16,
+                          int parserId) {
+  const auto store = [](std::vector<MarkdownRange> ranges,
+                        std::string schemaError) {
+    return ParseResult{std::move(ranges), std::move(schemaError)};
   };
 
   const auto &markdownRuntime = getMarkdownRuntime();

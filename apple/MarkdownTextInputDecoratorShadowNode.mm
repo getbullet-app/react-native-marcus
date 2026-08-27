@@ -8,7 +8,11 @@
 #include "MarkdownTextInputDecoratorShadowNode.h"
 
 #import <React/RCTUtils.h>
+#include <react/renderer/core/ConcreteState.h>
 #include <react/renderer/textlayoutmanager/RCTAttributedTextUtils.h>
+
+#include <atomic>
+#include <memory>
 
 #import "RCTMarkdownStyle+Codegen.h"
 #import <RNLiveMarkdown/MarkdownParser.h>
@@ -16,6 +20,66 @@
 
 namespace facebook {
 namespace react {
+
+namespace {
+
+using DecoratorState = ConcreteState<MarkdownTextInputDecoratorState>;
+
+// Formats `string` in place.
+//
+// On the main thread only already-cached ranges are used; the parser is never
+// run there. Running it waits on the markdown runtime, and on a Yoga measure
+// pass that wait can outlast the watchdog
+// (Expensify/react-native-live-markdown#772). On a cache miss the text is left
+// unformatted for this pass and parsed in the background instead, then
+// `needsRemeasure` and a state update ask for another measure so the size
+// measured from unformatted text -- wrong for h1, code fonts, blockquote
+// indents and emoji -- does not stick.
+//
+// This is rare in practice: text changes are normally parsed off the main
+// thread first, so the main thread finds the ranges already cached.
+void ApplyMarkdownFormatting(NSMutableAttributedString *string,
+                             NSDictionary<NSAttributedStringKey, id> *defaultTextAttributes,
+                             RCTMarkdownStyle *markdownStyle,
+                             NSNumber *parserId,
+                             MarkdownParser *parser,
+                             std::shared_ptr<std::atomic_bool> needsRemeasure,
+                             std::shared_ptr<const DecoratorState> state) {
+  NSString *text = string.string;
+  NSArray<MarkdownRange *> *markdownRanges = [parser cachedRangesForText:text withParserId:parserId];
+
+  if (markdownRanges == nil) {
+    if ([NSThread isMainThread]) {
+      [parser warmCacheAsyncForText:text
+                       withParserId:parserId
+                         completion:^{
+        // Only ever runs for the newest text, so this cannot loop: the next
+        // measure finds the ranges cached, or the text changed again and a new
+        // measure was needed anyway.
+        if (needsRemeasure != nullptr) {
+          needsRemeasure->store(true);
+        }
+        if (state != nullptr) {
+          // Changes nothing; it exists only to schedule a commit. updateState()
+          // is safe from any thread and handles an already-gone family.
+          state->updateState(MarkdownTextInputDecoratorState{});
+        }
+      }];
+      return;
+    }
+
+    // Background threads may parse inline: the watchdog only applies to the
+    // main thread, and parsing no longer holds a lock the main thread waits on.
+    markdownRanges = [parser parse:text withParserId:parserId];
+  }
+
+  [MarkdownFormatter formatAttributedString:string
+                      defaultTextAttributes:defaultTextAttributes
+                                     ranges:markdownRanges
+                                      style:markdownStyle];
+}
+
+} // namespace
 
 Float MarkdownTextInputDecoratorShadowNode::fontSizeMultiplier() {
   return RCTFontSizeMultiplier();
@@ -48,6 +112,7 @@ void MarkdownTextInputDecoratorShadowNode::applyMarkdownFormattingToTextInputSta
     MarkdownParser *freshParser = [[MarkdownParser alloc] init];
     markdownParser_ = std::shared_ptr<void>(
         (__bridge_retained void *)freshParser, [](void *p) { CFRelease(p); });
+    needsRemeasure_ = std::make_shared<std::atomic_bool>(false);
   }
   MarkdownParser *parser = (__bridge MarkdownParser *)markdownParser_.get();
 
@@ -94,12 +159,9 @@ void MarkdownTextInputDecoratorShadowNode::applyMarkdownFormattingToTextInputSta
 
     // apply markdown
     NSMutableAttributedString *newString = [nsAttributedString mutableCopy];
-    NSArray<MarkdownRange *> *markdownRanges = [parser parse:newString.string
-                                                withParserId:parserId];
-    [MarkdownFormatter formatAttributedString:newString
-                        defaultTextAttributes:defaultNSTextAttributes
-                                       ranges:markdownRanges
-                                        style:markdownStyle];
+    ApplyMarkdownFormatting(newString, defaultNSTextAttributes, markdownStyle,
+                            parserId, parser, needsRemeasure_,
+                            std::static_pointer_cast<const DecoratorState>(getState()));
 
     // create a clone of the old TextInputState and update the
     // attributed string box to point to the string with markdown
@@ -111,12 +173,9 @@ void MarkdownTextInputDecoratorShadowNode::applyMarkdownFormattingToTextInputSta
 
     // apply markdown
     NSMutableAttributedString *newString = [nsAttributedString mutableCopy];
-    NSArray<MarkdownRange *> *markdownRanges = [parser parse:newString.string
-                                                withParserId:parserId];
-    [MarkdownFormatter formatAttributedString:newString
-                        defaultTextAttributes:defaultNSTextAttributes
-                                       ranges:markdownRanges
-                                        style:markdownStyle];
+    ApplyMarkdownFormatting(newString, defaultNSTextAttributes, markdownStyle,
+                            parserId, parser, needsRemeasure_,
+                            std::static_pointer_cast<const DecoratorState>(getState()));
 
     // create a clone of the old TextInputState and update the
     // attributed string box to point to the string with markdown

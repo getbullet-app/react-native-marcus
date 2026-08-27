@@ -33,6 +33,7 @@ MarkdownTextInputDecoratorShadowNode::MarkdownTextInputDecoratorShadowNode(
   const auto &source =
       static_cast<const MarkdownTextInputDecoratorShadowNode &>(sourceShadowNode);
   markdownParser_ = source.markdownParser_;
+  needsRemeasure_ = source.needsRemeasure_;
 
   initialize();
   makeChildNodeMutable();
@@ -92,6 +93,20 @@ void MarkdownTextInputDecoratorShadowNode::overwriteMeasureCallbackConnector() {
   // on the decorator
   const auto &yogaNode = &nodeWithAccessibleYogaNode->yogaNode_;
   YGNodeSetMeasureFunc(yogaNode, yogaNodeMeasureCallbackConnector);
+
+  // If a background parse finished since the last layout, the size Yoga has for
+  // the child was measured from unformatted text. Nothing dirties this part of
+  // the tree on its own -- Yoga never measures the decorator -- so the stale
+  // height would stick until something else changed the layout.
+  //
+  // Both nodes are marked by hand rather than via YGNodeMarkDirty(): the child
+  // is usually already dirty from completeClone(), which stops the flag
+  // propagating upwards and would leave the decorator clean. Parents pick it up
+  // themselves when updateYogaChildren() runs.
+  if (needsRemeasure_ != nullptr && needsRemeasure_->exchange(false)) {
+    yogaNode->setDirty(true);
+    yogaNode_.setDirty(true);
+  }
 }
 
 void MarkdownTextInputDecoratorShadowNode::appendChild(
