@@ -1,5 +1,19 @@
 package com.expensify.livemarkdown;
 
+/*
+ * NOTE: This file deliberately stays in Java.
+ *
+ * Everything it does sits on React Native declarations that are `internal` in Kotlin:
+ * `TextLayoutManager` (the measureText call itself), `LayoutMetricsConversions`
+ * (getYogaSize / getYogaMeasureMode) and `MountingManager`, which is both a constructor
+ * parameter type and a field type here. Java still sees all of them because `internal`
+ * stays public in the bytecode; the Kotlin compiler refuses.
+ *
+ * A Kotlin version would have to smuggle MountingManager as `Any` and delegate the whole
+ * method body to a Java helper, which is more indirection for no gain, so the class is
+ * left as-is until React Native opens these APIs up.
+ */
+
 import static com.facebook.react.fabric.mounting.LayoutMetricsConversions.getYogaMeasureMode;
 import static com.facebook.react.fabric.mounting.LayoutMetricsConversions.getYogaSize;
 
@@ -86,7 +100,28 @@ public class CustomFabricUIManager extends FabricUIManager {
   private static <T> T readPrivateField(Object obj, String name) throws NoSuchFieldException, IllegalAccessException {
     Class<?> clazz = obj.getClass();
 
-    Field field = clazz.getDeclaredField(name);
+    Field field;
+    try {
+      field = clazz.getDeclaredField(name);
+    } catch (NoSuchFieldException e) {
+      // FabricUIManager is one of the last Java files left in React Native's fabric
+      // package. When it is converted to Kotlin these `m`-prefixed names go away, and a
+      // bare NoSuchFieldException gives no hint why. Name what we actually found.
+      StringBuilder declared = new StringBuilder();
+      for (Field candidate : clazz.getDeclaredFields()) {
+        if (declared.length() > 0) {
+          declared.append(", ");
+        }
+        declared.append(candidate.getName());
+      }
+      throw new NoSuchFieldException(
+          "[LiveMarkdown] "
+              + clazz.getName()
+              + " has no field '"
+              + name
+              + "'. React Native most likely renamed it. Declared fields: "
+              + declared);
+    }
     field.setAccessible(true);
     T value = (T) field.get(obj);
 

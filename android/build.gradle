@@ -16,6 +16,10 @@ def reactNativeArchitectures() {
 
 apply plugin: "com.android.library"
 apply plugin: "com.facebook.react"
+// Kotlin Gradle Plugin is expected on the root buildscript classpath, which the
+// React Native community template provides. Not declaring a version here means
+// the library always compiles with the Kotlin version the app pins.
+apply plugin: "org.jetbrains.kotlin.android"
 
 def getExtOrDefault(name) {
   return rootProject.ext.has(name) ? rootProject.ext.get(name) : project.properties["LiveMarkdown_" + name]
@@ -64,6 +68,10 @@ def getReactNativeMinorVersion() {
 
 def REACT_NATIVE_MINOR_VERSION = getReactNativeMinorVersion()
 
+if (REACT_NATIVE_MINOR_VERSION < 81) {
+  throw new GradleException("[react-native-live-markdown] React Native 0.81 or newer is required, found 0.${REACT_NATIVE_MINOR_VERSION}.")
+}
+
 android {
   if (supportsNamespace()) {
     namespace "com.expensify.livemarkdown"
@@ -76,6 +84,13 @@ android {
   }
 
   compileSdkVersion getExtOrIntegerDefault("compileSdkVersion")
+
+  // Without this the library compiles its native code with whatever NDK the
+  // Android Gradle Plugin defaults to, which is rarely the one the app pins and
+  // often isn't installed at all.
+  if (rootProject.ext.has("ndkVersion")) {
+    ndkVersion rootProject.ext.get("ndkVersion")
+  }
 
   defaultConfig {
     minSdkVersion getExtOrIntegerDefault("minSdkVersion")
@@ -113,8 +128,8 @@ android {
   }
 
   compileOptions {
-    sourceCompatibility JavaVersion.VERSION_1_8
-    targetCompatibility JavaVersion.VERSION_1_8
+    sourceCompatibility JavaVersion.VERSION_17
+    targetCompatibility JavaVersion.VERSION_17
   }
 
   sourceSets {
@@ -125,11 +140,7 @@ android {
       ]
 
       // TextLayoutManager
-      if (REACT_NATIVE_MINOR_VERSION <= 79) {
-          java.srcDirs += "src/reactNativeVersionPatch/CustomMountingManager/79"
-      } else if (REACT_NATIVE_MINOR_VERSION == 80) {
-          java.srcDirs += "src/reactNativeVersionPatch/CustomMountingManager/80"
-      } else if (REACT_NATIVE_MINOR_VERSION <= 85) {
+      if (REACT_NATIVE_MINOR_VERSION <= 85) {
           java.srcDirs += "src/reactNativeVersionPatch/CustomMountingManager/81"
       } else {
           java.srcDirs += "src/reactNativeVersionPatch/CustomMountingManager/latest"
@@ -164,6 +175,14 @@ android {
       "**/libreact_render*.so",
       "**/librrc_root.so",
     ]
+  }
+}
+
+kotlin {
+  compilerOptions {
+    // Must match compileOptions above; a mismatch fails the build with
+    // "Inconsistent JVM-target compatibility" rather than anything useful.
+    jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17
   }
 }
 
