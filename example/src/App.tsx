@@ -3,6 +3,7 @@ import {Button, ScrollView, StyleSheet, Text} from 'react-native';
 import {
   MarkdownTextInput,
   parseExpensiMark,
+  parseMicroMark,
 } from '@expensify/react-native-live-markdown';
 import * as TEST_CONST from './testConstants';
 import {PlatformInfo} from './PlatformInfo';
@@ -17,6 +18,9 @@ export default function App() {
   const [emojiFontSizeState, setEmojiFontSizeState] = React.useState(false);
   const [caretHidden, setCaretHidden] = React.useState(false);
   const [selection, setSelection] = React.useState({start: 0, end: 0});
+  const [useMicroMark, setUseMicroMark] = React.useState(false);
+
+  const parser = useMicroMark ? parseMicroMark : parseExpensiMark;
 
   const style = React.useMemo(() => {
     return {
@@ -40,6 +44,9 @@ export default function App() {
     <ScrollView contentContainerStyle={styles.container} style={styles.content}>
       <PlatformInfo />
       <Text>{multiline ? 'multiline' : 'singleline'}</Text>
+      <Text testID="parser-label">
+        parser: {useMicroMark ? 'micromark' : 'ExpensiMark'}
+      </Text>
       <MarkdownTextInput
         multiline={multiline}
         formatSelection={handleFormatSelection}
@@ -50,7 +57,7 @@ export default function App() {
         style={[styles.input, style]}
         ref={ref}
         markdownStyle={markdownStyle}
-        parser={parseExpensiMark}
+        parser={parser}
         placeholder="Type here..."
         onSelectionChange={e => setSelection(e.nativeEvent.selection)}
         selection={selection}
@@ -58,6 +65,13 @@ export default function App() {
         maxLength={30000}
       />
       <Text style={styles.text}>{JSON.stringify(value)}</Text>
+      <Button
+        testID="toggleParser"
+        title="Toggle parser"
+        onPress={() => {
+          setUseMicroMark(v => !v);
+        }}
+      />
       <Button
         testID="focus"
         title="Focus"

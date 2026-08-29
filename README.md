@@ -1,5 +1,13 @@
 <img src="./assets/hero-animation.gif" alt="@expensify/react-native-live-markdown" />
 
+## Why another fork?
+
+Three reasons really:
+
+- Personal preference. `@expensify/react-native-live-markdown` is written primarily in Objective-C++ and Java. I have a strong distaste for and little experience with these languages. So I ported the code to Swift and Kotlin where possible.
+- ExpensiMark. It's an in house markdown flavor/parser from Expensify. It deviates heavily from CommonMark and other common flavors. It supports only a small subset of markdown. It's sluggish.
+- bullet. is moving fast and `@expensify/react-native-live-markdown` isn't, in fact it seems to be in maintenance mode only doing bugfixes and dependency upgrades. Waiting for weeks for feature PRs to be approved and merged with no guarantee that it'll even happen simply isn't viable.
+
 ## Features
 
 - ⚛️ Drop-in replacement for `<TextInput>` component
@@ -183,7 +191,7 @@ Currently, `react-native-live-markdown` supports only [ExpensiMark](https://gith
 `MarkdownTextInput` inherits all props of React Native's `TextInput` component as well as introduces the following properties:
 
 | Prop            | Type                                 | Default     | Note                                                                                                                                                                                                                   |
-|-----------------|--------------------------------------|-------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| --------------- | ------------------------------------ | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `parser`        | `(value: string) => MarkdownRange[]` | `undefined` | A function that parses the current value and returns an array of ranges.                                                                                                                                               |
 | `markdownStyle` | `MarkdownStyle`                      | `undefined` | Adds custom styling to Markdown text. The provided value is merged with default style object. See [Styling](https://github.com/expensify/react-native-live-markdown/blob/main/README.md#styling) for more information. |
 
@@ -194,30 +202,28 @@ Currently, `react-native-live-markdown` supports only [ExpensiMark](https://gith
 ### React Native compatibility
 
 |                   | 0.73 | 0.74 | 0.75 | 0.76 | 0.77 | 0.78 | 0.79 | 0.80 | 0.81 | 0.82 | 0.83 | 0.84 | 0.85 | 0.86 |
-|:-----------------:|:----:|:----:|:----:|:----:|:----:|:----:|:----:|:----:|:----:|:----:|:----:|:----:|:----:|:----:|
-|     0.1.336+      |  ❌   |  ❌   |  ❌   |  ❌   |  ❌   |  ❌   |  ❌   |  ❌   |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |
-| 0.1.331 – 0.1.335 |  ❌   |  ❌   |  ❌   |  ❌   |  ❌   |  ❌   |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |
-| 0.1.321 – 0.1.330 |  ❌   |  ❌   |  ❌   |  ❌   |  ❌   |  ❌   |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |  ❌   |
-| 0.1.304 - 0.1.320 |  ❌   |  ❌   |  ❌   |  ❌   |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |  ❌   |  ❌   |  ❌   |  ❌   |  ❌   |
-| 0.1.297 – 0.1.303 |  ❌   |  ❌   |  ❌   |  ❌   |  ✅   |  ✅   |  ✅   |  ✅   |  ❌   |  ❌   |  ❌   |  ❌   |  ❌   |  ❌   |
-| 0.1.260 – 0.1.296 |  ❌   |  ❌   |  ❌   |  ❌   |  ✅   |  ✅   |  ✅   |  ❌   |  ❌   |  ❌   |  ❌   |  ❌   |  ❌   |  ❌   |
-| 0.1.256 – 0.1.259 |  ❌   |  ❌   |  ❌   |  ❌   |  ✅   |  ❌   |  ❌   |  ❌   |  ❌   |  ❌   |  ❌   |  ❌   |  ❌   |  ❌   |
-| 0.1.248 – 0.1.255 |  ❌   |  ❌   |  ❌   |  ✅   |  ✅   |  ❌   |  ❌   |  ❌   |  ❌   |  ❌   |  ❌   |  ❌   |  ❌   |  ❌   |
-| 0.1.235 – 0.1.247 |  ❌   |  ❌   |  ✅   |  ✅   |  ✅   |  ❌   |  ❌   |  ❌   |  ❌   |  ❌   |  ❌   |  ❌   |  ❌   |  ❌   |
-| 0.1.141 – 0.1.234 |  ❌   |  ❌   |  ✅   |  ✅   |  ❌   |  ❌   |  ❌   |  ❌   |  ❌   |  ❌   |  ❌   |  ❌   |  ❌   |  ❌   |
-| 0.1.129 – 0.1.140 |  ❌   |  ❌   |  ✅   |  ❌   |  ❌   |  ❌   |  ❌   |  ❌   |  ❌   |  ❌   |  ❌   |  ❌   |  ❌   |  ❌   |
-| 0.1.122 – 0.1.128 |  ❌   |  ✅   |  ❌   |  ❌   |  ❌   |  ❌   |  ❌   |  ❌   |  ❌   |  ❌   |  ❌   |  ❌   |  ❌   |  ❌   |
-| 0.1.15 – 0.1.121  |  ✅   |  ❌   |  ❌   |  ❌   |  ❌   |  ❌   |  ❌   |  ❌   |  ❌   |  ❌   |  ❌   |  ❌   |  ❌   |  ❌   |
-
+| :---------------: | :--: | :--: | :--: | :--: | :--: | :--: | :--: | :--: | :--: | :--: | :--: | :--: | :--: | :--: |
+|     0.1.336+      |  ❌  |  ❌  |  ❌  |  ❌  |  ❌  |  ❌  |  ❌  |  ❌  |  ✅  |  ✅  |  ✅  |  ✅  |  ✅  |  ✅  |
+| 0.1.331 – 0.1.335 |  ❌  |  ❌  |  ❌  |  ❌  |  ❌  |  ❌  |  ✅  |  ✅  |  ✅  |  ✅  |  ✅  |  ✅  |  ✅  |  ✅  |
+| 0.1.321 – 0.1.330 |  ❌  |  ❌  |  ❌  |  ❌  |  ❌  |  ❌  |  ✅  |  ✅  |  ✅  |  ✅  |  ✅  |  ✅  |  ✅  |  ❌  |
+| 0.1.304 - 0.1.320 |  ❌  |  ❌  |  ❌  |  ❌  |  ✅  |  ✅  |  ✅  |  ✅  |  ✅  |  ❌  |  ❌  |  ❌  |  ❌  |  ❌  |
+| 0.1.297 – 0.1.303 |  ❌  |  ❌  |  ❌  |  ❌  |  ✅  |  ✅  |  ✅  |  ✅  |  ❌  |  ❌  |  ❌  |  ❌  |  ❌  |  ❌  |
+| 0.1.260 – 0.1.296 |  ❌  |  ❌  |  ❌  |  ❌  |  ✅  |  ✅  |  ✅  |  ❌  |  ❌  |  ❌  |  ❌  |  ❌  |  ❌  |  ❌  |
+| 0.1.256 – 0.1.259 |  ❌  |  ❌  |  ❌  |  ❌  |  ✅  |  ❌  |  ❌  |  ❌  |  ❌  |  ❌  |  ❌  |  ❌  |  ❌  |  ❌  |
+| 0.1.248 – 0.1.255 |  ❌  |  ❌  |  ❌  |  ✅  |  ✅  |  ❌  |  ❌  |  ❌  |  ❌  |  ❌  |  ❌  |  ❌  |  ❌  |  ❌  |
+| 0.1.235 – 0.1.247 |  ❌  |  ❌  |  ✅  |  ✅  |  ✅  |  ❌  |  ❌  |  ❌  |  ❌  |  ❌  |  ❌  |  ❌  |  ❌  |  ❌  |
+| 0.1.141 – 0.1.234 |  ❌  |  ❌  |  ✅  |  ✅  |  ❌  |  ❌  |  ❌  |  ❌  |  ❌  |  ❌  |  ❌  |  ❌  |  ❌  |  ❌  |
+| 0.1.129 – 0.1.140 |  ❌  |  ❌  |  ✅  |  ❌  |  ❌  |  ❌  |  ❌  |  ❌  |  ❌  |  ❌  |  ❌  |  ❌  |  ❌  |  ❌  |
+| 0.1.122 – 0.1.128 |  ❌  |  ✅  |  ❌  |  ❌  |  ❌  |  ❌  |  ❌  |  ❌  |  ❌  |  ❌  |  ❌  |  ❌  |  ❌  |  ❌  |
+| 0.1.15 – 0.1.121  |  ✅  |  ❌  |  ❌  |  ❌  |  ❌  |  ❌  |  ❌  |  ❌  |  ❌  |  ❌  |  ❌  |  ❌  |  ❌  |  ❌  |
 
 ### `react-native-worklets` compatibility
 
 |                   | 0.6.x | 0.7.x | 0.8.x | 0.9.x | 0.10.2+ |
-|:-----------------:|:-----:|:-----:|:-----:|:-----:|:-------:|
-|     0.1.333+      |   ❌   |   ✅   |   ✅   |   ✅   |   ✅    |
-| 0.1.321 – 0.1.332 |   ❌   |   ✅   |   ✅   |   ✅   |   ❌    |
-| 0.1.308 – 0.1.320 |   ✅   |   ❌   |   ❌   |   ❌   |   ❌    |
-
+| :---------------: | :---: | :---: | :---: | :---: | :-----: |
+|     0.1.333+      |  ❌   |  ✅   |  ✅   |  ✅   |   ✅    |
+| 0.1.321 – 0.1.332 |  ❌   |  ✅   |  ✅   |  ✅   |   ❌    |
+| 0.1.308 – 0.1.320 |  ✅   |  ❌   |  ❌   |  ❌   |   ❌    |
 
 ## License
 

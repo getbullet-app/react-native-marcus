@@ -1,0 +1,76 @@
+diff --git a/node_modules/react-native-builder-bob/lib/src/targets/commonjs.js b/node_modules/react-native-builder-bob/lib/src/targets/commonjs.js
+index ff09ba3..80cb257 100644
+--- a/node_modules/react-native-builder-bob/lib/src/targets/commonjs.js
++++ b/node_modules/react-native-builder-bob/lib/src/targets/commonjs.js
+@@ -1,19 +1,29 @@
+ import path from 'node:path';
+ import { deleteAsync } from 'del';
++import fs from 'fs-extra';
+ import kleur from 'kleur';
+ import compile, {} from "../utils/compile.js";
+ export default async function build({ root, source, output, exclude, options, variants, report, }) {
+-    report.info(`Cleaning up previous build at ${kleur.blue(path.relative(root, output))}`);
+-    await deleteAsync([output]);
+-    await compile({
++  const tmpOutput = `${output}.tmp`;
++  const staleOutput = `${output}.stale`;
++
++  await deleteAsync([tmpOutput, staleOutput]);
++  await compile({
+         ...options,
+         variants,
+         root,
+         source,
+-        output,
++        output: tmpOutput,
+         exclude,
+         modules: 'commonjs',
+         report,
+     });
++
++  report.info(`Swapping in new build at ${kleur.blue(path.relative(root, output))}`);
++  if (await fs.pathExists(output)) {
++      await fs.rename(output, staleOutput);
++  }
++  await fs.rename(tmpOutput, output);
++  await deleteAsync([staleOutput]);
+ }
+ //# sourceMappingURL=commonjs.js.map
+diff --git a/node_modules/react-native-builder-bob/lib/src/targets/module.js b/node_modules/react-native-builder-bob/lib/src/targets/module.js
+index 676ac13..171e8ab 100644
+--- a/node_modules/react-native-builder-bob/lib/src/targets/module.js
++++ b/node_modules/react-native-builder-bob/lib/src/targets/module.js
+@@ -1,19 +1,29 @@
+ import path from 'node:path';
+ import { deleteAsync } from 'del';
++import fs from 'fs-extra';
+ import kleur from 'kleur';
+ import compile, {} from "../utils/compile.js";
+ export default async function build({ root, source, output, exclude, options, variants, report, }) {
+-    report.info(`Cleaning up previous build at ${kleur.blue(path.relative(root, output))}`);
+-    await deleteAsync([output]);
+-    await compile({
++  const tmpOutput = `${output}.tmp`;
++  const staleOutput = `${output}.stale`;
++
++  await deleteAsync([tmpOutput, staleOutput]);
++  await compile({
+         ...options,
+         variants,
+         root,
+         source,
+-        output,
++        output: tmpOutput,
+         exclude,
+         modules: 'preserve',
+         report,
+     });
++
++  report.info(`Swapping in new build at ${kleur.blue(path.relative(root, output))}`);
++  if (await fs.pathExists(output)) {
++      await fs.rename(output, staleOutput);
++  }
++  await fs.rename(tmpOutput, output);
++  await deleteAsync([staleOutput]);
+ }
+ //# sourceMappingURL=module.js.map

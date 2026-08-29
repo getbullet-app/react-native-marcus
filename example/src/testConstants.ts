@@ -1,18 +1,24 @@
 const LOCAL_URL = 'http://localhost:8081/';
 
+// Valid CommonMark that exercises every range type the native formatter styles:
+// h1, bold, italic, strikethrough, code, pre, blockquote, link, emoji, the three mention
+// kinds, and the syntax delimiters around all of them.
+//
+// ExpensiMark reads some of this differently (it treats *single asterisks* as bold and
+// ~single tildes~ as strikethrough), which is exactly what the parser toggle is for.
 const EXAMPLE_CONTENT = [
-  'Hello, *world*!',
-  '😀🍕🍔',
-  'https://expensify.com',
-  '# header1',
-  '> blockquote',
-  '~sb\n*sbb\n_sbi\n> strikethrough_blockquote\nsbi_\nsbb*\nsb~',
-  '`inline code`',
-  '```\ncodeblock\n```',
-  '@here',
-  '@someone@swmansion.com',
-  '#mention-report',
-  '![demo image](https://picsum.photos/id/1067/200/300)',
+  '# Live Markdown',
+  '',
+  'A paragraph with **bold**, *italic*, **bold around *nested italic* inside**,',
+  '~~strikethrough~~ and `inline code`, a bare link https://expensify.com,',
+  'a [labelled link](https://expensify.com), emoji 😀🍕🍔, and mentions for',
+  '@here, @someone@swmansion.com and #mention-report.',
+  '',
+  '> Blockquotes keep their **formatting**, including *italic* and `code`.',
+  '',
+  '```',
+  'const ranges = parseMarkdown(text);',
+  '```',
 ].join('\n');
 
 const INPUT_ID = 'MarkdownInput_Example';
