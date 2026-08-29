@@ -1,14 +1,14 @@
-#import <RNLiveMarkdown/RCTTextInputComponentView+Markdown.h>
-#import <RNLiveMarkdown/MarkdownAttributes.h>
-#import <RNLiveMarkdown/MarkdownTextInputDecoratorComponentView.h>
+#import <RNMarcus/MarkdownAttributes.h>
+#import <RNMarcus/MarkdownTextInputDecoratorComponentView.h>
+#import <RNMarcus/RCTTextInputComponentView+Markdown.h>
 #import <objc/message.h>
 
 @implementation RCTTextInputComponentView (Markdown)
 
-- (BOOL)markdown__textOf:(NSAttributedString *)newText equals:(NSAttributedString *)oldText
-{
+- (BOOL)markdown__textOf:(NSAttributedString *)newText
+                  equals:(NSAttributedString *)oldText {
   __block BOOL isMarkdownTextInput = false;
-  [oldText enumerateAttribute:RCTLiveMarkdownTextAttributeName
+  [oldText enumerateAttribute:RCTMarcusTextAttributeName
                       inRange:NSMakeRange(0, oldText.length)
                       options:0
                    usingBlock:^(id value, NSRange range, BOOL *stop) {
@@ -24,18 +24,18 @@
   return [self markdown__textOf:newText equals:oldText];
 }
 
-- (void)markdown_didAddSubview:(UIView *)subview
-{
+- (void)markdown_didAddSubview:(UIView *)subview {
   [self markdown_didAddSubview:subview];
 
-  // React Native swaps `_backedTextInputView` in place when `multiline` changes:
-  // it removes the old view from this component view and adds a new one. That
-  // never touches the decorator's own subviews, so its didAddSubview: does not
-  // fire and its observers would stay bound to the discarded view -- keeping it
-  // alive and leaving the new, visible one unformatted.
+  // React Native swaps `_backedTextInputView` in place when `multiline`
+  // changes: it removes the old view from this component view and adds a new
+  // one. That never touches the decorator's own subviews, so its didAddSubview:
+  // does not fire and its observers would stay bound to the discarded view --
+  // keeping it alive and leaving the new, visible one unformatted.
   UIView *parent = self.superview;
   if ([parent isKindOfClass:[MarkdownTextInputDecoratorComponentView class]]) {
-    [(MarkdownTextInputDecoratorComponentView *)parent reattachTextInputObservers];
+    [(MarkdownTextInputDecoratorComponentView *)
+            parent reattachTextInputObservers];
   }
 }
 
@@ -47,21 +47,19 @@
 // exchanging it rewrites UIView for every view in the app. So the
 // implementation is added to this class first; when that succeeds, the
 // "call the original" selector is pointed at the inherited implementation.
-static void RCTLiveMarkdownSwizzle(Class cls, SEL originalSelector, SEL swizzledSelector)
-{
+static void RCTMarcusSwizzle(Class cls, SEL originalSelector,
+                             SEL swizzledSelector) {
   Method originalMethod = class_getInstanceMethod(cls, originalSelector);
   Method swizzledMethod = class_getInstanceMethod(cls, swizzledSelector);
   if (originalMethod == NULL || swizzledMethod == NULL) {
     return;
   }
 
-  BOOL didAddMethod = class_addMethod(cls,
-                                      originalSelector,
+  BOOL didAddMethod = class_addMethod(cls, originalSelector,
                                       method_getImplementation(swizzledMethod),
                                       method_getTypeEncoding(swizzledMethod));
   if (didAddMethod) {
-    class_replaceMethod(cls,
-                        swizzledSelector,
+    class_replaceMethod(cls, swizzledSelector,
                         method_getImplementation(originalMethod),
                         method_getTypeEncoding(originalMethod));
   } else {
@@ -69,17 +67,18 @@ static void RCTLiveMarkdownSwizzle(Class cls, SEL originalSelector, SEL swizzled
   }
 }
 
-+ (void)load
-{
++ (void)load {
   static dispatch_once_t onceToken;
   dispatch_once(&onceToken, ^{
     Class cls = [self class];
 
     // Implemented by this class, so this is a plain exchange.
-    RCTLiveMarkdownSwizzle(cls, @selector(_textOf:equals:), @selector(markdown__textOf:equals:));
+    RCTMarcusSwizzle(cls, @selector(_textOf:equals:),
+                     @selector(markdown__textOf:equals:));
 
     // Inherited from UIView, so this must go through class_addMethod.
-    RCTLiveMarkdownSwizzle(cls, @selector(didAddSubview:), @selector(markdown_didAddSubview:));
+    RCTMarcusSwizzle(cls, @selector(didAddSubview:),
+                     @selector(markdown_didAddSubview:));
   });
 }
 

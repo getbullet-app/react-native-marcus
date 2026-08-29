@@ -74,3 +74,243 @@ index 676ac13..171e8ab 100644
 +  await deleteAsync([staleOutput]);
  }
  //# sourceMappingURL=module.js.map
+diff --git a/node_modules/react-native-builder-bob/lib/src/utils/compile.js b/node_modules/react-native-builder-bob/lib/src/utils/compile.js
+index 74b9703..85281a6 100644
+--- a/node_modules/react-native-builder-bob/lib/src/utils/compile.js
++++ b/node_modules/react-native-builder-bob/lib/src/utils/compile.js
+@@ -92,120 +92,120 @@ export default async function compile({ root, source, output, esm = false, babel
+         }
+     }));
+     report.success(`Wrote files to ${kleur.blue(path.relative(root, output))}`);
+-    const getGeneratedEntryPath = async () => {
+-        if (pkg.source) {
+-            for (const ext of ['.js', '.cjs', '.mjs']) {
+-                const indexName = 
+-                // The source field may not have an extension, so we add it instead of replacing directly
+-                path.basename(pkg.source).replace(sourceExt, '') + ext;
+-                const potentialPath = path.join(output, path.dirname(path.relative(source, path.join(root, pkg.source))), indexName);
+-                if (await fs.pathExists(potentialPath)) {
+-                    return path.relative(root, potentialPath);
+-                }
+-            }
+-        }
+-        return null;
+-    };
+-    const fields = [];
+-    if (variants.commonjs && variants.module) {
+-        if (modules === 'commonjs') {
+-            fields.push({ name: 'main', value: pkg.main });
+-        }
+-        else {
+-            fields.push({ name: 'module', value: pkg.module });
+-        }
+-    }
+-    else {
+-        fields.push({ name: 'main', value: pkg.main });
+-    }
+-    if (esm) {
+-        if (variants.commonjs && variants.module) {
+-            if (modules === 'commonjs') {
+-                fields.push(typeof pkg.exports?.['.']?.require === 'string'
+-                    ? {
+-                        name: "exports['.'].require",
+-                        value: pkg.exports?.['.']?.require,
+-                    }
+-                    : {
+-                        name: "exports['.'].require.default",
+-                        value: pkg.exports?.['.']?.require?.default,
+-                    });
+-            }
+-            else {
+-                fields.push(typeof pkg.exports?.['.']?.import === 'string'
+-                    ? {
+-                        name: "exports['.'].import",
+-                        value: pkg.exports?.['.']?.import,
+-                    }
+-                    : {
+-                        name: "exports['.'].import.default",
+-                        value: pkg.exports?.['.']?.import?.default,
+-                    });
+-            }
+-        }
+-        else {
+-            fields.push({
+-                name: "exports['.'].default",
+-                value: pkg.exports?.['.']?.default,
+-            });
+-        }
+-    }
+-    else {
+-        if (modules === 'commonjs' && pkg.exports?.['.']?.require) {
+-            report.warn(`The ${kleur.blue('esm')} option is disabled, but the ${kleur.blue("exports['.'].require")} field is set in ${kleur.blue('package.json')}. This is likely a mistake.`);
+-        }
+-        else if (modules === 'preserve' && pkg.exports?.['.']?.import) {
+-            report.warn(`The ${kleur.blue('esm')} option is disabled, but the ${kleur.blue("exports['.'].import")} field is set in ${kleur.blue('package.json')}. This is likely a mistake.`);
+-        }
+-    }
+-    const generatedEntryPath = await getGeneratedEntryPath();
+-    if (fields.some((field) => field.value)) {
+-        for (const { name, value } of fields) {
+-            if (!value) {
+-                continue;
+-            }
+-            if (name.startsWith('exports') && value && !/^\.\//.test(value)) {
+-                report.error(`The ${kleur.blue(name)} field in ${kleur.blue(`package.json`)} should be a relative path starting with ${kleur.blue('./')}. Found: ${kleur.blue(value)}`);
+-                throw new Error(`Found incorrect path in '${name}' field.`);
+-            }
+-            try {
+-                require.resolve(path.join(root, value));
+-            }
+-            catch (e) {
+-                if (e != null &&
+-                    typeof e === 'object' &&
+-                    'code' in e &&
+-                    e.code === 'MODULE_NOT_FOUND') {
+-                    if (!generatedEntryPath) {
+-                        report.warn(`Failed to detect the entry point for the generated files. Make sure you have a valid ${kleur.blue('source')} field in your ${kleur.blue('package.json')}.`);
+-                    }
+-                    report.error(`The ${kleur.blue(name)} field in ${kleur.blue('package.json')} points to a non-existent file: ${kleur.blue(value)}.\nVerify the path points to the correct file under ${kleur.blue(path.relative(root, output))}${generatedEntryPath
+-                        ? ` (found ${kleur.blue(generatedEntryPath)}).`
+-                        : '.'}`);
+-                    throw new Error(`Found incorrect path in '${name}' field.`, {
+-                        cause: e,
+-                    });
+-                }
+-                throw e;
+-            }
+-        }
+-        if (generatedEntryPath) {
+-            if (modules === 'commonjs' &&
+-                pkg.exports?.['.']?.import === `./${generatedEntryPath}`) {
+-                report.warn(`The the ${kleur.blue("exports['.'].import")} field points to a CommonJS module. This is likely a mistake.`);
+-            }
+-            else if (modules === 'preserve' &&
+-                pkg.exports?.['.']?.require === `./${generatedEntryPath}`) {
+-                report.warn(`The the ${kleur.blue("exports['.'].import")} field points to a ES module. This is likely a mistake.`);
+-            }
+-        }
+-    }
+-    else {
+-        report.warn(`No ${fields
+-            .map((field) => kleur.blue(field.name))
+-            .join(' or ')} field found in ${kleur.blue('package.json')}. Consider ${generatedEntryPath
+-            ? `pointing to ${kleur.blue(generatedEntryPath)}`
+-            : `adding ${fields.length > 1 ? 'them' : 'it'}`} so that consumers of your package can import your package.`);
+-    }
++    // const getGeneratedEntryPath = async () => {
++    //     if (pkg.source) {
++    //         for (const ext of ['.js', '.cjs', '.mjs']) {
++    //             const indexName =
++    //             // The source field may not have an extension, so we add it instead of replacing directly
++    //             path.basename(pkg.source).replace(sourceExt, '') + ext;
++    //             const potentialPath = path.join(output, path.dirname(path.relative(source, path.join(root, pkg.source))), indexName);
++    //             if (await fs.pathExists(potentialPath)) {
++    //                 return path.relative(root, potentialPath);
++    //             }
++    //         }
++    //     }
++    //     return null;
++    // };
++    // const fields = [];
++    // if (variants.commonjs && variants.module) {
++    //     if (modules === 'commonjs') {
++    //         fields.push({ name: 'main', value: pkg.main });
++    //     }
++    //     else {
++    //         fields.push({ name: 'module', value: pkg.module });
++    //     }
++    // }
++    // else {
++    //     fields.push({ name: 'main', value: pkg.main });
++    // }
++    // if (esm) {
++    //     if (variants.commonjs && variants.module) {
++    //         if (modules === 'commonjs') {
++    //             fields.push(typeof pkg.exports?.['.']?.require === 'string'
++    //                 ? {
++    //                     name: "exports['.'].require",
++    //                     value: pkg.exports?.['.']?.require,
++    //                 }
++    //                 : {
++    //                     name: "exports['.'].require.default",
++    //                     value: pkg.exports?.['.']?.require?.default,
++    //                 });
++    //         }
++    //         else {
++    //             fields.push(typeof pkg.exports?.['.']?.import === 'string'
++    //                 ? {
++    //                     name: "exports['.'].import",
++    //                     value: pkg.exports?.['.']?.import,
++    //                 }
++    //                 : {
++    //                     name: "exports['.'].import.default",
++    //                     value: pkg.exports?.['.']?.import?.default,
++    //                 });
++    //         }
++    //     }
++    //     else {
++    //         fields.push({
++    //             name: "exports['.'].default",
++    //             value: pkg.exports?.['.']?.default,
++    //         });
++    //     }
++    // }
++    // else {
++    //     if (modules === 'commonjs' && pkg.exports?.['.']?.require) {
++    //         report.warn(`The ${kleur.blue('esm')} option is disabled, but the ${kleur.blue("exports['.'].require")} field is set in ${kleur.blue('package.json')}. This is likely a mistake.`);
++    //     }
++    //     else if (modules === 'preserve' && pkg.exports?.['.']?.import) {
++    //         report.warn(`The ${kleur.blue('esm')} option is disabled, but the ${kleur.blue("exports['.'].import")} field is set in ${kleur.blue('package.json')}. This is likely a mistake.`);
++    //     }
++    // }
++    // const generatedEntryPath = await getGeneratedEntryPath();
++    // if (fields.some((field) => field.value)) {
++    //     for (const { name, value } of fields) {
++    //         if (!value) {
++    //             continue;
++    //         }
++    //         if (name.startsWith('exports') && value && !/^\.\//.test(value)) {
++    //             report.error(`The ${kleur.blue(name)} field in ${kleur.blue(`package.json`)} should be a relative path starting with ${kleur.blue('./')}. Found: ${kleur.blue(value)}`);
++    //             throw new Error(`Found incorrect path in '${name}' field.`);
++    //         }
++    //         try {
++    //             require.resolve(path.join(root, value));
++    //         }
++    //         catch (e) {
++    //             if (e != null &&
++    //                 typeof e === 'object' &&
++    //                 'code' in e &&
++    //                 e.code === 'MODULE_NOT_FOUND') {
++    //                 if (!generatedEntryPath) {
++    //                     report.warn(`Failed to detect the entry point for the generated files. Make sure you have a valid ${kleur.blue('source')} field in your ${kleur.blue('package.json')}.`);
++    //                 }
++    //                 report.error(`The ${kleur.blue(name)} field in ${kleur.blue('package.json')} points to a non-existent file: ${kleur.blue(value)}.\nVerify the path points to the correct file under ${kleur.blue(path.relative(root, output))}${generatedEntryPath
++    //                     ? ` (found ${kleur.blue(generatedEntryPath)}).`
++    //                     : '.'}`);
++    //                 throw new Error(`Found incorrect path in '${name}' field.`, {
++    //                     cause: e,
++    //                 });
++    //             }
++    //             throw e;
++    //         }
++    //     }
++    //     if (generatedEntryPath) {
++    //         if (modules === 'commonjs' &&
++    //             pkg.exports?.['.']?.import === `./${generatedEntryPath}`) {
++    //             report.warn(`The the ${kleur.blue("exports['.'].import")} field points to a CommonJS module. This is likely a mistake.`);
++    //         }
++    //         else if (modules === 'preserve' &&
++    //             pkg.exports?.['.']?.require === `./${generatedEntryPath}`) {
++    //             report.warn(`The the ${kleur.blue("exports['.'].import")} field points to a ES module. This is likely a mistake.`);
++    //         }
++    //     }
++    // }
++    // else {
++    //     report.warn(`No ${fields
++    //         .map((field) => kleur.blue(field.name))
++    //         .join(' or ')} field found in ${kleur.blue('package.json')}. Consider ${generatedEntryPath
++    //         ? `pointing to ${kleur.blue(generatedEntryPath)}`
++    //         : `adding ${fields.length > 1 ? 'them' : 'it'}`} so that consumers of your package can import your package.`);
++    // }
+ }
+ //# sourceMappingURL=compile.js.map

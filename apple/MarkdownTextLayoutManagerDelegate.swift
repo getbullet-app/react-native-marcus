@@ -21,14 +21,14 @@ import UIKit
     let index = textLayoutManager.offset(from: textLayoutManager.documentRange.location, to: location)
     guard index < textStorage.length else { return plain() }
 
-    let depth = textStorage.attribute(.liveMarkdownBlockquoteDepth,
+    let depth = textStorage.attribute(.marcusBlockquoteDepth,
                                       at: index, effectiveRange: nil) as? NSNumber
 
     guard let paragraph = textElement as? NSTextParagraph else { return plain() }
     let attributedString = paragraph.attributedString
 
     var mentions: [MarkdownTextBackgroundWithRange] = []
-    attributedString.enumerateAttribute(.liveMarkdownTextBackground,
+    attributedString.enumerateAttribute(.marcusTextBackground,
                                         in: NSRange(location: 0, length: attributedString.length)) { value, range, _ in
       guard let textBackground = value as? MarkdownTextBackground else { return }
       mentions.append(MarkdownTextBackgroundWithRange(textBackground: textBackground, range: range))

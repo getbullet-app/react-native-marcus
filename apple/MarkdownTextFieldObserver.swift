@@ -44,7 +44,7 @@ import UIKit
     applyMarkdownFormatting()
   }
 
-  private static let forceUpdateAttributeName = NSAttributedString.Key("RCTLiveMarkdownForceUpdate")
+  private static let forceUpdateAttributeName = NSAttributedString.Key("RCTMarcusForceUpdate")
   private static var forceUpdateCounter: UInt = 0
 
   private static func nextForceUpdateToken() -> NSNumber {

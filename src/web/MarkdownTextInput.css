@@ -1,43 +1,43 @@
-.react-native-live-markdown-input-multiline {
+.react-native-marcus-input-multiline {
   white-space: pre-wrap;
 }
 
-.react-native-live-markdown-input-singleline p {
+.react-native-marcus-input-singleline p {
   display: inline-block;
 }
 
-.react-native-live-markdown-input-multiline p {
+.react-native-marcus-input-multiline p {
   display: block;
 }
 
-.react-native-live-markdown-input-singleline::-webkit-scrollbar {
+.react-native-marcus-input-singleline::-webkit-scrollbar {
   display: none;
 }
 
-.react-native-live-markdown-input-singleline br {
+.react-native-marcus-input-singleline br {
   display: none;
 }
 
-.react-native-live-markdown-input-singleline span[data-type='text'] {
+.react-native-marcus-input-singleline span[data-type='text'] {
   vertical-align: middle;
 }
 
-.react-native-live-markdown-input-singleline span[data-type='link'] span[data-type='text'] {
+.react-native-marcus-input-singleline span[data-type='link'] span[data-type='text'] {
   vertical-align: top;
 }
 
-.react-native-live-markdown-input-singleline > p:last-child {
+.react-native-marcus-input-singleline > p:last-child {
   padding-right: 1px !important;
 }
 
-.react-native-live-markdown-input-singleline:empty::before,
-.react-native-live-markdown-input-multiline:empty::before {
+.react-native-marcus-input-singleline:empty::before,
+.react-native-marcus-input-multiline:empty::before {
   pointer-events: none;
   display: block; /* For Firefox */
   content: attr(placeholder);
 }
 
-.react-native-live-markdown-input-multiline *[data-type='pre'] {
+.react-native-marcus-input-multiline *[data-type='pre'] {
   line-height: 1.3;
   display: block;
   width: fit-content;
@@ -45,7 +45,7 @@
   box-sizing: border-box;
 }
 
-.react-native-live-markdown-input-multiline *[data-type='codeblock'] {
+.react-native-marcus-input-multiline *[data-type='codeblock'] {
   position: relative;
   width: fit-content;
   max-width: 100%;
@@ -54,20 +54,20 @@
   display: block;
 }
 
-.react-native-live-markdown-input-singleline *[data-type='code'] > *[data-type='emoji'],
-.react-native-live-markdown-input-multiline *[data-type='code'] > *[data-type='emoji'] {
+.react-native-marcus-input-singleline *[data-type='code'] > *[data-type='emoji'],
+.react-native-marcus-input-multiline *[data-type='code'] > *[data-type='emoji'] {
   font-size: inherit !important;
   line-height: inherit !important;
   vertical-align: unset !important;
 }
 
-.react-native-live-markdown-input-multiline *[data-type='line'] *[data-type='syntax']:has(+ *[data-type='pre']),
-.react-native-live-markdown-input-multiline *[data-type='line'] *[data-type='pre'] + *[data-type='syntax'] {
+.react-native-marcus-input-multiline *[data-type='line'] *[data-type='syntax']:has(+ *[data-type='pre']),
+.react-native-marcus-input-multiline *[data-type='line'] *[data-type='pre'] + *[data-type='syntax'] {
   display: block;
   line-height: 1.3;
 }
 
-@keyframes react-native-live-markdown-spin {
+@keyframes react-native-marcus-spin {
   0% {
     transform: rotate(0deg);
   }
@@ -76,7 +76,7 @@
   }
 }
 
-.react-native-live-markdown-input-multiline [contenteditable='false'] {
+.react-native-marcus-input-multiline [contenteditable='false'] {
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -84,6 +84,6 @@
   user-select: none;
 }
 
-[class^='react-native-live-markdown-input'] [data-type='strikethrough'] * {
+[class^='react-native-marcus-input'] [data-type='strikethrough'] * {
   text-decoration: inherit;
 }

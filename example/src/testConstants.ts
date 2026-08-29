@@ -7,7 +7,7 @@ const LOCAL_URL = 'http://localhost:8081/';
 // ExpensiMark reads some of this differently (it treats *single asterisks* as bold and
 // ~single tildes~ as strikethrough), which is exactly what the parser toggle is for.
 const EXAMPLE_CONTENT = [
-  '# Live Markdown',
+  '# Marcus',
   '',
   'A paragraph with **bold**, *italic*, **bold around *nested italic* inside**,',
   '~~strikethrough~~ and `inline code`, a bare link https://expensify.com,',
@@ -27,12 +27,4 @@ const TOGGLE_LINK_COLOR = 'toggle-link-color';
 const CHANGE_SELECTION = 'change-selection';
 const SELECTION_END = 20;
 
-export {
-  LOCAL_URL,
-  EXAMPLE_CONTENT,
-  INPUT_ID,
-  INPUT_HISTORY_DEBOUNCE_TIME_MS,
-  TOGGLE_LINK_COLOR,
-  CHANGE_SELECTION,
-  SELECTION_END,
-};
+export {LOCAL_URL, EXAMPLE_CONTENT, INPUT_ID, INPUT_HISTORY_DEBOUNCE_TIME_MS, TOGGLE_LINK_COLOR, CHANGE_SELECTION, SELECTION_END};

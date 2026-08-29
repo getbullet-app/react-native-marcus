@@ -124,16 +124,16 @@ const MarkdownTextInput = React.forwardRef<MarkdownTextInput, MarkdownTextInputP
     ref,
   ) => {
     if (parser === undefined) {
-      throw new Error('[react-native-live-markdown] `parser` is undefined');
+      throw new Error('[react-native-marcus] `parser` is undefined');
     }
     if (typeof parser !== 'function') {
-      throw new Error('[react-native-live-markdown] `parser` is not a function');
+      throw new Error('[react-native-marcus] `parser` is not a function');
     }
 
     const divRef = useRef<MarkdownTextInputElement | null>(null);
     const currentlyFocusedField = useRef<HTMLDivElement | null>(null);
     const contentSelection = useRef<Selection | null>(null);
-    const className = `react-native-live-markdown-input-${multiline ? 'multiline' : 'singleline'}`;
+    const className = `react-native-marcus-input-${multiline ? 'multiline' : 'singleline'}`;
     const history = useRef<InputHistory | null>(null);
     const dimensions = useRef<Dimensions | null>(null);
     const pasteContent = useRef<string | null>(null);
@@ -254,7 +254,7 @@ const MarkdownTextInput = React.forwardRef<MarkdownTextInput, MarkdownTextInputP
     const handleFormatSelection = useCallback(
       (target: MarkdownTextInputElement, parsedText: string, cursorPosition: number, formatCommand: string): ParseTextResult => {
         if (!contentSelection.current || contentSelection.current.end - contentSelection.current.start < 1) {
-          throw new Error('[react-native-live-markdown] Trying to apply format command on empty selection');
+          throw new Error('[react-native-marcus] Trying to apply format command on empty selection');
         }
 
         if (!formatSelection) {
@@ -850,7 +850,7 @@ export default MarkdownTextInput;
 export type {MarkdownNativeEvent, MarkdownTextInputProps, MarkdownTextInputElement, HTMLMarkdownElement};
 
 function getWorkletRuntime() {
-  throw new Error('[react-native-live-markdown] `getWorkletRuntime` is not available on web. Please make sure to use it only on native Android or iOS.');
+  throw new Error('[react-native-marcus] `getWorkletRuntime` is not available on web. Please make sure to use it only on native Android or iOS.');
 }
 
 export {getWorkletRuntime};

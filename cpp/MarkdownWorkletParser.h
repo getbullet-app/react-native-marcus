@@ -4,8 +4,8 @@
 #include <string>
 #include <vector>
 
-namespace expensify {
-namespace livemarkdown {
+namespace bulletpoint {
+namespace marcus {
 
 struct MarkdownRange {
   std::string type;
@@ -41,5 +41,5 @@ struct ParseResult {
 ParseResult parseMarkdown(const std::string &utf8Text, size_t textLengthUtf16,
                           int parserId);
 
-} // namespace livemarkdown
-} // namespace expensify
+} // namespace marcus
+} // namespace bulletpoint

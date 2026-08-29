@@ -33,7 +33,7 @@ import MarkdownCxx
   /// Serial on purpose: the markdown runtime runs one parse at a time anyway,
   /// and serialising here avoids doing the same work twice.
   private static let warmupQueue = DispatchQueue(
-    label: "com.expensify.livemarkdown.parser-cache-warmup", qos: .userInitiated)
+    label: "app.getbullet.marcus.parser-cache-warmup", qos: .userInitiated)
 
   /// Guards everything below, and is never held across a parse. Holding a lock
   /// while waiting on the markdown runtime is what let a background parse block
@@ -98,13 +98,13 @@ import MarkdownCxx
 
   private func parseUncached(_ text: String, parserId: NSNumber) -> [MarkdownRange] {
     // `utf16.count` is the unit the worklet reports range offsets in.
-    let result = expensify.livemarkdown.parseMarkdown(std.string(text),
+    let result = bulletpoint.marcus.parseMarkdown(std.string(text),
                                                       text.utf16.count,
                                                       Int32(parserId.intValue))
 
     let schemaError = String(result.schemaError)
     if !schemaError.isEmpty {
-      markdownLogWarn("[react-native-live-markdown] Incorrect schema of worklet parser output: \(schemaError)")
+      markdownLogWarn("[react-native-marcus] Incorrect schema of worklet parser output: \(schemaError)")
     }
 
     return result.ranges.map { range in

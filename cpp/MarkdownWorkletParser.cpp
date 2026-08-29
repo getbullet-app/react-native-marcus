@@ -5,8 +5,8 @@
 #include <stdexcept>
 #include <utility>
 
-namespace expensify {
-namespace livemarkdown {
+namespace bulletpoint {
+namespace marcus {
 
 ParseResult parseMarkdown(const std::string &utf8Text, size_t textLengthUtf16,
                           int parserId) {
@@ -40,16 +40,20 @@ ParseResult parseMarkdown(const std::string &utf8Text, size_t textLengthUtf16,
     for (size_t i = 0; i < count; ++i) {
       const auto &item = items.getValueAtIndex(rt, i).asObject(rt);
       auto type = item.getProperty(rt, "type").asString(rt).utf8(rt);
-      const auto start = static_cast<int>(item.getProperty(rt, "start").asNumber());
-      const auto length = static_cast<int>(item.getProperty(rt, "length").asNumber());
-      const auto depth = item.hasProperty(rt, "depth")
-                             ? static_cast<int>(item.getProperty(rt, "depth").asNumber())
-                             : 1;
+      const auto start =
+          static_cast<int>(item.getProperty(rt, "start").asNumber());
+      const auto length =
+          static_cast<int>(item.getProperty(rt, "length").asNumber());
+      const auto depth =
+          item.hasProperty(rt, "depth")
+              ? static_cast<int>(item.getProperty(rt, "depth").asNumber())
+              : 1;
 
       // `start` is checked explicitly because the offsets come from JS and a
       // negative one would wrap when converted to an unsigned platform range.
       if (length <= 0 || start < 0 ||
-          static_cast<size_t>(start) + static_cast<size_t>(length) > textLengthUtf16) {
+          static_cast<size_t>(start) + static_cast<size_t>(length) >
+              textLengthUtf16) {
         continue;
       }
 
@@ -62,5 +66,5 @@ ParseResult parseMarkdown(const std::string &utf8Text, size_t textLengthUtf16,
   return {std::move(ranges), ""};
 }
 
-} // namespace livemarkdown
-} // namespace expensify
+} // namespace marcus
+} // namespace bulletpoint

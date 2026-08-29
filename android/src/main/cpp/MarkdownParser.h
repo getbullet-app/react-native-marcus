@@ -13,44 +13,45 @@
 
 using namespace facebook;
 
-namespace expensify {
-namespace livemarkdown {
+namespace bulletpoint {
+namespace marcus {
 
-  struct JMarkdownRange : jni::JavaClass<JMarkdownRange> {
-    static constexpr auto kJavaDescriptor =
-        "Lcom/expensify/livemarkdown/MarkdownRange;";
+struct JMarkdownRange : jni::JavaClass<JMarkdownRange> {
+  static constexpr auto kJavaDescriptor =
+      "Lapp/getbullet/marcus/MarkdownRange;";
 
-    // fbjni keeps newInstance protected, so the factory has to live inside the class.
-    static jni::local_ref<JMarkdownRange> create(const std::string &type, int start,
-                                                 int length, int depth) {
-      return newInstance(jni::make_jstring(type), start, length, depth);
-    }
-  };
+  // fbjni keeps newInstance protected, so the factory has to live inside the
+  // class.
+  static jni::local_ref<JMarkdownRange>
+  create(const std::string &type, int start, int length, int depth) {
+    return newInstance(jni::make_jstring(type), start, length, depth);
+  }
+};
 
-  struct JMarkdownParseResult : jni::JavaClass<JMarkdownParseResult> {
-    static constexpr auto kJavaDescriptor =
-        "Lcom/expensify/livemarkdown/MarkdownParseResult;";
+struct JMarkdownParseResult : jni::JavaClass<JMarkdownParseResult> {
+  static constexpr auto kJavaDescriptor =
+      "Lapp/getbullet/marcus/MarkdownParseResult;";
 
-    static jni::local_ref<JMarkdownParseResult> create(
-        jni::alias_ref<jni::JArrayClass<JMarkdownRange::javaobject>> ranges,
-        jni::local_ref<jni::JString> schemaError) {
-      return newInstance(ranges, schemaError);
-    }
-  };
+  static jni::local_ref<JMarkdownParseResult>
+  create(jni::alias_ref<jni::JArrayClass<JMarkdownRange::javaobject>> ranges,
+         jni::local_ref<jni::JString> schemaError) {
+    return newInstance(ranges, schemaError);
+  }
+};
 
-  // A plain JavaClass, not a HybridClass: the Kotlin side holds no HybridData and nothing
-  // ever constructs a C++ peer, so the hybrid machinery would only be decoration.
-  struct JMarkdownParser : jni::JavaClass<JMarkdownParser> {
-    static constexpr auto kJavaDescriptor =
-        "Lcom/expensify/livemarkdown/MarkdownParser;";
+// A plain JavaClass, not a HybridClass: the Kotlin side holds no HybridData and
+// nothing ever constructs a C++ peer, so the hybrid machinery would only be
+// decoration.
+struct JMarkdownParser : jni::JavaClass<JMarkdownParser> {
+  static constexpr auto kJavaDescriptor =
+      "Lapp/getbullet/marcus/MarkdownParser;";
 
-    static jni::local_ref<JMarkdownParseResult> nativeParse(
-        jni::alias_ref<JMarkdownParser> jThis,
-        jni::alias_ref<jni::JString> text,
-        const int parserId);
+  static jni::local_ref<JMarkdownParseResult>
+  nativeParse(jni::alias_ref<JMarkdownParser> jThis,
+              jni::alias_ref<jni::JString> text, const int parserId);
 
-    static void registerNatives();
-  };
+  static void registerNatives();
+};
 
-} // namespace livemarkdown
-} // namespace expensify
+} // namespace marcus
+} // namespace bulletpoint

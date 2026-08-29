@@ -9,7 +9,7 @@ try {
     // eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports
     require('react-native-web/dist/exports/StyleSheet/compiler/createReactDOMStyle').default;
 } catch {
-  throw new Error('[react-native-live-markdown] Function `createReactDOMStyle` from react-native-web not found. Please make sure that you are using React Native Web 0.18 or newer.');
+  throw new Error('[react-native-marcus] Function `createReactDOMStyle` from react-native-web not found. Please make sure that you are using React Native Web 0.18 or newer.');
 }
 
 let preprocessStyle: (style: any) => any;
@@ -18,7 +18,7 @@ try {
     // eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports
     require('react-native-web/dist/exports/StyleSheet/preprocess').default;
 } catch {
-  throw new Error('[react-native-live-markdown] Function `preprocessStyle` from react-native-web not found.');
+  throw new Error('[react-native-marcus] Function `preprocessStyle` from react-native-web not found.');
 }
 
 let dangerousStyleValue: (name: string, value: any, isCustomProperty: boolean) => any;
@@ -27,7 +27,7 @@ try {
     // eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports
     require('react-native-web/dist/modules/setValueForStyles/dangerousStyleValue').default;
 } catch {
-  throw new Error('[react-native-live-markdown] Function `dangerousStyleValue` from react-native-web not found.');
+  throw new Error('[react-native-marcus] Function `dangerousStyleValue` from react-native-web not found.');
 }
 
 function processUnitsInMarkdownStyle(input: MarkdownStyle): MarkdownStyle {
@@ -54,7 +54,7 @@ function parseToReactDOMStyle(style: TextStyle): any {
 function* generateUniqueId() {
   let idCounter = 0;
   while (true) {
-    yield `live-markdown-input-${idCounter++}`;
+    yield `marcus-input-${idCounter++}`;
   }
 }
 

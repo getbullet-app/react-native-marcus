@@ -7,18 +7,20 @@
 using namespace facebook;
 using namespace worklets;
 
-namespace expensify {
-namespace livemarkdown {
+namespace bulletpoint {
+namespace marcus {
 
-void setMarkdownRuntime(const std::shared_ptr<WorkletRuntime> &markdownWorkletRuntime);
+void setMarkdownRuntime(
+    const std::shared_ptr<WorkletRuntime> &markdownWorkletRuntime);
 
 std::shared_ptr<WorkletRuntime> getMarkdownRuntime();
 
-const int registerMarkdownWorklet(const std::shared_ptr<SerializableWorklet> &markdownWorklet);
+const int registerMarkdownWorklet(
+    const std::shared_ptr<SerializableWorklet> &markdownWorklet);
 
 void unregisterMarkdownWorklet(const int parserId);
 
 std::shared_ptr<SerializableWorklet> getMarkdownWorklet(const int parserId);
 
-} // namespace livemarkdown
-} // namespace expensify
+} // namespace marcus
+} // namespace bulletpoint

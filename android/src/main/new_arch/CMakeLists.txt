@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.13)
 set(CMAKE_VERBOSE_MAKEFILE ON)
 set(CMAKE_CXX_STANDARD 20)
 
-set(LIB_LITERAL RNLiveMarkdownSpec)
+set(LIB_LITERAL RNMarcusSpec)
 set(LIB_TARGET_NAME react_codegen_${LIB_LITERAL})
 
 set(LIB_ANDROID_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../..)
@@ -11,7 +11,7 @@ set(LIB_CUSTOM_SOURCES_DIR ${LIB_CPP_DIR}/react/renderer/components/${LIB_LITERA
 set(LIB_ANDROID_GENERATED_JNI_DIR ${LIB_ANDROID_DIR}/build/generated/source/codegen/jni)
 set(LIB_ANDROID_GENERATED_COMPONENTS_DIR ${LIB_ANDROID_GENERATED_JNI_DIR}/react/renderer/components/${LIB_LITERAL})
 
-file(GLOB LIB_MODULE_SRCS CONFIGURE_DEPENDS *.cpp react/renderer/components/RNLiveMarkdownSpec/*.cpp)
+file(GLOB LIB_MODULE_SRCS CONFIGURE_DEPENDS *.cpp react/renderer/components/RNMarcusSpec/*.cpp)
 file(GLOB LIB_CUSTOM_SRCS CONFIGURE_DEPENDS ${LIB_CUSTOM_SOURCES_DIR}/*.cpp)
 file(GLOB LIB_CODEGEN_SRCS CONFIGURE_DEPENDS ${LIB_ANDROID_GENERATED_COMPONENTS_DIR}/*.cpp)
 
@@ -27,7 +27,7 @@ target_include_directories(
         ${LIB_TARGET_NAME}
         PUBLIC
         .
-        ./react/renderer/components/RNLiveMarkdownSpec
+        ./react/renderer/components/RNMarcusSpec
         ${LIB_ANDROID_GENERATED_JNI_DIR}
         ${LIB_ANDROID_GENERATED_COMPONENTS_DIR}
         ${LIB_CPP_DIR}

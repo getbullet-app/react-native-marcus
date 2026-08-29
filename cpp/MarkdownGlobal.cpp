@@ -4,8 +4,8 @@
 
 using namespace facebook;
 
-namespace expensify {
-namespace livemarkdown {
+namespace bulletpoint {
+namespace marcus {
 
 std::shared_ptr<WorkletRuntime> globalMarkdownWorkletRuntime;
 
@@ -39,5 +39,5 @@ std::shared_ptr<SerializableWorklet> getMarkdownWorklet(const int parserId) {
   return globalMarkdownShareableWorklets.at(parserId);
 }
 
-} // namespace livemarkdown
-} // namespace expensify
+} // namespace marcus
+} // namespace bulletpoint

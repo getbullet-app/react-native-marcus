@@ -5,7 +5,7 @@ import {createSerializable, createWorkletRuntime} from 'react-native-worklets';
 import type {SerializableRef, WorkletFunction, WorkletRuntime} from 'react-native-worklets';
 import MarkdownTextInputDecoratorViewNativeComponent from './MarkdownTextInputDecoratorViewNativeComponent';
 import type {MarkdownStyle} from './MarkdownTextInputDecoratorViewNativeComponent';
-import NativeLiveMarkdownModule from './NativeLiveMarkdownModule';
+import NativeMarcusModule from './NativeMarcusModule';
 import {mergeMarkdownStyleWithDefault} from './styleUtils';
 import type {PartialMarkdownStyle} from './styleUtils';
 import type {InlineImagesInputProps, MarkdownRange} from './commonTypes';
@@ -25,29 +25,29 @@ let workletRuntime: WorkletRuntime | undefined;
 function getWorkletRuntime(): WorkletRuntime {
   if (workletRuntime === undefined) {
     throw new Error(
-      "[react-native-live-markdown] Worklet runtime hasn't been created yet. Please avoid calling `getWorkletRuntime()` in top-level scope. Instead, call `getWorkletRuntime()` directly in `runOnRuntime` arguments list.",
+      "[react-native-marcus] Worklet runtime hasn't been created yet. Please avoid calling `getWorkletRuntime()` in top-level scope. Instead, call `getWorkletRuntime()` directly in `runOnRuntime` arguments list.",
     );
   }
   return workletRuntime;
 }
 
-function initializeLiveMarkdownIfNeeded() {
+function initializeMarcusIfNeeded() {
   if (initialized) {
     return;
   }
-  if (NativeLiveMarkdownModule) {
-    NativeLiveMarkdownModule.install();
+  if (NativeMarcusModule) {
+    NativeMarcusModule.install();
   }
   if (!global.jsi_setMarkdownRuntime) {
-    throw new Error('[react-native-live-markdown] global.jsi_setMarkdownRuntime is not available');
+    throw new Error('[react-native-marcus] global.jsi_setMarkdownRuntime is not available');
   }
-  workletRuntime = createWorkletRuntime({name: 'LiveMarkdownRuntime'});
+  workletRuntime = createWorkletRuntime({name: 'MarcusRuntime'});
   global.jsi_setMarkdownRuntime(workletRuntime);
   initialized = true;
 }
 
 function registerParser(parser: (input: string) => MarkdownRange[]): number {
-  initializeLiveMarkdownIfNeeded();
+  initializeMarcusIfNeeded();
   const serializableWorklet = createSerializable(parser as WorkletFunction<[string], MarkdownRange[]>);
   const parserId = global.jsi_registerMarkdownWorklet(serializableWorklet);
   return parserId;
@@ -95,13 +95,13 @@ const MarkdownTextInput = React.forwardRef<MarkdownTextInput, MarkdownTextInputP
   const markdownStyle = React.useMemo(() => processMarkdownStyle(props.markdownStyle), [props.markdownStyle]);
 
   if (props.parser === undefined) {
-    throw new Error('[react-native-live-markdown] `parser` is undefined');
+    throw new Error('[react-native-marcus] `parser` is undefined');
   }
 
   // eslint-disable-next-line no-underscore-dangle
   const workletHash = (props.parser as {__workletHash?: number}).__workletHash;
   if (workletHash === undefined) {
-    throw new Error('[react-native-live-markdown] `parser` is not a worklet');
+    throw new Error('[react-native-marcus] `parser` is not a worklet');
   }
 
   const parserId = React.useMemo(() => {

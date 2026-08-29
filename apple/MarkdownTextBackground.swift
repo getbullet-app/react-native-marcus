@@ -3,7 +3,7 @@ import UIKit
 /// The rounded background drawn behind a mention.
 ///
 /// Stored as an attributed-string attribute value under
-/// `.liveMarkdownTextBackground`, so it stays an object rather than a struct.
+/// `.marcusTextBackground`, so it stays an object rather than a struct.
 final class MarkdownTextBackground: NSObject {
   var color: UIColor = .clear
   var borderRadius: CGFloat = 0

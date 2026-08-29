@@ -1,8 +1,8 @@
 #pragma once
 
-#include <react/renderer/components/RNLiveMarkdownSpec/MarkdownTextInputDecoratorState.h>
-#include <react/renderer/components/RNLiveMarkdownSpec/EventEmitters.h>
-#include <react/renderer/components/RNLiveMarkdownSpec/Props.h>
+#include <react/renderer/components/RNMarcusSpec/EventEmitters.h>
+#include <react/renderer/components/RNMarcusSpec/MarkdownTextInputDecoratorState.h>
+#include <react/renderer/components/RNMarcusSpec/Props.h>
 #include <react/renderer/components/iostextinput/TextInputShadowNode.h>
 
 #include <react/renderer/components/view/ConcreteViewShadowNode.h>
@@ -42,8 +42,9 @@ private:
   void initialize();
   void overwriteMeasureCallbackConnector();
   void makeChildNodeMutable();
-  void applyMarkdownFormattingToTextInputState(std::shared_ptr<TextInputShadowNode> node,
-                     const LayoutContext &layoutContext) const;
+  void applyMarkdownFormattingToTextInputState(
+      std::shared_ptr<TextInputShadowNode> node,
+      const LayoutContext &layoutContext) const;
   static YGSize yogaNodeMeasureCallbackConnector(YGNodeConstRef yogaNode,
                                                  float width,
                                                  YGMeasureMode widthMode,
@@ -52,10 +53,9 @@ private:
   static YogaLayoutableShadowNode &
   shadowNodeFromContext(YGNodeConstRef yogaNode);
 
-  // Defined in the Objective-C++ half of this class; wraps RCTFontSizeMultiplier
-  // so the Yoga measure connector can stay in plain C++.
+  // Defined in the Objective-C++ half of this class; wraps
+  // RCTFontSizeMultiplier so the Yoga measure connector can stay in plain C++.
   static Float fontSizeMultiplier();
-
 
   // Set from any thread when a background parse finishes. The next
   // overwriteMeasureCallbackConnector() marks the child's Yoga node dirty so it

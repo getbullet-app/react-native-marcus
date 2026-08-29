@@ -15,7 +15,7 @@
 #include <memory>
 
 #import "RCTMarkdownStyle+Codegen.h"
-#import <RNLiveMarkdown/MarkdownSwiftInterop.h>
+#import <RNMarcus/MarkdownSwiftInterop.h>
 
 namespace facebook {
 namespace react {
@@ -37,33 +37,36 @@ using DecoratorState = ConcreteState<MarkdownTextInputDecoratorState>;
 //
 // This is rare in practice: text changes are normally parsed off the main
 // thread first, so the main thread finds the ranges already cached.
-void ApplyMarkdownFormatting(NSMutableAttributedString *string,
-                             NSDictionary<NSAttributedStringKey, id> *defaultTextAttributes,
-                             RCTMarkdownStyle *markdownStyle,
-                             NSNumber *parserId,
-                             MarkdownParser *parser,
-                             std::shared_ptr<std::atomic_bool> needsRemeasure,
-                             std::shared_ptr<const DecoratorState> state) {
+void ApplyMarkdownFormatting(
+    NSMutableAttributedString *string,
+    NSDictionary<NSAttributedStringKey, id> *defaultTextAttributes,
+    RCTMarkdownStyle *markdownStyle, NSNumber *parserId, MarkdownParser *parser,
+    std::shared_ptr<std::atomic_bool> needsRemeasure,
+    std::shared_ptr<const DecoratorState> state) {
   NSString *text = string.string;
-  NSArray<MarkdownRange *> *markdownRanges = [parser cachedRangesForText:text withParserId:parserId];
+  NSArray<MarkdownRange *> *markdownRanges =
+      [parser cachedRangesForText:text withParserId:parserId];
 
   if (markdownRanges == nil) {
     if ([NSThread isMainThread]) {
-      [parser warmCacheAsyncForText:text
-                       withParserId:parserId
-                         completion:^{
-        // Only ever runs for the newest text, so this cannot loop: the next
-        // measure finds the ranges cached, or the text changed again and a new
-        // measure was needed anyway.
-        if (needsRemeasure != nullptr) {
-          needsRemeasure->store(true);
-        }
-        if (state != nullptr) {
-          // Changes nothing; it exists only to schedule a commit. updateState()
-          // is safe from any thread and handles an already-gone family.
-          state->updateState(MarkdownTextInputDecoratorState{});
-        }
-      }];
+      [parser
+          warmCacheAsyncForText:text
+                   withParserId:parserId
+                     completion:^{
+                       // Only ever runs for the newest text, so this cannot
+                       // loop: the next measure finds the ranges cached, or the
+                       // text changed again and a new measure was needed
+                       // anyway.
+                       if (needsRemeasure != nullptr) {
+                         needsRemeasure->store(true);
+                       }
+                       if (state != nullptr) {
+                         // Changes nothing; it exists only to schedule a
+                         // commit. updateState() is safe from any thread and
+                         // handles an already-gone family.
+                         state->updateState(MarkdownTextInputDecoratorState{});
+                       }
+                     }];
       return;
     }
 
@@ -84,9 +87,10 @@ Float MarkdownTextInputDecoratorShadowNode::fontSizeMultiplier() {
   return RCTFontSizeMultiplier();
 }
 
-void MarkdownTextInputDecoratorShadowNode::applyMarkdownFormattingToTextInputState(
-    std::shared_ptr<TextInputShadowNode> textInput,
-    const LayoutContext &layoutContext) const {
+void MarkdownTextInputDecoratorShadowNode::
+    applyMarkdownFormattingToTextInputState(
+        std::shared_ptr<TextInputShadowNode> textInput,
+        const LayoutContext &layoutContext) const {
 
   const auto &textInputState =
       *std::static_pointer_cast<const react::ConcreteState<TextInputState>>(
@@ -156,9 +160,10 @@ void MarkdownTextInputDecoratorShadowNode::applyMarkdownFormattingToTextInputSta
 
     // apply markdown
     NSMutableAttributedString *newString = [nsAttributedString mutableCopy];
-    ApplyMarkdownFormatting(newString, defaultNSTextAttributes, markdownStyle,
-                            parserId, parser, needsRemeasure_,
-                            std::static_pointer_cast<const DecoratorState>(getState()));
+    ApplyMarkdownFormatting(
+        newString, defaultNSTextAttributes, markdownStyle, parserId, parser,
+        needsRemeasure_,
+        std::static_pointer_cast<const DecoratorState>(getState()));
 
     // create a clone of the old TextInputState and update the
     // attributed string box to point to the string with markdown
@@ -170,9 +175,10 @@ void MarkdownTextInputDecoratorShadowNode::applyMarkdownFormattingToTextInputSta
 
     // apply markdown
     NSMutableAttributedString *newString = [nsAttributedString mutableCopy];
-    ApplyMarkdownFormatting(newString, defaultNSTextAttributes, markdownStyle,
-                            parserId, parser, needsRemeasure_,
-                            std::static_pointer_cast<const DecoratorState>(getState()));
+    ApplyMarkdownFormatting(
+        newString, defaultNSTextAttributes, markdownStyle, parserId, parser,
+        needsRemeasure_,
+        std::static_pointer_cast<const DecoratorState>(getState()));
 
     // create a clone of the old TextInputState and update the
     // attributed string box to point to the string with markdown

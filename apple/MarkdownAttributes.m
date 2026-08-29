@@ -1,5 +1,7 @@
-#import <RNLiveMarkdown/MarkdownAttributes.h>
+#import <RNMarcus/MarkdownAttributes.h>
 
-const NSAttributedStringKey RCTLiveMarkdownTextAttributeName = @"RCTLiveMarkdownText";
-const NSAttributedStringKey RCTLiveMarkdownTextBackgroundAttributeName = @"RCTLiveMarkdownTextBackground";
-const NSAttributedStringKey RCTLiveMarkdownBlockquoteDepthAttributeName = @"RCTLiveMarkdownBlockquoteDepth";
+const NSAttributedStringKey RCTMarcusTextAttributeName = @"RCTMarcusText";
+const NSAttributedStringKey RCTMarcusTextBackgroundAttributeName =
+    @"RCTMarcusTextBackground";
+const NSAttributedStringKey RCTMarcusBlockquoteDepthAttributeName =
+    @"RCTMarcusBlockquoteDepth";

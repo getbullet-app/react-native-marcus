@@ -21,7 +21,7 @@ import UIKit
     attributedString.setAttributes(defaultTextAttributes, range: fullRange)
 
     // Forces the swizzled `_textOf:equals:` into string-only comparison.
-    attributedString.addAttribute(.liveMarkdownText, value: true, range: fullRange)
+    attributedString.addAttribute(.marcusText, value: true, range: fullRange)
 
     for markdownRange in ranges {
       apply(markdownRange.type,
@@ -125,7 +125,7 @@ import UIKit
       paragraphStyle.firstLineHeadIndent = indent
       paragraphStyle.headIndent = indent
       attributedString.addAttribute(.paragraphStyle, value: paragraphStyle, range: range)
-      attributedString.addAttribute(.liveMarkdownBlockquoteDepth, value: depth, range: range)
+      attributedString.addAttribute(.marcusBlockquoteDepth, value: depth, range: range)
 
     case "pre":
       attributedString.addAttribute(.foregroundColor, value: style.preColor, range: range)
@@ -153,7 +153,7 @@ import UIKit
     let textBackground = MarkdownTextBackground()
     textBackground.color = backgroundColor
     textBackground.borderRadius = borderRadius
-    attributedString.addAttribute(.liveMarkdownTextBackground, value: textBackground, range: range)
+    attributedString.addAttribute(.marcusTextBackground, value: textBackground, range: range)
   }
 
   // MARK: - Baseline

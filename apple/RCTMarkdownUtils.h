@@ -1,5 +1,5 @@
+#import <RNMarcus/RCTMarkdownStyle.h>
 #import <UIKit/UIKit.h>
-#import <RNLiveMarkdown/RCTMarkdownStyle.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -13,11 +13,14 @@ NS_ASSUME_NONNULL_BEGIN
 // Nullable: both are assigned after init (props arrive after the view
 // hierarchy is built), and applyMarkdownFormatting: bails out when either is
 // still nil.
-@property (nonatomic, nullable) RCTMarkdownStyle *markdownStyle;
-@property (nonatomic, nullable) NSNumber *parserId;
+@property(nonatomic, nullable) RCTMarkdownStyle *markdownStyle;
+@property(nonatomic, nullable) NSNumber *parserId;
 
-- (void)applyMarkdownFormatting:(nonnull NSMutableAttributedString *)attributedString
-      withDefaultTextAttributes:(nonnull NSDictionary<NSAttributedStringKey, id> *)defaultTextAttributes;
+- (void)applyMarkdownFormatting:
+            (nonnull NSMutableAttributedString *)attributedString
+      withDefaultTextAttributes:
+          (nonnull NSDictionary<NSAttributedStringKey, id> *)
+              defaultTextAttributes;
 
 @end
 

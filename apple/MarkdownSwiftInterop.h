@@ -12,12 +12,12 @@
 #import <React/RCTUITextField.h>
 #import <React/RCTUITextView.h>
 
-#import <RNLiveMarkdown/MarkdownRange.h>
-#import <RNLiveMarkdown/RCTMarkdownStyle.h>
-#import <RNLiveMarkdown/RCTMarkdownUtils.h>
+#import <RNMarcus/MarkdownRange.h>
+#import <RNMarcus/RCTMarkdownStyle.h>
+#import <RNMarcus/RCTMarkdownUtils.h>
 
-#if __has_include(<RNLiveMarkdown/RNLiveMarkdown-Swift.h>)
-#import <RNLiveMarkdown/RNLiveMarkdown-Swift.h>
+#if __has_include(<RNMarcus/RNMarcus-Swift.h>)
+#import <RNMarcus/RNMarcus-Swift.h>
 #else
-#import "RNLiveMarkdown-Swift.h"
+#import "RNMarcus-Swift.h"
 #endif

@@ -1,1 +1,1 @@
--keep class com.expensify.livemarkdown.** { *; }
+-keep class app.getbullet.marcus.** { *; }

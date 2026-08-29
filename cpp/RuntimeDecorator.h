@@ -4,10 +4,10 @@
 
 using namespace facebook;
 
-namespace expensify {
-namespace livemarkdown {
+namespace bulletpoint {
+namespace marcus {
 
 void injectJSIBindings(jsi::Runtime &rt);
 
-} // namespace livemarkdown
-} // namespace expensify
+} // namespace marcus
+} // namespace bulletpoint

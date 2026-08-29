@@ -9,7 +9,7 @@
     "start": "react-native start --client-logs"
   },
   "dependencies": {
-    "@expensify/react-native-live-markdown": "file:..",
+    "react-native-marcus": "file:..",
     "expensify-common": "2.0.148",
     "react": "19.2.3",
     "react-native": "0.85.3",
