@@ -1,52 +1,42 @@
-import * as React from 'react';
-import {Button, ScrollView, StyleSheet, Text} from 'react-native';
-import {
-  MarkdownTextInput,
-  parseExpensiMark,
-  parseMicroMark,
-} from 'react-native-marcus';
-import * as TEST_CONST from './testConstants';
-import {PlatformInfo} from './PlatformInfo';
-import {handleFormatSelection} from './formatSelectionUtils';
+import * as React from "react"
+import { Button, ScrollView, StyleSheet, Text } from "react-native"
+import { MarkdownTextInput, parser } from "react-native-marcus"
+import * as TEST_CONST from "./testConstants"
+import { PlatformInfo } from "./PlatformInfo"
+import { handleFormatSelection } from "./formatSelectionUtils"
 
 export default function App() {
-  const [value, setValue] = React.useState(TEST_CONST.EXAMPLE_CONTENT);
-  const [multiline, setMultiline] = React.useState(true);
-  const [textColorState, setTextColorState] = React.useState(false);
-  const [linkColorState, setLinkColorState] = React.useState(false);
-  const [textFontSizeState, setTextFontSizeState] = React.useState(false);
-  const [emojiFontSizeState, setEmojiFontSizeState] = React.useState(false);
-  const [caretHidden, setCaretHidden] = React.useState(false);
-  const [selection, setSelection] = React.useState({start: 0, end: 0});
-  const [useMicroMark, setUseMicroMark] = React.useState(false);
-
-  const parser = useMicroMark ? parseMicroMark : parseExpensiMark;
+  const [value, setValue] = React.useState(TEST_CONST.EXAMPLE_CONTENT)
+  const [multiline, setMultiline] = React.useState(true)
+  const [textColorState, setTextColorState] = React.useState(false)
+  const [linkColorState, setLinkColorState] = React.useState(false)
+  const [textFontSizeState, setTextFontSizeState] = React.useState(false)
+  const [emojiFontSizeState, setEmojiFontSizeState] = React.useState(false)
+  const [caretHidden, setCaretHidden] = React.useState(false)
+  const [selection, setSelection] = React.useState({ start: 0, end: 0 })
 
   const style = React.useMemo(() => {
     return {
-      color: textColorState ? 'gray' : 'black',
+      color: textColorState ? "gray" : "black",
       fontSize: textFontSizeState ? 15 : 20,
-    };
-  }, [textColorState, textFontSizeState]);
+    }
+  }, [textColorState, textFontSizeState])
 
   const markdownStyle = {
     emoji: {
       fontSize: emojiFontSizeState ? 15 : 20,
     },
     link: {
-      color: linkColorState ? 'red' : 'blue',
+      color: linkColorState ? "red" : "blue",
     },
-  };
+  }
 
-  const ref = React.useRef<MarkdownTextInput>(null);
+  const ref = React.useRef<MarkdownTextInput>(null)
 
   return (
     <ScrollView contentContainerStyle={styles.container} style={styles.content}>
       <PlatformInfo />
-      <Text>{multiline ? 'multiline' : 'singleline'}</Text>
-      <Text testID="parser-label">
-        parser: {useMicroMark ? 'micromark' : 'ExpensiMark'}
-      </Text>
+      <Text>{multiline ? "multiline" : "singleline"}</Text>
       <MarkdownTextInput
         multiline={multiline}
         formatSelection={handleFormatSelection}
@@ -59,27 +49,20 @@ export default function App() {
         markdownStyle={markdownStyle}
         parser={parser}
         placeholder="Type here..."
-        onSelectionChange={e => setSelection(e.nativeEvent.selection)}
+        onSelectionChange={(e) => setSelection(e.nativeEvent.selection)}
         selection={selection}
         id={TEST_CONST.INPUT_ID}
         maxLength={30000}
       />
       <Text style={styles.text}>{JSON.stringify(value)}</Text>
       <Button
-        testID="toggleParser"
-        title="Toggle parser"
-        onPress={() => {
-          setUseMicroMark(v => !v);
-        }}
-      />
-      <Button
         testID="focus"
         title="Focus"
         onPress={() => {
           if (!ref.current) {
-            return;
+            return
           }
-          ref.current.focus();
+          ref.current.focus()
         }}
       />
       <Button
@@ -87,63 +70,54 @@ export default function App() {
         title="Blur"
         onPress={() => {
           if (!ref.current) {
-            return;
+            return
           }
-          ref.current.blur();
+          ref.current.blur()
         }}
       />
       <Button
         testID="reset"
         title="Reset"
         onPress={() => {
-          setValue(TEST_CONST.EXAMPLE_CONTENT);
-          setTextColorState(false);
-          setLinkColorState(false);
-          setTextFontSizeState(false);
-          setEmojiFontSizeState(false);
-          setSelection({start: 0, end: 0});
+          setValue(TEST_CONST.EXAMPLE_CONTENT)
+          setTextColorState(false)
+          setLinkColorState(false)
+          setTextFontSizeState(false)
+          setEmojiFontSizeState(false)
+          setSelection({ start: 0, end: 0 })
         }}
       />
       <Button
         testID="clear"
         title="Clear"
         onPress={() => {
-          setValue('');
+          setValue("")
         }}
       />
-      <Button
-        title="Toggle multiline"
-        onPress={() => setMultiline(prev => !prev)}
-      />
-      <Button
-        title="Toggle text color"
-        onPress={() => setTextColorState(prev => !prev)}
-      />
+      <Button title="Toggle multiline" onPress={() => setMultiline((prev) => !prev)} />
+      <Button title="Toggle text color" onPress={() => setTextColorState((prev) => !prev)} />
       <Button
         testID={TEST_CONST.TOGGLE_LINK_COLOR}
         title="Toggle link color"
-        onPress={() => setLinkColorState(prev => !prev)}
+        onPress={() => setLinkColorState((prev) => !prev)}
       />
       <Button
         title="Toggle text font size"
-        onPress={() => setTextFontSizeState(prev => !prev)}
+        onPress={() => setTextFontSizeState((prev) => !prev)}
       />
       <Button
         title="Toggle emoji font size"
-        onPress={() => setEmojiFontSizeState(prev => !prev)}
+        onPress={() => setEmojiFontSizeState((prev) => !prev)}
       />
-      <Button
-        title="Toggle caret hidden"
-        onPress={() => setCaretHidden(prev => !prev)}
-      />
+      <Button title="Toggle caret hidden" onPress={() => setCaretHidden((prev) => !prev)} />
       <Button
         title="Toggle all"
         onPress={() => {
-          setTextColorState(prev => !prev);
-          setLinkColorState(prev => !prev);
-          setTextFontSizeState(prev => !prev);
-          setEmojiFontSizeState(prev => !prev);
-          setCaretHidden(prev => !prev);
+          setTextColorState((prev) => !prev)
+          setLinkColorState((prev) => !prev)
+          setTextFontSizeState((prev) => !prev)
+          setEmojiFontSizeState((prev) => !prev)
+          setCaretHidden((prev) => !prev)
         }}
       />
       <Button
@@ -151,19 +125,19 @@ export default function App() {
         title="Change selection"
         onPress={() => {
           if (!ref.current) {
-            return;
+            return
           }
-          ref.current.focus();
-          setSelection({start: 0, end: 20});
+          ref.current.focus()
+          setSelection({ start: 0, end: 20 })
         }}
       />
     </ScrollView>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
   container: {
-    alignItems: 'center',
+    alignItems: "center",
   },
   content: {
     marginTop: 60,
@@ -172,13 +146,13 @@ const styles = StyleSheet.create({
     fontSize: 20,
     width: 300,
     padding: 5,
-    borderColor: 'gray',
+    borderColor: "gray",
     borderWidth: 1,
-    textAlignVertical: 'top',
+    textAlignVertical: "top",
   },
   text: {
-    fontFamily: 'Courier New',
+    fontFamily: "Courier New",
     marginTop: 10,
     height: 100,
   },
-});
+})

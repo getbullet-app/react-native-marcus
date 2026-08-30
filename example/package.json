@@ -10,7 +10,6 @@
   },
   "dependencies": {
     "react-native-marcus": "file:..",
-    "expensify-common": "2.0.148",
     "react": "19.2.3",
     "react-native": "0.85.3",
     "react-native-worklets": "0.10.2"
