@@ -1,22 +1,22 @@
-const path = require('path');
-const pak = require('../package.json');
+const path = require("path")
+const pak = require("../package.json")
 
 module.exports = function (api) {
-  api.cache(true);
+  api.cache(true)
   return {
-    presets: ['babel-preset-expo'],
+    presets: ["babel-preset-expo"],
     plugins: [
       [
-        'module-resolver',
+        "module-resolver",
         {
-          extensions: ['.tsx', '.ts', '.js', '.json'],
+          extensions: [".tsx", ".ts", ".js", ".json"],
           alias: {
-            react: path.join(__dirname, '..', 'node_modules', 'react'),
-            'react-native': path.join(__dirname, '..', 'node_modules', 'react-native-web'),
-            [pak.name]: path.join(__dirname, '..', pak.source),
+            "react": path.join(__dirname, "..", "node_modules", "react"),
+            "react-native": path.join(__dirname, "..", "node_modules", "react-native-web"),
+            [pak.name]: path.join(__dirname, "..", pak.source),
           },
         },
       ],
     ],
-  };
-};
+  }
+}

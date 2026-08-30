@@ -16,55 +16,55 @@ file(GLOB LIB_CUSTOM_SRCS CONFIGURE_DEPENDS ${LIB_CUSTOM_SOURCES_DIR}/*.cpp)
 file(GLOB LIB_CODEGEN_SRCS CONFIGURE_DEPENDS ${LIB_ANDROID_GENERATED_COMPONENTS_DIR}/*.cpp)
 
 add_library(
-        ${LIB_TARGET_NAME}
-        SHARED
-        ${LIB_MODULE_SRCS}
-        ${LIB_CUSTOM_SRCS}
-        ${LIB_CODEGEN_SRCS}
+  ${LIB_TARGET_NAME}
+  SHARED
+    ${LIB_MODULE_SRCS}
+    ${LIB_CUSTOM_SRCS}
+    ${LIB_CODEGEN_SRCS}
 )
 
 target_include_directories(
-        ${LIB_TARGET_NAME}
-        PUBLIC
-        .
-        ./react/renderer/components/RNMarcusSpec
-        ${LIB_ANDROID_GENERATED_JNI_DIR}
-        ${LIB_ANDROID_GENERATED_COMPONENTS_DIR}
-        ${LIB_CPP_DIR}
+  ${LIB_TARGET_NAME}
+  PUBLIC
+    .
+    ./react/renderer/components/RNMarcusSpec
+    ${LIB_ANDROID_GENERATED_JNI_DIR}
+    ${LIB_ANDROID_GENERATED_COMPONENTS_DIR}
+    ${LIB_CPP_DIR}
 )
 
 find_package(fbjni REQUIRED CONFIG)
 find_package(ReactAndroid REQUIRED CONFIG)
 
 target_link_libraries(
-        ${LIB_TARGET_NAME}
-        fbjni::fbjni
-        ReactAndroid::jsi
-        ReactAndroid::reactnative
+  ${LIB_TARGET_NAME}
+  fbjni::fbjni
+  ReactAndroid::jsi
+  ReactAndroid::reactnative
 )
 
 if (ReactAndroid_VERSION_MINOR LESS_EQUAL 80)
-        target_compile_options(
-                ${LIB_TARGET_NAME}
-                PRIVATE
-                -DLOG_TAG=\"ReactNative\"
-                -fexceptions
-                -frtti
-                -Wall
-                -std=c++20
-        )
+  target_compile_options(
+    ${LIB_TARGET_NAME}
+    PRIVATE
+      -DLOG_TAG=\"ReactNative\"
+      -fexceptions
+      -frtti
+      -Wall
+      -std=c++20
+  )
 else()
-        target_compile_reactnative_options(${LIB_TARGET_NAME} PRIVATE)
+  target_compile_reactnative_options(${LIB_TARGET_NAME} PRIVATE)
 endif()
 
 target_compile_options(
-        ${LIB_TARGET_NAME}
-        PRIVATE
-        -DREACT_NATIVE_MINOR_VERSION=${ReactAndroid_VERSION_MINOR}
+  ${LIB_TARGET_NAME}
+  PRIVATE
+    -DREACT_NATIVE_MINOR_VERSION=${ReactAndroid_VERSION_MINOR}
 )
 
 target_include_directories(
-        ${CMAKE_PROJECT_NAME}
-        PUBLIC
-        ${CMAKE_CURRENT_SOURCE_DIR}
+  ${CMAKE_PROJECT_NAME}
+  PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}
 )

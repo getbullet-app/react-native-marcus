@@ -15,12 +15,15 @@ import com.facebook.react.views.text.internal.span.CustomLineHeightSpan;
  * removes the class, this file stops compiling, which is the failure mode we want.
  */
 public final class ReactLineHeight {
-  private ReactLineHeight() {}
+  private ReactLineHeight() {
+  }
 
-  /** The line height React Native applied to {@code spanned}, or -1 if it applied none. */
+  /**
+   * The line height React Native applied to {@code spanned}, or -1 if it applied none.
+   */
   public static int find(Spanned spanned) {
     CustomLineHeightSpan[] spans =
-        spanned.getSpans(0, spanned.length(), CustomLineHeightSpan.class);
+      spanned.getSpans(0, spanned.length(), CustomLineHeightSpan.class);
     return spans.length >= 1 ? spans[0].getLineHeight() : -1;
   }
 }

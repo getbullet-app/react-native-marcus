@@ -22,7 +22,7 @@ using namespace facebook::react;
 
 + (ComponentDescriptorProvider)componentDescriptorProvider {
   return concreteComponentDescriptorProvider<
-      MarkdownTextInputDecoratorViewComponentDescriptor>();
+    MarkdownTextInputDecoratorViewComponentDescriptor>();
 }
 
 // Needed because of this: https://github.com/facebook/react-native/pull/37274
@@ -33,7 +33,7 @@ using namespace facebook::react;
 - (instancetype)initWithFrame:(CGRect)frame {
   if (self = [super initWithFrame:frame]) {
     static const auto defaultProps =
-        std::make_shared<const MarkdownTextInputDecoratorViewProps>();
+      std::make_shared<const MarkdownTextInputDecoratorViewProps>();
     _props = defaultProps;
     _decorator = [MarkdownDecorator new];
   }
@@ -44,13 +44,13 @@ using namespace facebook::react;
 - (void)didAddSubview:(UIView *)subview {
   [super didAddSubview:subview];
 
-  react_native_assert(!_decorator.isAttached &&
-                      "MarkdownTextInputDecoratorComponentView tried to add "
-                      "TextInput observers while they were attached");
+  react_native_assert(!_decorator.isAttached && "MarkdownTextInputDecoratorComponentView tried to add "
+                                                "TextInput observers while they were attached");
   react_native_assert(
-      [subview isKindOfClass:[RCTTextInputComponentView class]] &&
-      "Child component of MarkdownTextInputDecoratorComponentView is not an "
-      "instance of RCTTextInputComponentView.");
+    [subview isKindOfClass:[RCTTextInputComponentView class]] &&
+    "Child component of MarkdownTextInputDecoratorComponentView is not an "
+    "instance of RCTTextInputComponentView."
+  );
 
   [_decorator attachTo:subview];
 }
@@ -76,11 +76,13 @@ using namespace facebook::react;
 - (void)updateProps:(Props::Shared const &)props
            oldProps:(Props::Shared const &)oldProps {
   const auto &oldViewProps =
-      *std::static_pointer_cast<MarkdownTextInputDecoratorViewProps const>(
-          _props);
+    *std::static_pointer_cast<MarkdownTextInputDecoratorViewProps const>(
+      _props
+    );
   const auto &newViewProps =
-      *std::static_pointer_cast<MarkdownTextInputDecoratorViewProps const>(
-          props);
+    *std::static_pointer_cast<MarkdownTextInputDecoratorViewProps const>(
+      props
+    );
 
   if (oldViewProps.parserId != newViewProps.parserId) {
     _decorator.parserId = @(newViewProps.parserId);
@@ -93,7 +95,7 @@ using namespace facebook::react;
   // whenever the props object is recreated -- but hand-written equality over
   // ~27 fields would rot silently the moment a style prop is added.
   _decorator.markdownStyle =
-      [[RCTMarkdownStyle alloc] initWithStruct:newViewProps.markdownStyle];
+    [[RCTMarkdownStyle alloc] initWithStruct:newViewProps.markdownStyle];
 
   [_decorator applyNewStyles];
 
@@ -101,18 +103,18 @@ using namespace facebook::react;
 }
 
 - (void)prepareForRecycle {
-  react_native_assert(!_decorator.isAttached &&
-                      "MarkdownTextInputDecoratorComponentView was being "
-                      "recycled with TextInput observers still attached");
+  react_native_assert(!_decorator.isAttached && "MarkdownTextInputDecoratorComponentView was being "
+                                                "recycled with TextInput observers still attached");
   [super prepareForRecycle];
 
   static const auto defaultProps =
-      std::make_shared<const MarkdownTextInputDecoratorViewProps>();
+    std::make_shared<const MarkdownTextInputDecoratorViewProps>();
   _props = defaultProps;
   [_decorator reset];
 }
 
-Class<RCTComponentViewProtocol> MarkdownTextInputDecoratorViewCls(void) {
+Class<RCTComponentViewProtocol>
+MarkdownTextInputDecoratorViewCls(void) {
   return MarkdownTextInputDecoratorComponentView.class;
 }
 

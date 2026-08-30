@@ -28,8 +28,8 @@ import UIKit
 
   private static func flattenedImage(from glyph: Any) -> UIImage? {
     guard #available(iOS 18.0, *),
-          let glyph = glyph as? NSAdaptiveImageGlyph,
-          let original = UIImage(data: glyph.imageContent)
+      let glyph = glyph as? NSAdaptiveImageGlyph,
+      let original = UIImage(data: glyph.imageContent)
     else { return nil }
 
     let targetSize = CGSize(width: 128, height: 128)

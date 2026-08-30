@@ -1,1 +1,1 @@
-export * from '../lib/typescript/src/mock/index';
+export * from "../lib/typescript/src/mock/index"

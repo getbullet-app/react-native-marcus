@@ -1,6 +1,10 @@
 import * as React from 'react';
 import {Button, ScrollView, StyleSheet, Text} from 'react-native';
-import {MarkdownTextInput, parseExpensiMark, parseMicroMark} from 'react-native-marcus';
+import {
+  MarkdownTextInput,
+  parseExpensiMark,
+  parseMicroMark,
+} from 'react-native-marcus';
 import * as TEST_CONST from './testConstants';
 import {PlatformInfo} from './PlatformInfo';
 import {handleFormatSelection} from './formatSelectionUtils';
@@ -37,13 +41,12 @@ export default function App() {
   const ref = React.useRef<MarkdownTextInput>(null);
 
   return (
-    <ScrollView
-      contentContainerStyle={styles.container}
-      style={styles.content}
-    >
+    <ScrollView contentContainerStyle={styles.container} style={styles.content}>
       <PlatformInfo />
       <Text>{multiline ? 'multiline' : 'singleline'}</Text>
-      <Text testID="parser-label">parser: {useMicroMark ? 'micromark' : 'ExpensiMark'}</Text>
+      <Text testID="parser-label">
+        parser: {useMicroMark ? 'micromark' : 'ExpensiMark'}
+      </Text>
       <MarkdownTextInput
         multiline={multiline}
         formatSelection={handleFormatSelection}
@@ -56,7 +59,7 @@ export default function App() {
         markdownStyle={markdownStyle}
         parser={parser}
         placeholder="Type here..."
-        onSelectionChange={(e) => setSelection(e.nativeEvent.selection)}
+        onSelectionChange={e => setSelection(e.nativeEvent.selection)}
         selection={selection}
         id={TEST_CONST.INPUT_ID}
         maxLength={30000}
@@ -66,7 +69,7 @@ export default function App() {
         testID="toggleParser"
         title="Toggle parser"
         onPress={() => {
-          setUseMicroMark((v) => !v);
+          setUseMicroMark(v => !v);
         }}
       />
       <Button
@@ -110,37 +113,37 @@ export default function App() {
       />
       <Button
         title="Toggle multiline"
-        onPress={() => setMultiline((prev) => !prev)}
+        onPress={() => setMultiline(prev => !prev)}
       />
       <Button
         title="Toggle text color"
-        onPress={() => setTextColorState((prev) => !prev)}
+        onPress={() => setTextColorState(prev => !prev)}
       />
       <Button
         testID={TEST_CONST.TOGGLE_LINK_COLOR}
         title="Toggle link color"
-        onPress={() => setLinkColorState((prev) => !prev)}
+        onPress={() => setLinkColorState(prev => !prev)}
       />
       <Button
         title="Toggle text font size"
-        onPress={() => setTextFontSizeState((prev) => !prev)}
+        onPress={() => setTextFontSizeState(prev => !prev)}
       />
       <Button
         title="Toggle emoji font size"
-        onPress={() => setEmojiFontSizeState((prev) => !prev)}
+        onPress={() => setEmojiFontSizeState(prev => !prev)}
       />
       <Button
         title="Toggle caret hidden"
-        onPress={() => setCaretHidden((prev) => !prev)}
+        onPress={() => setCaretHidden(prev => !prev)}
       />
       <Button
         title="Toggle all"
         onPress={() => {
-          setTextColorState((prev) => !prev);
-          setLinkColorState((prev) => !prev);
-          setTextFontSizeState((prev) => !prev);
-          setEmojiFontSizeState((prev) => !prev);
-          setCaretHidden((prev) => !prev);
+          setTextColorState(prev => !prev);
+          setLinkColorState(prev => !prev);
+          setTextFontSizeState(prev => !prev);
+          setEmojiFontSizeState(prev => !prev);
+          setCaretHidden(prev => !prev);
         }}
       />
       <Button

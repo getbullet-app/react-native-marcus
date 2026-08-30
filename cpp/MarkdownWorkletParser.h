@@ -38,8 +38,8 @@ struct ParseResult {
 // worklet reports range offsets in UTF-16 units, matching JS string indices.
 // For any non-ASCII text the UTF-8 byte count is larger, so validating against
 // it would let out-of-bounds ranges through.
-ParseResult parseMarkdown(const std::string &utf8Text, size_t textLengthUtf16,
-                          int parserId);
+ParseResult
+parseMarkdown(const std::string &utf8Text, size_t textLengthUtf16, int parserId);
 
 } // namespace marcus
 } // namespace bulletpoint

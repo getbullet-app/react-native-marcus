@@ -13,17 +13,22 @@ import UIKit
   /// Guards against the KVO observer re-entering while we assign `attributedText`.
   private var active = true
 
-  @objc public init(textField: RCTUITextField, markdownUtils: RCTMarkdownUtils) {
+  @objc public init(textField: RCTUITextField, markdownUtils: RCTMarkdownUtils)
+  {
     self.textField = textField
     self.markdownUtils = markdownUtils
     super.init()
   }
 
-  public override func observeValue(forKeyPath keyPath: String?,
-                                    of object: Any?,
-                                    change: [NSKeyValueChangeKey: Any]?,
-                                    context: UnsafeMutableRawPointer?) {
-    guard active, keyPath == "text" || keyPath == "attributedText" else { return }
+  public override func observeValue(
+    forKeyPath keyPath: String?,
+    of object: Any?,
+    change: [NSKeyValueChangeKey: Any]?,
+    context: UnsafeMutableRawPointer?
+  ) {
+    guard active, keyPath == "text" || keyPath == "attributedText" else {
+      return
+    }
     applyMarkdownFormatting()
   }
 
@@ -38,13 +43,16 @@ import UIKit
     // compares deeply, so the value has to actually differ each time -- hence
     // the counter.
     var defaultTextAttributes = self.textField.defaultTextAttributes ?? [:]
-    defaultTextAttributes[Self.forceUpdateAttributeName] = Self.nextForceUpdateToken()
+    defaultTextAttributes[Self.forceUpdateAttributeName] =
+      Self.nextForceUpdateToken()
     self.textField.defaultTextAttributes = defaultTextAttributes
 
     applyMarkdownFormatting()
   }
 
-  private static let forceUpdateAttributeName = NSAttributedString.Key("RCTMarcusForceUpdate")
+  private static let forceUpdateAttributeName = NSAttributedString.Key(
+    "RCTMarcusForceUpdate"
+  )
   private static var forceUpdateCounter: UInt = 0
 
   private static func nextForceUpdateToken() -> NSNumber {
@@ -57,11 +65,15 @@ import UIKit
     // rewriting the text breaks the input method's internal state.
     guard textField.markedTextRange == nil else { return }
 
-    guard let attributedText = textField.attributedText?.mutableCopy() as? NSMutableAttributedString
+    guard
+      let attributedText = textField.attributedText?.mutableCopy()
+        as? NSMutableAttributedString
     else { return }
 
-    markdownUtils.applyMarkdownFormatting(attributedText,
-                                          withDefaultTextAttributes: textField.defaultTextAttributes ?? [:])
+    markdownUtils.applyMarkdownFormatting(
+      attributedText,
+      withDefaultTextAttributes: textField.defaultTextAttributes ?? [:]
+    )
 
     let selectedTextRange = textField.selectedTextRange
 

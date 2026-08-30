@@ -1,8 +1,8 @@
-import type {TurboModule} from 'react-native';
-import {TurboModuleRegistry} from 'react-native';
+import type { TurboModule } from "react-native"
+import { TurboModuleRegistry } from "react-native"
 
 interface Spec extends TurboModule {
-  install: () => boolean;
+  install: () => boolean
 }
 
-export default TurboModuleRegistry.get<Spec>('MarcusModule');
+export default TurboModuleRegistry.get<Spec>("MarcusModule")

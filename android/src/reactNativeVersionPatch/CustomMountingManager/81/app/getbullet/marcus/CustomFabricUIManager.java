@@ -95,7 +95,7 @@ public class CustomFabricUIManager extends FabricUIManager {
       getYogaSize(minHeight, maxHeight),
       getYogaMeasureMode(minHeight, maxHeight),
       spannable -> {
-        mMarkdownUtils.applyMarkdownFormatting((SpannableStringBuilder)spannable);
+        mMarkdownUtils.applyMarkdownFormatting((SpannableStringBuilder) spannable);
       },
       attachmentsPositions);
   }
@@ -141,12 +141,12 @@ public class CustomFabricUIManager extends FabricUIManager {
         declared.append(candidate.getName());
       }
       throw new NoSuchFieldException(
-          "[Marcus] "
-              + clazz.getName()
-              + " has no field '"
-              + name
-              + "'. React Native most likely renamed it. Declared fields: "
-              + declared);
+        "[Marcus] "
+          + clazz.getName()
+          + " has no field '"
+          + name
+          + "'. React Native most likely renamed it. Declared fields: "
+          + declared);
     }
     field.setAccessible(true);
     T value = (T) field.get(obj);

@@ -9,15 +9,15 @@ NS_ASSUME_NONNULL_BEGIN
 // Marks a string as markdown-formatted, which switches the swizzled
 // `_textOf:equals:` to compare plain strings instead of full attributes.
 FOUNDATION_EXPORT const
-    NSAttributedStringKey RCTMarcusTextAttributeName NS_SWIFT_NAME(marcusText);
+  NSAttributedStringKey RCTMarcusTextAttributeName NS_SWIFT_NAME(marcusText);
 
 // Carries a MarkdownTextBackground for mention pills, drawn by the layout
 // fragment rather than by NSBackgroundColorAttributeName.
 FOUNDATION_EXPORT const NSAttributedStringKey
-    RCTMarcusTextBackgroundAttributeName NS_SWIFT_NAME(marcusTextBackground);
+  RCTMarcusTextBackgroundAttributeName NS_SWIFT_NAME(marcusTextBackground);
 
 // Blockquote nesting level, used to draw the ribbons.
 FOUNDATION_EXPORT const NSAttributedStringKey
-    RCTMarcusBlockquoteDepthAttributeName NS_SWIFT_NAME(marcusBlockquoteDepth);
+  RCTMarcusBlockquoteDepthAttributeName NS_SWIFT_NAME(marcusBlockquoteDepth);
 
 NS_ASSUME_NONNULL_END

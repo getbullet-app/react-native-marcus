@@ -30,8 +30,7 @@ public:
 
 JSI_EXPORT
 std::shared_ptr<TurboModule>
-RNMarcusSpec_ModuleProvider(const std::string &moduleName,
-                            const JavaTurboModule::InitParams &params);
+RNMarcusSpec_ModuleProvider(const std::string &moduleName, const JavaTurboModule::InitParams &params);
 
 } // namespace react
 } // namespace facebook

@@ -1,63 +1,69 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type {TextStyle} from 'react-native';
-import type {MarkdownStyle} from '../../MarkdownTextInputDecoratorViewNativeComponent';
-import {mergeMarkdownStyleWithDefault} from '../../styleUtils';
+import type { TextStyle } from "react-native"
+import type { MarkdownStyle } from "../../MarkdownTextInputDecoratorViewNativeComponent"
+import { mergeMarkdownStyleWithDefault } from "../../styleUtils"
 
-let createReactDOMStyle: (style: any) => any;
+let createReactDOMStyle: (style: any) => any
 try {
   createReactDOMStyle =
     // eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports
-    require('react-native-web/dist/exports/StyleSheet/compiler/createReactDOMStyle').default;
+    require("react-native-web/dist/exports/StyleSheet/compiler/createReactDOMStyle").default
 } catch {
-  throw new Error('[react-native-marcus] Function `createReactDOMStyle` from react-native-web not found. Please make sure that you are using React Native Web 0.18 or newer.');
+  throw new Error(
+    "[react-native-marcus] Function `createReactDOMStyle` from react-native-web not found. Please make sure that you are using React Native Web 0.18 or newer.",
+  )
 }
 
-let preprocessStyle: (style: any) => any;
+let preprocessStyle: (style: any) => any
 try {
   preprocessStyle =
     // eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports
-    require('react-native-web/dist/exports/StyleSheet/preprocess').default;
+    require("react-native-web/dist/exports/StyleSheet/preprocess").default
 } catch {
-  throw new Error('[react-native-marcus] Function `preprocessStyle` from react-native-web not found.');
+  throw new Error(
+    "[react-native-marcus] Function `preprocessStyle` from react-native-web not found.",
+  )
 }
 
-let dangerousStyleValue: (name: string, value: any, isCustomProperty: boolean) => any;
+let dangerousStyleValue: (name: string, value: any, isCustomProperty: boolean) => any
 try {
   dangerousStyleValue =
     // eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports
-    require('react-native-web/dist/modules/setValueForStyles/dangerousStyleValue').default;
+    require("react-native-web/dist/modules/setValueForStyles/dangerousStyleValue").default
 } catch {
-  throw new Error('[react-native-marcus] Function `dangerousStyleValue` from react-native-web not found.');
+  throw new Error(
+    "[react-native-marcus] Function `dangerousStyleValue` from react-native-web not found.",
+  )
 }
 
 function processUnitsInMarkdownStyle(input: MarkdownStyle): MarkdownStyle {
-  const output = JSON.parse(JSON.stringify(input));
+  const output = JSON.parse(JSON.stringify(input))
 
   Object.keys(output).forEach((key) => {
-    const obj = output[key];
+    const obj = output[key]
     Object.keys(obj).forEach((prop) => {
-      obj[prop] = dangerousStyleValue(prop, obj[prop], false);
-    });
-  });
+      obj[prop] = dangerousStyleValue(prop, obj[prop], false)
+    })
+  })
 
-  return output as MarkdownStyle;
+  return output as MarkdownStyle
 }
 
 function processMarkdownStyle(input: MarkdownStyle | undefined): MarkdownStyle {
-  return processUnitsInMarkdownStyle(mergeMarkdownStyleWithDefault(input));
+  return processUnitsInMarkdownStyle(mergeMarkdownStyleWithDefault(input))
 }
 
 function parseToReactDOMStyle(style: TextStyle): any {
-  return createReactDOMStyle(preprocessStyle(style));
+  return createReactDOMStyle(preprocessStyle(style))
 }
 
 function* generateUniqueId() {
-  let idCounter = 0;
+  let idCounter = 0
   while (true) {
-    yield `marcus-input-${idCounter++}`;
+    yield `marcus-input-${idCounter++}`
   }
 }
 
-const idGenerator = generateUniqueId();
+const idGenerator = generateUniqueId()
 
-export {parseToReactDOMStyle, processMarkdownStyle, idGenerator};
+export { parseToReactDOMStyle, processMarkdownStyle, idGenerator }

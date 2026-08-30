@@ -18,7 +18,7 @@ namespace marcus {
 
 struct JMarkdownRange : jni::JavaClass<JMarkdownRange> {
   static constexpr auto kJavaDescriptor =
-      "Lapp/getbullet/marcus/MarkdownRange;";
+    "Lapp/getbullet/marcus/MarkdownRange;";
 
   // fbjni keeps newInstance protected, so the factory has to live inside the
   // class.
@@ -30,11 +30,10 @@ struct JMarkdownRange : jni::JavaClass<JMarkdownRange> {
 
 struct JMarkdownParseResult : jni::JavaClass<JMarkdownParseResult> {
   static constexpr auto kJavaDescriptor =
-      "Lapp/getbullet/marcus/MarkdownParseResult;";
+    "Lapp/getbullet/marcus/MarkdownParseResult;";
 
   static jni::local_ref<JMarkdownParseResult>
-  create(jni::alias_ref<jni::JArrayClass<JMarkdownRange::javaobject>> ranges,
-         jni::local_ref<jni::JString> schemaError) {
+  create(jni::alias_ref<jni::JArrayClass<JMarkdownRange::javaobject>> ranges, jni::local_ref<jni::JString> schemaError) {
     return newInstance(ranges, schemaError);
   }
 };
@@ -44,13 +43,13 @@ struct JMarkdownParseResult : jni::JavaClass<JMarkdownParseResult> {
 // decoration.
 struct JMarkdownParser : jni::JavaClass<JMarkdownParser> {
   static constexpr auto kJavaDescriptor =
-      "Lapp/getbullet/marcus/MarkdownParser;";
+    "Lapp/getbullet/marcus/MarkdownParser;";
 
   static jni::local_ref<JMarkdownParseResult>
-  nativeParse(jni::alias_ref<JMarkdownParser> jThis,
-              jni::alias_ref<jni::JString> text, const int parserId);
+  nativeParse(jni::alias_ref<JMarkdownParser> jThis, jni::alias_ref<jni::JString> text, const int parserId);
 
-  static void registerNatives();
+  static void
+  registerNatives();
 };
 
 } // namespace marcus

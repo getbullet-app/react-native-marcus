@@ -1,1 +1,1 @@
-module.exports = require('../lib/commonjs/mock/index.js');
+module.exports = require("../lib/commonjs/mock/index.js")

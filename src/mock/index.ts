@@ -1,16 +1,20 @@
-import {MarkdownTextInput} from '..';
-import type {parseExpensiMark} from '..';
+import { MarkdownTextInput } from ".."
+import type { parseExpensiMark } from ".."
 
-global.jsi_setMarkdownRuntime = jest.fn();
-global.jsi_registerMarkdownWorklet = jest.fn();
-global.jsi_unregisterMarkdownWorklet = jest.fn();
+global.jsi_setMarkdownRuntime = jest.fn()
+global.jsi_registerMarkdownWorklet = jest.fn()
+global.jsi_unregisterMarkdownWorklet = jest.fn()
 
 const parseExpensiMarkMock: typeof parseExpensiMark = () => {
-  'worklet';
+  "worklet"
 
-  return [];
-};
+  return []
+}
 
-const getWorkletRuntimeMock = () => ({});
+const getWorkletRuntimeMock = () => ({})
 
-export {MarkdownTextInput, parseExpensiMarkMock as parseExpensiMark, getWorkletRuntimeMock as getWorkletRuntime};
+export {
+  MarkdownTextInput,
+  parseExpensiMarkMock as parseExpensiMark,
+  getWorkletRuntimeMock as getWorkletRuntime,
+}

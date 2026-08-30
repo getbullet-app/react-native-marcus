@@ -35,7 +35,7 @@
   UIView *parent = self.superview;
   if ([parent isKindOfClass:[MarkdownTextInputDecoratorComponentView class]]) {
     [(MarkdownTextInputDecoratorComponentView *)
-            parent reattachTextInputObservers];
+        parent reattachTextInputObservers];
   }
 }
 
@@ -47,21 +47,17 @@
 // exchanging it rewrites UIView for every view in the app. So the
 // implementation is added to this class first; when that succeeds, the
 // "call the original" selector is pointed at the inherited implementation.
-static void RCTMarcusSwizzle(Class cls, SEL originalSelector,
-                             SEL swizzledSelector) {
+static void
+RCTMarcusSwizzle(Class cls, SEL originalSelector, SEL swizzledSelector) {
   Method originalMethod = class_getInstanceMethod(cls, originalSelector);
   Method swizzledMethod = class_getInstanceMethod(cls, swizzledSelector);
   if (originalMethod == NULL || swizzledMethod == NULL) {
     return;
   }
 
-  BOOL didAddMethod = class_addMethod(cls, originalSelector,
-                                      method_getImplementation(swizzledMethod),
-                                      method_getTypeEncoding(swizzledMethod));
+  BOOL didAddMethod = class_addMethod(cls, originalSelector, method_getImplementation(swizzledMethod), method_getTypeEncoding(swizzledMethod));
   if (didAddMethod) {
-    class_replaceMethod(cls, swizzledSelector,
-                        method_getImplementation(originalMethod),
-                        method_getTypeEncoding(originalMethod));
+    class_replaceMethod(cls, swizzledSelector, method_getImplementation(originalMethod), method_getTypeEncoding(originalMethod));
   } else {
     method_exchangeImplementations(originalMethod, swizzledMethod);
   }
@@ -73,12 +69,10 @@ static void RCTMarcusSwizzle(Class cls, SEL originalSelector,
     Class cls = [self class];
 
     // Implemented by this class, so this is a plain exchange.
-    RCTMarcusSwizzle(cls, @selector(_textOf:equals:),
-                     @selector(markdown__textOf:equals:));
+    RCTMarcusSwizzle(cls, @selector(_textOf:equals:), @selector(markdown__textOf:equals:));
 
     // Inherited from UIView, so this must go through class_addMethod.
-    RCTMarcusSwizzle(cls, @selector(didAddSubview:),
-                     @selector(markdown_didAddSubview:));
+    RCTMarcusSwizzle(cls, @selector(didAddSubview:), @selector(markdown_didAddSubview:));
   });
 }
 

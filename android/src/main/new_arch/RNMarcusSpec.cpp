@@ -14,25 +14,25 @@
 namespace facebook {
 namespace react {
 
-static facebook::jsi::Value __hostFunction_NativeMarcusModuleSpecJSI_install(
-    facebook::jsi::Runtime &rt, TurboModule &turboModule,
-    const facebook::jsi::Value *args, size_t count) {
+static facebook::jsi::Value
+__hostFunction_NativeMarcusModuleSpecJSI_install(
+  facebook::jsi::Runtime &rt, TurboModule &turboModule, const facebook::jsi::Value *args, size_t count
+) {
   static jmethodID cachedMethodId = nullptr;
   return static_cast<JavaTurboModule &>(turboModule)
-      .invokeJavaMethod(rt, BooleanKind, "install", "()Z", args, count,
-                        cachedMethodId);
+    .invokeJavaMethod(rt, BooleanKind, "install", "()Z", args, count, cachedMethodId);
 }
 
 NativeMarcusModuleSpecJSI::NativeMarcusModuleSpecJSI(
-    const JavaTurboModule::InitParams &params)
+  const JavaTurboModule::InitParams &params
+)
     : JavaTurboModule(params) {
   methodMap_["install"] =
-      MethodMetadata{0, __hostFunction_NativeMarcusModuleSpecJSI_install};
+    MethodMetadata{0, __hostFunction_NativeMarcusModuleSpecJSI_install};
 }
 
 std::shared_ptr<TurboModule>
-RNMarcusSpec_ModuleProvider(const std::string &moduleName,
-                            const JavaTurboModule::InitParams &params) {
+RNMarcusSpec_ModuleProvider(const std::string &moduleName, const JavaTurboModule::InitParams &params) {
   if (moduleName == "MarcusModule") {
     return std::make_shared<NativeMarcusModuleSpecJSI>(params);
   }

@@ -4,32 +4,32 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface RCTMarkdownStyle : NSObject
 
-@property (nonatomic) UIColor *syntaxColor;
-@property (nonatomic) UIColor *linkColor;
-@property (nonatomic) CGFloat h1FontSize;
-@property (nonatomic) CGFloat emojiFontSize;
-@property (nonatomic) NSString *emojiFontFamily;
-@property (nonatomic) UIColor *blockquoteBorderColor;
-@property (nonatomic) CGFloat blockquoteBorderWidth;
-@property (nonatomic) CGFloat blockquoteMarginLeft;
-@property (nonatomic) CGFloat blockquotePaddingLeft;
-@property (nonatomic) NSString *codeFontFamily;
-@property (nonatomic) CGFloat codeFontSize;
-@property (nonatomic) UIColor *codeColor;
-@property (nonatomic) UIColor *codeBackgroundColor;
-@property (nonatomic) NSString *preFontFamily;
-@property (nonatomic) CGFloat preFontSize;
-@property (nonatomic) UIColor *preColor;
-@property (nonatomic) UIColor *preBackgroundColor;
-@property (nonatomic) UIColor *mentionHereColor;
-@property (nonatomic) UIColor *mentionHereBackgroundColor;
-@property (nonatomic) CGFloat mentionHereBorderRadius;
-@property (nonatomic) UIColor *mentionUserColor;
-@property (nonatomic) UIColor *mentionUserBackgroundColor;
-@property (nonatomic) CGFloat mentionUserBorderRadius;
-@property (nonatomic) UIColor *mentionReportColor;
-@property (nonatomic) UIColor *mentionReportBackgroundColor;
-@property (nonatomic) CGFloat mentionReportBorderRadius;
+@property(nonatomic) UIColor *syntaxColor;
+@property(nonatomic) UIColor *linkColor;
+@property(nonatomic) CGFloat h1FontSize;
+@property(nonatomic) CGFloat emojiFontSize;
+@property(nonatomic) NSString *emojiFontFamily;
+@property(nonatomic) UIColor *blockquoteBorderColor;
+@property(nonatomic) CGFloat blockquoteBorderWidth;
+@property(nonatomic) CGFloat blockquoteMarginLeft;
+@property(nonatomic) CGFloat blockquotePaddingLeft;
+@property(nonatomic) NSString *codeFontFamily;
+@property(nonatomic) CGFloat codeFontSize;
+@property(nonatomic) UIColor *codeColor;
+@property(nonatomic) UIColor *codeBackgroundColor;
+@property(nonatomic) NSString *preFontFamily;
+@property(nonatomic) CGFloat preFontSize;
+@property(nonatomic) UIColor *preColor;
+@property(nonatomic) UIColor *preBackgroundColor;
+@property(nonatomic) UIColor *mentionHereColor;
+@property(nonatomic) UIColor *mentionHereBackgroundColor;
+@property(nonatomic) CGFloat mentionHereBorderRadius;
+@property(nonatomic) UIColor *mentionUserColor;
+@property(nonatomic) UIColor *mentionUserBackgroundColor;
+@property(nonatomic) CGFloat mentionUserBorderRadius;
+@property(nonatomic) UIColor *mentionReportColor;
+@property(nonatomic) UIColor *mentionReportBackgroundColor;
+@property(nonatomic) CGFloat mentionReportBorderRadius;
 
 @end
 

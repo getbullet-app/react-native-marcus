@@ -3,7 +3,10 @@ import UIKit
 
 /// Sits in front of the text view's real delegate purely to fix the caret
 /// position after a blockquote; every other callback is forwarded untouched.
-@objc public final class MarkdownBackedTextInputDelegate: NSObject, RCTBackedTextInputDelegate {
+@objc
+public final class MarkdownBackedTextInputDelegate: NSObject,
+  RCTBackedTextInputDelegate
+{
 
   private weak var textView: RCTUITextView?
   private let originalTextInputDelegate: RCTBackedTextInputDelegate?
@@ -26,9 +29,11 @@ import UIKit
     // next line still carry the blockquote's paragraph indents, which pushes the
     // caret to the right instead of leaving it at the start of the line.
     guard let textView,
-          let typingAttributes = textView.typingAttributes,
-          let paragraphStyle = typingAttributes[.paragraphStyle] as? NSParagraphStyle,
-          let mutableParagraphStyle = paragraphStyle.mutableCopy() as? NSMutableParagraphStyle
+      let typingAttributes = textView.typingAttributes,
+      let paragraphStyle = typingAttributes[.paragraphStyle]
+        as? NSParagraphStyle,
+      let mutableParagraphStyle = paragraphStyle.mutableCopy()
+        as? NSMutableParagraphStyle
     else { return }
 
     mutableParagraphStyle.firstLineHeadIndent = 0
@@ -41,10 +46,18 @@ import UIKit
 
   // MARK: - Straight forwarding
 
-  public func textInputDidChange() { originalTextInputDelegate?.textInputDidChange() }
-  public func textInputDidBeginEditing() { originalTextInputDelegate?.textInputDidBeginEditing() }
-  public func textInputDidEndEditing() { originalTextInputDelegate?.textInputDidEndEditing() }
-  public func textInputDidReturn() { originalTextInputDelegate?.textInputDidReturn() }
+  public func textInputDidChange() {
+    originalTextInputDelegate?.textInputDidChange()
+  }
+  public func textInputDidBeginEditing() {
+    originalTextInputDelegate?.textInputDidBeginEditing()
+  }
+  public func textInputDidEndEditing() {
+    originalTextInputDelegate?.textInputDidEndEditing()
+  }
+  public func textInputDidReturn() {
+    originalTextInputDelegate?.textInputDidReturn()
+  }
 
   public func textInputShouldBeginEditing() -> Bool {
     originalTextInputDelegate?.textInputShouldBeginEditing() ?? true
@@ -66,7 +79,9 @@ import UIKit
   // returning nil rejects the change. Declared as an implicitly unwrapped
   // optional so a nil from the real delegate is forwarded rather than being
   // silently turned into "accept".
-  public func textInputShouldChangeText(_ text: String, in range: NSRange) -> String! {
+  public func textInputShouldChangeText(_ text: String, in range: NSRange)
+    -> String!
+  {
     originalTextInputDelegate?.textInputShouldChangeText(text, in: range)
   }
 
@@ -79,17 +94,24 @@ import UIKit
 
   @objc(textInputDidPaste:withData:)
   public func textInputDidPaste(_ type: String, withData data: String) {
-    let selector = #selector(MarkdownBackedTextInputDelegate.textInputDidPaste(_:withData:))
+    let selector = #selector(
+      MarkdownBackedTextInputDelegate.textInputDidPaste(_:withData:)
+    )
     guard let delegate = originalTextInputDelegate as AnyObject?,
-          delegate.responds(to: selector) else { return }
+      delegate.responds(to: selector)
+    else { return }
     _ = delegate.perform(selector, with: type, with: data)
   }
 
   @objc(textInputDidPaste:)
   public func textInputDidPaste(_ items: [[String: String]]) {
-    let selector = #selector(MarkdownBackedTextInputDelegate.textInputDidPaste(_:) as (MarkdownBackedTextInputDelegate) -> ([[String: String]]) -> Void)
+    let selector = #selector(
+      MarkdownBackedTextInputDelegate.textInputDidPaste(_:)
+        as (MarkdownBackedTextInputDelegate) -> ([[String: String]]) -> Void
+    )
     guard let delegate = originalTextInputDelegate as AnyObject?,
-          delegate.responds(to: selector) else { return }
+      delegate.responds(to: selector)
+    else { return }
     _ = delegate.perform(selector, with: items)
   }
 }

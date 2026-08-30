@@ -1,10 +1,12 @@
-import type {MarkdownTextInputElement} from '../../MarkdownTextInput.web';
-import {isChildOfMultilineMarkdownElement} from './blockUtils';
-import {findHTMLElementInTree, getTreeNodeByIndex} from './treeUtils';
-import type {TreeNode} from './treeUtils';
+import type { MarkdownTextInputElement } from "../../MarkdownTextInput.web"
+import { isChildOfMultilineMarkdownElement } from "./blockUtils"
+import { findHTMLElementInTree, getTreeNodeByIndex } from "./treeUtils"
+import type { TreeNode } from "./treeUtils"
 
 function getMaxRangeOffset(node: ChildNode): number {
-  return node.nodeType === Node.TEXT_NODE ? (node.textContent ?? '').length : node.childNodes.length;
+  return node.nodeType === Node.TEXT_NODE
+    ? (node.textContent ?? "").length
+    : node.childNodes.length
 }
 
 /**
@@ -13,155 +15,190 @@ function getMaxRangeOffset(node: ChildNode): number {
  * restoration lands at the nearest valid position instead of throwing.
  */
 function getClampedRangeOffset(node: ChildNode, offset: number): number {
-  return Math.max(0, Math.min(offset, getMaxRangeOffset(node)));
+  return Math.max(0, Math.min(offset, getMaxRangeOffset(node)))
 }
 
-function setCursorPosition(target: MarkdownTextInputElement, startIndex: number, endIndex: number | null = null, shouldScrollIntoView = false) {
+function setCursorPosition(
+  target: MarkdownTextInputElement,
+  startIndex: number,
+  endIndex: number | null = null,
+  shouldScrollIntoView = false,
+) {
   // We don't want to move the cursor if the target is not focused
   if (!target.tree || target !== document.activeElement) {
-    return;
+    return
   }
 
-  const start = Math.max(0, Math.min(startIndex, target.tree.length));
-  const end = endIndex ? Math.max(0, Math.min(endIndex, target.tree.length)) : null;
+  const start = Math.max(0, Math.min(startIndex, target.tree.length))
+  const end = endIndex ? Math.max(0, Math.min(endIndex, target.tree.length)) : null
   if (end && end < start) {
-    return;
+    return
   }
 
-  const range = document.createRange();
-  range.selectNodeContents(target);
+  const range = document.createRange()
+  range.selectNodeContents(target)
 
-  const startTreeNode = getTreeNodeByIndex(target.tree, start);
-  const endTreeNode = end && startTreeNode && (end < startTreeNode.start || end >= startTreeNode.start + startTreeNode.length) ? getTreeNodeByIndex(target.tree, end) : startTreeNode;
+  const startTreeNode = getTreeNodeByIndex(target.tree, start)
+  const endTreeNode =
+    end &&
+    startTreeNode &&
+    (end < startTreeNode.start || end >= startTreeNode.start + startTreeNode.length)
+      ? getTreeNodeByIndex(target.tree, end)
+      : startTreeNode
   if (!startTreeNode || !endTreeNode) {
-    console.error('Invalid start or end tree node');
-    return;
+    console.error("Invalid start or end tree node")
+    return
   }
 
-  if (startTreeNode.type === 'br') {
-    range.setStartBefore(startTreeNode.element);
+  if (startTreeNode.type === "br") {
+    range.setStartBefore(startTreeNode.element)
   } else {
-    const startElement = startTreeNode.element;
-    const startNode = (startElement.childNodes[0] || startElement) as ChildNode;
-    range.setStart(startNode, getClampedRangeOffset(startNode, start - startTreeNode.start));
+    const startElement = startTreeNode.element
+    const startNode = (startElement.childNodes[0] || startElement) as ChildNode
+    range.setStart(startNode, getClampedRangeOffset(startNode, start - startTreeNode.start))
   }
 
-  if (endTreeNode.type === 'br') {
-    range.setEndBefore(endTreeNode.element);
+  if (endTreeNode.type === "br") {
+    range.setEndBefore(endTreeNode.element)
   } else {
-    const endElement = endTreeNode.element;
-    const endNode = (endElement.childNodes[0] || endElement) as ChildNode;
-    range.setEnd(endNode, getClampedRangeOffset(endNode, (end || start) - endTreeNode.start));
+    const endElement = endTreeNode.element
+    const endNode = (endElement.childNodes[0] || endElement) as ChildNode
+    range.setEnd(endNode, getClampedRangeOffset(endNode, (end || start) - endTreeNode.start))
   }
 
   if (!end) {
-    range.collapse(true);
+    range.collapse(true)
   }
 
-  const selection = window.getSelection();
+  const selection = window.getSelection()
   if (selection) {
-    selection.setBaseAndExtent(range.startContainer, range.startOffset, range.endContainer, range.endOffset);
+    selection.setBaseAndExtent(
+      range.startContainer,
+      range.startOffset,
+      range.endContainer,
+      range.endOffset,
+    )
   }
 
   if (shouldScrollIntoView) {
-    scrollIntoView(target, endTreeNode);
+    scrollIntoView(target, endTreeNode)
   }
 }
 
 function scrollIntoView(target: MarkdownTextInputElement, node: TreeNode) {
-  let scrollTargetElement = node.element;
-  const targetElement = target;
+  let scrollTargetElement = node.element
+  const targetElement = target
 
   if (!isChildOfMultilineMarkdownElement(node.element)) {
-    const orderIndex = Number(node.orderIndex.split(',')[0]);
-    const currentLine = target.tree.childNodes[orderIndex]?.element;
+    const orderIndex = Number(node.orderIndex.split(",")[0])
+    const currentLine = target.tree.childNodes[orderIndex]?.element
     if (currentLine) {
-      scrollTargetElement = currentLine;
+      scrollTargetElement = currentLine
     }
-  } else if (node.element.nodeName === 'BR') {
+  } else if (node.element.nodeName === "BR") {
     // Force scrolling BR into view
-    const selection = window.getSelection();
+    const selection = window.getSelection()
     if (selection) {
-      const range = document.createRange();
+      const range = document.createRange()
 
-      range.setStartBefore(node.element);
-      range.collapse(true);
+      range.setStartBefore(node.element)
+      range.collapse(true)
 
-      selection.addRange(range);
+      selection.addRange(range)
 
       // Scroll to caret
-      const span = document.createElement('span');
-      span.textContent = '\u200B'; // zero-width space
-      range.insertNode(span);
-      span.scrollIntoView({block: 'center'});
-      span.remove(); // cleanup
-      return;
+      const span = document.createElement("span")
+      span.textContent = "\u200B" // zero-width space
+      range.insertNode(span)
+      span.scrollIntoView({ block: "center" })
+      span.remove() // cleanup
+      return
     }
   }
 
-  const caretRect = scrollTargetElement.getBoundingClientRect();
-  const targetRect = target.getBoundingClientRect();
+  const caretRect = scrollTargetElement.getBoundingClientRect()
+  const targetRect = target.getBoundingClientRect()
   // In case the caret is below the visible input area, scroll to the end of the node
   if (caretRect.top + caretRect.height > targetRect.top + targetRect.height) {
-    targetElement.scrollTop = caretRect.top - targetRect.top + target.scrollTop - targetRect.height + caretRect.height + 4;
-    return;
+    targetElement.scrollTop =
+      caretRect.top -
+      targetRect.top +
+      target.scrollTop -
+      targetRect.height +
+      caretRect.height +
+      4
+    return
   }
 
   scrollTargetElement.scrollIntoView({
-    block: 'nearest',
-  });
+    block: "nearest",
+  })
 }
 
 function moveCursorToEnd(target: HTMLElement) {
-  const range = document.createRange();
-  const selection = window.getSelection();
+  const range = document.createRange()
+  const selection = window.getSelection()
   if (selection) {
-    range.setStart(target, target.childNodes.length);
-    range.collapse(true);
-    selection.setBaseAndExtent(range.startContainer, range.startOffset, range.endContainer, range.endOffset);
+    range.setStart(target, target.childNodes.length)
+    range.collapse(true)
+    selection.setBaseAndExtent(
+      range.startContainer,
+      range.startOffset,
+      range.endContainer,
+      range.endOffset,
+    )
   }
 }
 
 function getCurrentCursorPosition(target: MarkdownTextInputElement) {
   function getHTMLElement(node: Node) {
-    let element = node as HTMLElement | Text;
+    let element = node as HTMLElement | Text
     if (element instanceof Text) {
-      element = node.parentElement as HTMLElement;
+      element = node.parentElement as HTMLElement
     }
-    return element;
+    return element
   }
 
-  const selection = window.getSelection();
+  const selection = window.getSelection()
   if (!selection || (selection && selection.rangeCount === 0)) {
-    return null;
+    return null
   }
-  const range = selection.getRangeAt(0);
-  const startElement = getHTMLElement(range.startContainer);
-  const endElement = range.startContainer === range.endContainer ? startElement : getHTMLElement(range.endContainer);
+  const range = selection.getRangeAt(0)
+  const startElement = getHTMLElement(range.startContainer)
+  const endElement =
+    range.startContainer === range.endContainer
+      ? startElement
+      : getHTMLElement(range.endContainer)
 
-  const startTreeNode = findHTMLElementInTree(target.tree, startElement);
-  const endTreeNode = findHTMLElementInTree(target.tree, endElement);
+  const startTreeNode = findHTMLElementInTree(target.tree, startElement)
+  const endTreeNode = findHTMLElementInTree(target.tree, endElement)
 
-  let start = -1;
-  let end = -1;
+  let start = -1
+  let end = -1
   if (startTreeNode && endTreeNode) {
-    start = startTreeNode.start + range.startOffset;
+    start = startTreeNode.start + range.startOffset
 
     // If the end node is a root node, we need to set the end to the end of the text (FireFox fix)
     if (endTreeNode?.parentNode === null) {
-      end = target.value.length;
+      end = target.value.length
     } else {
-      end = endTreeNode.start + range.endOffset;
+      end = endTreeNode.start + range.endOffset
     }
   }
-  return {start, end};
+  return { start, end }
 }
 
 function removeSelection() {
-  const selection = window.getSelection();
+  const selection = window.getSelection()
   if (selection) {
-    selection.removeAllRanges();
+    selection.removeAllRanges()
   }
 }
 
-export {getCurrentCursorPosition, moveCursorToEnd, setCursorPosition, removeSelection, scrollIntoView};
+export {
+  getCurrentCursorPosition,
+  moveCursorToEnd,
+  setCursorPosition,
+  removeSelection,
+  scrollIntoView,
+}

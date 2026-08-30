@@ -1,6 +1,7 @@
 package app.getbullet.marcus
 
 import android.content.res.AssetManager
+import android.os.Trace
 import android.text.SpannableStringBuilder
 import android.text.Spanned
 import app.getbullet.marcus.spans.MarkdownBackgroundColorSpan
@@ -15,7 +16,6 @@ import app.getbullet.marcus.spans.MarkdownLineHeightSpan
 import app.getbullet.marcus.spans.MarkdownSpan
 import app.getbullet.marcus.spans.MarkdownStrikethroughSpan
 import app.getbullet.marcus.spans.MarkdownUnderlineSpan
-import android.os.Trace
 
 class MarkdownFormatter(private val assetManager: AssetManager) {
 
@@ -75,7 +75,12 @@ class MarkdownFormatter(private val assetManager: AssetManager) {
       "strikethrough" -> setSpan(ssb, MarkdownStrikethroughSpan(), start, end)
 
       "emoji" -> {
-        setSpan(ssb, MarkdownFontFamilySpan(markdownStyle.emojiFontFamily, assetManager), start, end)
+        setSpan(
+          ssb,
+          MarkdownFontFamilySpan(markdownStyle.emojiFontFamily, assetManager),
+          start,
+          end
+        )
         setSpan(ssb, MarkdownFontSizeSpan(markdownStyle.emojiFontSize), start, end)
       }
 

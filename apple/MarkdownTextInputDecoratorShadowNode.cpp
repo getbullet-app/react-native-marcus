@@ -8,40 +8,43 @@ namespace facebook {
 namespace react {
 
 extern const char MarkdownTextInputDecoratorViewComponentName[] =
-    "MarkdownTextInputDecoratorView";
+  "MarkdownTextInputDecoratorView";
 
 MarkdownTextInputDecoratorShadowNode::MarkdownTextInputDecoratorShadowNode(
-    ShadowNodeFragment const &fragment,
-    ShadowNodeFamily::Shared const &family,
-    ShadowNodeTraits traits)
+  ShadowNodeFragment const &fragment,
+  ShadowNodeFamily::Shared const &family,
+  ShadowNodeTraits traits
+)
     : ConcreteViewShadowNode(fragment, family, traits) {
   initialize();
   makeChildNodeMutable();
-  
+
   if (fragment.children) {
     overwriteMeasureCallbackConnector();
   }
 }
 
 MarkdownTextInputDecoratorShadowNode::MarkdownTextInputDecoratorShadowNode(
-    ShadowNode const &sourceShadowNode,
-    ShadowNodeFragment const &fragment)
+  ShadowNode const &sourceShadowNode,
+  ShadowNodeFragment const &fragment
+)
     : ConcreteViewShadowNode(sourceShadowNode, fragment) {
   // Carry the re-measure flag over from the node being cloned. It has to be set
   // before makeChildNodeMutable() below, which is what reads it.
   const auto &source =
-      static_cast<const MarkdownTextInputDecoratorShadowNode &>(sourceShadowNode);
+    static_cast<const MarkdownTextInputDecoratorShadowNode &>(sourceShadowNode);
   needsRemeasure_ = source.needsRemeasure_;
 
   initialize();
   makeChildNodeMutable();
-  
+
   if (fragment.children) {
     overwriteMeasureCallbackConnector();
   }
 }
 
-void MarkdownTextInputDecoratorShadowNode::initialize() {
+void
+MarkdownTextInputDecoratorShadowNode::initialize() {
   // Setting display: contents style results in ForceFlattenView trait being set
   // on the shadow node. This trait causes the node not to have a host view. By
   // removing the trait, it's possible to force RN to create a host view, layout
@@ -49,33 +52,38 @@ void MarkdownTextInputDecoratorShadowNode::initialize() {
   ShadowNode::traits_.unset(ShadowNodeTraits::ForceFlattenView);
 }
 
-void MarkdownTextInputDecoratorShadowNode::makeChildNodeMutable() {
+void
+MarkdownTextInputDecoratorShadowNode::makeChildNodeMutable() {
   // When the decorator is cloned and has a child node, the child node should be
   // cloned as well to ensure it is mutable.
   const auto &children = getChildren();
   if (!children.empty()) {
     react_native_assert(
-        children.size() == 1 &&
-        "MarkdownTextInputDecoratorView received more than one child");
+      children.size() == 1 &&
+      "MarkdownTextInputDecoratorView received more than one child"
+    );
 
     const auto clonedChild = children[0]->clone({});
     replaceChild(*children[0], clonedChild);
   }
 }
 
-void MarkdownTextInputDecoratorShadowNode::overwriteMeasureCallbackConnector() {
+void
+MarkdownTextInputDecoratorShadowNode::overwriteMeasureCallbackConnector() {
   const auto &children = getChildren();
   if (children.empty()) {
     return;
   }
   react_native_assert(
-      children.size() == 1 &&
-      "MarkdownTextInputDecoratorView received more than one child");
+    children.size() == 1 &&
+    "MarkdownTextInputDecoratorView received more than one child"
+  );
 
   const auto child = std::dynamic_pointer_cast<const TextInputShadowNode>(children[0]);
   react_native_assert(
-      child != nullptr &&
-      "MarkdownTextInputDecoratorView received child other than a TextInput");
+    child != nullptr &&
+    "MarkdownTextInputDecoratorView received child other than a TextInput"
+  );
   child->ensureUnsealed();
 
   // This is obviously not correct, but since both MarkdownTextInputDecoratorShadowNode and
@@ -84,7 +92,7 @@ void MarkdownTextInputDecoratorShadowNode::overwriteMeasureCallbackConnector() {
   // As only things from YogaLayoutableShadowNode are accessed, it should be safe,
   // since the vtable should be the same between them.
   const auto &nodeWithAccessibleYogaNode =
-      std::reinterpret_pointer_cast<const MarkdownTextInputDecoratorShadowNode>(child);
+    std::reinterpret_pointer_cast<const MarkdownTextInputDecoratorShadowNode>(child);
 
   // decorator node cannot have a measure function since it's not a leaf node
   // but we can redirect measuring of the child input to call measureContent
@@ -107,59 +115,67 @@ void MarkdownTextInputDecoratorShadowNode::overwriteMeasureCallbackConnector() {
   }
 }
 
-void MarkdownTextInputDecoratorShadowNode::appendChild(
-    const std::shared_ptr<const ShadowNode> &child) {
+void
+MarkdownTextInputDecoratorShadowNode::appendChild(
+  const std::shared_ptr<const ShadowNode> &child
+) {
   YogaLayoutableShadowNode::appendChild(child);
 
   overwriteMeasureCallbackConnector();
 }
 
-void MarkdownTextInputDecoratorShadowNode::replaceChild(
-    const ShadowNode &oldChild, const std::shared_ptr<const ShadowNode> &newChild,
-    size_t suggestedIndex) {
+void
+MarkdownTextInputDecoratorShadowNode::replaceChild(
+  const ShadowNode &oldChild, const std::shared_ptr<const ShadowNode> &newChild, size_t suggestedIndex
+) {
   YogaLayoutableShadowNode::replaceChild(oldChild, newChild, suggestedIndex);
 
   overwriteMeasureCallbackConnector();
 };
 
-Size MarkdownTextInputDecoratorShadowNode::measureContent(
-    const LayoutContext &layoutContext,
-    const LayoutConstraints &layoutConstraints) const {
+Size
+MarkdownTextInputDecoratorShadowNode::measureContent(
+  const LayoutContext &layoutContext,
+  const LayoutConstraints &layoutConstraints
+) const {
   const auto &children = getChildren();
   react_native_assert(
-      children.size() == 1 &&
-      "MarkdownTextInputDecoratorView received wrong number of children");
+    children.size() == 1 &&
+    "MarkdownTextInputDecoratorView received wrong number of children"
+  );
 
   const auto child =
-      std::static_pointer_cast<const TextInputShadowNode>(children[0]);
+    std::static_pointer_cast<const TextInputShadowNode>(children[0]);
 
   child->ensureUnsealed();
 
   // apply markdown formatting before measuring the child
   const auto &mutableChild =
-      std::const_pointer_cast<TextInputShadowNode>(child);
+    std::const_pointer_cast<TextInputShadowNode>(child);
   applyMarkdownFormattingToTextInputState(mutableChild, layoutContext);
 
   const auto childWithMeasureContentAccess =
-      std::static_pointer_cast<const YogaLayoutableShadowNode>(child);
+    std::static_pointer_cast<const YogaLayoutableShadowNode>(child);
   return childWithMeasureContentAccess->measureContent(layoutContext, layoutConstraints);
 }
 
-void MarkdownTextInputDecoratorShadowNode::layout(LayoutContext layoutContext) {
+void
+MarkdownTextInputDecoratorShadowNode::layout(LayoutContext layoutContext) {
   YogaLayoutableShadowNode::layout(layoutContext);
 
   const auto &children = getChildren();
   react_native_assert(
-      children.size() == 1 &&
-      "MarkdownTextInputDecoratorView didn't receive exactly one child");
+    children.size() == 1 &&
+    "MarkdownTextInputDecoratorView didn't receive exactly one child"
+  );
 
   const auto child =
-      std::static_pointer_cast<const TextInputShadowNode>(children[0]);
+    std::static_pointer_cast<const TextInputShadowNode>(children[0]);
 
   child->ensureUnsealed();
 
   const auto &mutableChild =
-      std::const_pointer_cast<TextInputShadowNode>(child);
+    std::const_pointer_cast<TextInputShadowNode>(child);
 
   // TODO: this may not be the correct way to do this
   // Since nodes with display: contents are skipped during layout, they have
@@ -176,15 +192,14 @@ void MarkdownTextInputDecoratorShadowNode::layout(LayoutContext layoutContext) {
   mutableChild->setLayoutMetrics(childMetrics);
 }
 
-
 // this is private in YogaLayoutableShadowNode
-YGSize MarkdownTextInputDecoratorShadowNode::yogaNodeMeasureCallbackConnector(
-    YGNodeConstRef yogaNode, float width, YGMeasureMode widthMode, float height,
-    YGMeasureMode heightMode) {
+YGSize
+MarkdownTextInputDecoratorShadowNode::yogaNodeMeasureCallbackConnector(
+  YGNodeConstRef yogaNode, float width, YGMeasureMode widthMode, float height, YGMeasureMode heightMode
+) {
 
   auto minimumSize = Size{0, 0};
-  auto maximumSize = Size{std::numeric_limits<Float>::infinity(),
-                          std::numeric_limits<Float>::infinity()};
+  auto maximumSize = Size{std::numeric_limits<Float>::infinity(), std::numeric_limits<Float>::infinity()};
 
   switch (widthMode) {
   case YGMeasureModeUndefined:
@@ -219,16 +234,17 @@ YGSize MarkdownTextInputDecoratorShadowNode::yogaNodeMeasureCallbackConnector(
 
   const auto size = decoratorShadowNode.measureContent(context, {minimumSize, maximumSize});
 
-  return YGSize{yogaFloatFromFloat(size.width),
-                yogaFloatFromFloat(size.height)};
+  return YGSize{yogaFloatFromFloat(size.width), yogaFloatFromFloat(size.height)};
 }
 
 // this is private in YogaLayoutableShadowNode
 YogaLayoutableShadowNode &
 MarkdownTextInputDecoratorShadowNode::shadowNodeFromContext(
-    YGNodeConstRef yogaNode) {
+  YGNodeConstRef yogaNode
+) {
   return dynamic_cast<YogaLayoutableShadowNode &>(
-      *static_cast<ShadowNode *>(YGNodeGetContext(yogaNode)));
+    *static_cast<ShadowNode *>(YGNodeGetContext(yogaNode))
+  );
 }
 
 } // namespace react

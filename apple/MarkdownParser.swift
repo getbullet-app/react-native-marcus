@@ -33,7 +33,9 @@ import MarkdownCxx
   /// Serial on purpose: the markdown runtime runs one parse at a time anyway,
   /// and serialising here avoids doing the same work twice.
   private static let warmupQueue = DispatchQueue(
-    label: "app.getbullet.marcus.parser-cache-warmup", qos: .userInitiated)
+    label: "app.getbullet.marcus.parser-cache-warmup",
+    qos: .userInitiated
+  )
 
   /// Guards everything below, and is never held across a parse. Holding a lock
   /// while waiting on the markdown runtime is what let a background parse block
@@ -52,14 +54,18 @@ import MarkdownCxx
 
   /// Returns the ranges for (text, parserId) only if they are already cached.
   /// Never runs the parser, so it is safe on the main thread.
-  @objc public func cachedRanges(forText text: String,
-                                 withParserId parserId: NSNumber) -> [MarkdownRange]? {
+  @objc public func cachedRanges(
+    forText text: String,
+    withParserId parserId: NSNumber
+  ) -> [MarkdownRange]? {
     lock.lock()
     defer { lock.unlock() }
 
-    guard let index = cache.firstIndex(where: {
-      $0.parserId == parserId.intValue && $0.text == text
-    }) else { return nil }
+    guard
+      let index = cache.firstIndex(where: {
+        $0.parserId == parserId.intValue && $0.text == text
+      })
+    else { return nil }
 
     guard index != 0 else { return cache[0].ranges }
 
@@ -69,12 +75,19 @@ import MarkdownCxx
     return entry.ranges
   }
 
-  private func store(_ ranges: [MarkdownRange], forText text: String, parserId: NSNumber) {
+  private func store(
+    _ ranges: [MarkdownRange],
+    forText text: String,
+    parserId: NSNumber
+  ) {
     lock.lock()
     defer { lock.unlock() }
 
     cache.removeAll { $0.parserId == parserId.intValue && $0.text == text }
-    cache.insert(CacheEntry(text: text, parserId: parserId.intValue, ranges: ranges), at: 0)
+    cache.insert(
+      CacheEntry(text: text, parserId: parserId.intValue, ranges: ranges),
+      at: 0
+    )
     if cache.count > Self.cacheCapacity {
       cache.removeLast(cache.count - Self.cacheCapacity)
     }
@@ -84,7 +97,9 @@ import MarkdownCxx
 
   /// Returns cached ranges when there are any, otherwise parses and caches.
   /// Never call this from the main thread on a layout path.
-  @objc public func parse(_ text: String, withParserId parserId: NSNumber) -> [MarkdownRange] {
+  @objc public func parse(_ text: String, withParserId parserId: NSNumber)
+    -> [MarkdownRange]
+  {
     if let cached = cachedRanges(forText: text, withParserId: parserId) {
       return cached
     }
@@ -96,21 +111,29 @@ import MarkdownCxx
     return ranges
   }
 
-  private func parseUncached(_ text: String, parserId: NSNumber) -> [MarkdownRange] {
+  private func parseUncached(_ text: String, parserId: NSNumber)
+    -> [MarkdownRange]
+  {
     // `utf16.count` is the unit the worklet reports range offsets in.
-    let result = bulletpoint.marcus.parseMarkdown(std.string(text),
-                                                      text.utf16.count,
-                                                      Int32(parserId.intValue))
+    let result = bulletpoint.marcus.parseMarkdown(
+      std.string(text),
+      text.utf16.count,
+      Int32(parserId.intValue)
+    )
 
     let schemaError = String(result.schemaError)
     if !schemaError.isEmpty {
-      markdownLogWarn("[react-native-marcus] Incorrect schema of worklet parser output: \(schemaError)")
+      markdownLogWarn(
+        "[react-native-marcus] Incorrect schema of worklet parser output: \(schemaError)"
+      )
     }
 
     return result.ranges.map { range in
-      MarkdownRange(type: String(range.type),
-                    range: NSRange(location: Int(range.start), length: Int(range.length)),
-                    depth: UInt(range.depth))
+      MarkdownRange(
+        type: String(range.type),
+        range: NSRange(location: Int(range.start), length: Int(range.length)),
+        depth: UInt(range.depth)
+      )
     }
   }
 
@@ -126,9 +149,11 @@ import MarkdownCxx
   /// `completion` runs on the background queue once the ranges are cached, and
   /// is skipped when a newer request replaced this one -- that request reports
   /// instead.
-  @objc public func warmCacheAsync(forText text: String,
-                                   withParserId parserId: NSNumber,
-                                   completion: (() -> Void)?) {
+  @objc public func warmCacheAsync(
+    forText text: String,
+    withParserId parserId: NSNumber,
+    completion: (() -> Void)?
+  ) {
     lock.lock()
     // Keep only the newest request, so stale text can never win over newer text.
     // The replaced completion goes with it; the newer request reports instead.

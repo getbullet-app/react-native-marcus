@@ -37,14 +37,22 @@ final class MarkdownTextLayoutFragment: NSTextLayoutFragment {
     guard depth > 0, let style = markdownStyle else { return }
 
     let borderWidth = style.blockquoteBorderWidth
-    let shift = style.blockquoteMarginLeft + borderWidth + style.blockquotePaddingLeft
+    let shift =
+      style.blockquoteMarginLeft + borderWidth + style.blockquotePaddingLeft
 
     style.blockquoteBorderColor.setFill()
 
     let bounds = boundingRect
     for level in 0..<depth {
       let x = bounds.origin.x + CGFloat(level) * shift
-      UIRectFill(CGRect(x: x, y: bounds.origin.y, width: borderWidth, height: bounds.size.height))
+      UIRectFill(
+        CGRect(
+          x: x,
+          y: bounds.origin.y,
+          width: borderWidth,
+          height: bounds.size.height
+        )
+      )
     }
   }
 
@@ -63,10 +71,13 @@ final class MarkdownTextLayoutFragment: NSTextLayoutFragment {
 
       let lineBounds = lineFragment.typographicBounds
       // Absolute index into the source string, not a fragment-relative offset.
-      let lineEndLocation = lineFragment.locationForCharacter(at: NSMaxRange(lineRange))
+      let lineEndLocation = lineFragment.locationForCharacter(
+        at: NSMaxRange(lineRange)
+      )
 
       while mentionIndex < mentions.count,
-            NSMaxRange(mentions[mentionIndex].range) <= lineRange.location {
+        NSMaxRange(mentions[mentionIndex].range) <= lineRange.location
+      {
         mentionIndex += 1
       }
 
@@ -78,31 +89,43 @@ final class MarkdownTextLayoutFragment: NSTextLayoutFragment {
         // part falling on this line is drawn here; the corners are rounded on
         // whichever side actually terminates the mention.
         let intersection = NSIntersectionRange(lineRange, mention.range)
-        let startLocation = lineFragment.locationForCharacter(at: intersection.location)
+        let startLocation = lineFragment.locationForCharacter(
+          at: intersection.location
+        )
 
         // Singleline: the mention starts off screen, nothing to draw. Only
         // happens while the text input is unfocused.
-        if isSingleline, startLocation.x == 0, intersection.location > 0 { continue }
+        if isSingleline, startLocation.x == 0, intersection.location > 0 {
+          continue
+        }
 
-        var endLocation = lineFragment.locationForCharacter(at: intersection.location + intersection.length)
+        var endLocation = lineFragment.locationForCharacter(
+          at: intersection.location + intersection.length
+        )
 
         // Singleline: the mention is only partially visible -- it either starts
         // mid-line or at the very beginning of the line.
         if isSingleline,
-           startLocation.x > endLocation.x
-             || (startLocation.x == endLocation.x && intersection.location == 0) {
+          startLocation.x > endLocation.x
+            || (startLocation.x == endLocation.x && intersection.location == 0)
+        {
           endLocation = lineEndLocation
         }
 
-        guard let font = lineFragment.attributedString.attribute(
-          .font, at: intersection.location, effectiveRange: nil) as? UIFont
+        guard
+          let font = lineFragment.attributedString.attribute(
+            .font,
+            at: intersection.location,
+            effectiveRange: nil
+          ) as? UIFont
         else { continue }
 
         let backgroundRect = CGRect(
           x: lineBounds.origin.x + startLocation.x,
           y: lineBounds.origin.y + startLocation.y - font.ascender,
           width: endLocation.x - startLocation.x,
-          height: font.lineHeight)
+          height: font.lineHeight
+        )
 
         var corners: UIRectCorner = []
         if intersection.location == mention.range.location {
@@ -113,11 +136,14 @@ final class MarkdownTextLayoutFragment: NSTextLayoutFragment {
         }
 
         let radius = mention.textBackground.borderRadius
-        let path = corners.isEmpty
+        let path =
+          corners.isEmpty
           ? UIBezierPath(rect: backgroundRect)
-          : UIBezierPath(roundedRect: backgroundRect,
-                         byRoundingCorners: corners,
-                         cornerRadii: CGSize(width: radius, height: radius))
+          : UIBezierPath(
+            roundedRect: backgroundRect,
+            byRoundingCorners: corners,
+            cornerRadii: CGSize(width: radius, height: radius)
+          )
 
         mention.textBackground.color.setFill()
         path.fill()
@@ -130,9 +156,12 @@ final class MarkdownTextLayoutFragment: NSTextLayoutFragment {
   /// The strip to the left of the text that the blockquote ribbons occupy.
   private var boundingRect: CGRect {
     var bounds = CGRect.null
-    for lineFragment in textLineFragments where lineFragment.characterRange.length != 0 {
-      bounds = bounds.isNull ? lineFragment.typographicBounds
-                             : bounds.union(lineFragment.typographicBounds)
+    for lineFragment in textLineFragments
+    where lineFragment.characterRange.length != 0 {
+      bounds =
+        bounds.isNull
+        ? lineFragment.typographicBounds
+        : bounds.union(lineFragment.typographicBounds)
     }
 
     // A null rect has an infinite origin; offsetting it would yield an
@@ -140,9 +169,11 @@ final class MarkdownTextLayoutFragment: NSTextLayoutFragment {
     guard !bounds.isNull, let style = markdownStyle else { return bounds }
 
     let borderWidth = style.blockquoteBorderWidth
-    let shift = style.blockquoteMarginLeft + borderWidth + style.blockquotePaddingLeft
+    let shift =
+      style.blockquoteMarginLeft + borderWidth + style.blockquotePaddingLeft
 
-    bounds.origin.x -= (style.blockquotePaddingLeft + borderWidth) + shift * CGFloat(depth - 1)
+    bounds.origin.x -=
+      (style.blockquotePaddingLeft + borderWidth) + shift * CGFloat(depth - 1)
     bounds.size.width = borderWidth + shift * CGFloat(depth - 1)
     return bounds
   }

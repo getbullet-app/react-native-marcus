@@ -11,8 +11,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface RCTMarkdownStyle (Codegen)
 
 - (instancetype)initWithStruct:
-    (const facebook::react::MarkdownTextInputDecoratorViewMarkdownStyleStruct &)
-        style;
+  (const facebook::react::MarkdownTextInputDecoratorViewMarkdownStyleStruct &)style;
 
 @end
 

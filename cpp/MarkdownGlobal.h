@@ -10,17 +10,24 @@ using namespace worklets;
 namespace bulletpoint {
 namespace marcus {
 
-void setMarkdownRuntime(
-    const std::shared_ptr<WorkletRuntime> &markdownWorkletRuntime);
+void
+setMarkdownRuntime(
+  const std::shared_ptr<WorkletRuntime> &markdownWorkletRuntime
+);
 
-std::shared_ptr<WorkletRuntime> getMarkdownRuntime();
+std::shared_ptr<WorkletRuntime>
+getMarkdownRuntime();
 
-const int registerMarkdownWorklet(
-    const std::shared_ptr<SerializableWorklet> &markdownWorklet);
+const int
+registerMarkdownWorklet(
+  const std::shared_ptr<SerializableWorklet> &markdownWorklet
+);
 
-void unregisterMarkdownWorklet(const int parserId);
+void
+unregisterMarkdownWorklet(const int parserId);
 
-std::shared_ptr<SerializableWorklet> getMarkdownWorklet(const int parserId);
+std::shared_ptr<SerializableWorklet>
+getMarkdownWorklet(const int parserId);
 
 } // namespace marcus
 } // namespace bulletpoint

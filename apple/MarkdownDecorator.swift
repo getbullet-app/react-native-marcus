@@ -51,10 +51,13 @@ import UIKit
   /// Detaches first, so this doubles as the re-attach path used when React
   /// Native swaps its backed view on a `multiline` change.
   @objc public func attach(to textInputComponentView: UIView) {
-    guard let backedTextInputView =
-            textInputComponentView.value(forKey: "_backedTextInputView") as? UIView
+    guard
+      let backedTextInputView =
+        textInputComponentView.value(forKey: "_backedTextInputView") as? UIView
     else {
-      assertionFailure("TextInput component view has no backed text input view.")
+      assertionFailure(
+        "TextInput component view has no backed text input view."
+      )
       return
     }
 
@@ -87,7 +90,11 @@ import UIKit
       textView.textLayoutManager?.delegate = nil
       backedTextInputDelegate = nil
       if let textViewObserver {
-        textView.removeObserver(textViewObserver, forKeyPath: "defaultTextAttributes", context: nil)
+        textView.removeObserver(
+          textViewObserver,
+          forKeyPath: "defaultTextAttributes",
+          context: nil
+        )
       }
       setAdaptiveImageGlyphSupport(false, on: textView)
       textViewObserver = nil
@@ -98,14 +105,28 @@ import UIKit
 
     if let textField {
       if let textFieldObserver {
-        textField.removeTarget(textFieldObserver,
-                               action: #selector(MarkdownTextFieldObserver.textFieldDidChange(_:)),
-                               for: .editingChanged)
-        textField.removeTarget(textFieldObserver,
-                               action: #selector(MarkdownTextFieldObserver.textFieldDidEndEditing(_:)),
-                               for: .editingDidEnd)
-        textField.removeObserver(textFieldObserver, forKeyPath: "text", context: nil)
-        textField.removeObserver(textFieldObserver, forKeyPath: "attributedText", context: nil)
+        textField.removeTarget(
+          textFieldObserver,
+          action: #selector(MarkdownTextFieldObserver.textFieldDidChange(_:)),
+          for: .editingChanged
+        )
+        textField.removeTarget(
+          textFieldObserver,
+          action: #selector(
+            MarkdownTextFieldObserver.textFieldDidEndEditing(_:)
+          ),
+          for: .editingDidEnd
+        )
+        textField.removeObserver(
+          textFieldObserver,
+          forKeyPath: "text",
+          context: nil
+        )
+        textField.removeObserver(
+          textFieldObserver,
+          forKeyPath: "attributedText",
+          context: nil
+        )
       }
       setAdaptiveImageGlyphSupport(false, on: textField)
       textFieldObserver = nil
@@ -136,29 +157,52 @@ import UIKit
 
     setAdaptiveImageGlyphSupport(true, on: textField)
 
-    let observer = MarkdownTextFieldObserver(textField: textField, markdownUtils: markdownUtils)
+    let observer = MarkdownTextFieldObserver(
+      textField: textField,
+      markdownUtils: markdownUtils
+    )
     textFieldObserver = observer
 
-    textField.addTarget(observer,
-                        action: #selector(MarkdownTextFieldObserver.textFieldDidChange(_:)),
-                        for: .editingChanged)
-    textField.addTarget(observer,
-                        action: #selector(MarkdownTextFieldObserver.textFieldDidEndEditing(_:)),
-                        for: .editingDidEnd)
-    textField.addObserver(observer, forKeyPath: "text", options: .new, context: nil)
-    textField.addObserver(observer, forKeyPath: "attributedText", options: .new, context: nil)
+    textField.addTarget(
+      observer,
+      action: #selector(MarkdownTextFieldObserver.textFieldDidChange(_:)),
+      for: .editingChanged
+    )
+    textField.addTarget(
+      observer,
+      action: #selector(MarkdownTextFieldObserver.textFieldDidEndEditing(_:)),
+      for: .editingDidEnd
+    )
+    textField.addObserver(
+      observer,
+      forKeyPath: "text",
+      options: .new,
+      context: nil
+    )
+    textField.addObserver(
+      observer,
+      forKeyPath: "attributedText",
+      options: .new,
+      context: nil
+    )
 
     // Format the initial value.
     observer.textFieldDidChange(textField)
 
     // UITextField keeps its TextKit 2 stack private. The key names are spelled
     // backwards so they don't appear as literals in the binary.
-    guard let textContainer = textField.value(forKey: Self.reversed("reniatnoCtxet_")) as? NSTextContainer,
-          let textStorage = textField.value(forKey: Self.reversed("egarotStxet_")) as? NSTextStorage
+    guard
+      let textContainer = textField.value(
+        forKey: Self.reversed("reniatnoCtxet_")
+      ) as? NSTextContainer,
+      let textStorage = textField.value(forKey: Self.reversed("egarotStxet_"))
+        as? NSTextStorage
     else { return }
 
-    let delegate = MarkdownTextLayoutManagerDelegate(textStorage: textStorage,
-                                                     markdownUtils: markdownUtils)
+    let delegate = MarkdownTextLayoutManagerDelegate(
+      textStorage: textStorage,
+      markdownUtils: markdownUtils
+    )
     layoutManagerDelegate = delegate
     textContainer.textLayoutManager?.delegate = delegate
 
@@ -174,35 +218,59 @@ import UIKit
     setAdaptiveImageGlyphSupport(true, on: textView)
 
     assert(textView.textStorage.delegate == nil)
-    let storageDelegate = MarkdownTextStorageDelegate(textView: textView, markdownUtils: markdownUtils)
+    let storageDelegate = MarkdownTextStorageDelegate(
+      textView: textView,
+      markdownUtils: markdownUtils
+    )
     textStorageDelegate = storageDelegate
     textView.textStorage.delegate = storageDelegate
 
-    let observer = MarkdownTextViewObserver(textView: textView, markdownUtils: markdownUtils)
+    let observer = MarkdownTextViewObserver(
+      textView: textView,
+      markdownUtils: markdownUtils
+    )
     textViewObserver = observer
-    textView.addObserver(observer, forKeyPath: "defaultTextAttributes", options: .new, context: nil)
+    textView.addObserver(
+      observer,
+      forKeyPath: "defaultTextAttributes",
+      options: .new,
+      context: nil
+    )
 
     // Format the initial value.
     if let attributedText = textView.attributedText {
       textView.textStorage.setAttributedString(attributedText)
     }
 
-    let delegate = MarkdownTextLayoutManagerDelegate(textStorage: textView.textStorage,
-                                                     markdownUtils: markdownUtils)
+    let delegate = MarkdownTextLayoutManagerDelegate(
+      textStorage: textView.textStorage,
+      markdownUtils: markdownUtils
+    )
     layoutManagerDelegate = delegate
     textView.textLayoutManager?.delegate = delegate
 
     // Fixes the caret position after a blockquote.
-    backedTextInputDelegate = MarkdownBackedTextInputDelegate(textView: textView)
+    backedTextInputDelegate = MarkdownBackedTextInputDelegate(
+      textView: textView
+    )
   }
 
   // MARK: - Helpers
 
-  private static func reversed(_ value: String) -> String { String(value.reversed()) }
+  private static func reversed(_ value: String) -> String {
+    String(value.reversed())
+  }
 
-  private func setAdaptiveImageGlyphSupport(_ enabled: Bool, on textInputView: UIView) {
+  private func setAdaptiveImageGlyphSupport(
+    _ enabled: Bool,
+    on textInputView: UIView
+  ) {
     guard #available(iOS 18.0, *) else { return }
-    guard textInputView.responds(to: NSSelectorFromString("setSupportsAdaptiveImageGlyph:")) else { return }
+    guard
+      textInputView.responds(
+        to: NSSelectorFromString("setSupportsAdaptiveImageGlyph:")
+      )
+    else { return }
     textInputView.setValue(enabled, forKey: "supportsAdaptiveImageGlyph")
   }
 }

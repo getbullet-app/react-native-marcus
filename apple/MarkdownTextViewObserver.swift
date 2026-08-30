@@ -15,10 +15,12 @@ import UIKit
     super.init()
   }
 
-  public override func observeValue(forKeyPath keyPath: String?,
-                                    of object: Any?,
-                                    change: [NSKeyValueChangeKey: Any]?,
-                                    context: UnsafeMutableRawPointer?) {
+  public override func observeValue(
+    forKeyPath keyPath: String?,
+    of object: Any?,
+    change: [NSKeyValueChangeKey: Any]?,
+    context: UnsafeMutableRawPointer?
+  ) {
     guard keyPath == "defaultTextAttributes" else { return }
     // Round-tripping through textStorage re-triggers the storage delegate,
     // which is what actually re-applies the formatting.

@@ -7,7 +7,8 @@ using namespace facebook;
 namespace bulletpoint {
 namespace marcus {
 
-void injectJSIBindings(jsi::Runtime &rt);
+void
+injectJSIBindings(jsi::Runtime &rt);
 
 } // namespace marcus
 } // namespace bulletpoint

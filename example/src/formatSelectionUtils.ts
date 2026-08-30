@@ -15,7 +15,12 @@ function getFormatRule(formatCommand: string): FormatRule | null {
   return null;
 }
 
-function handleFormatSelection(text: string, selectionStart: number, selectionEnd: number, formatCommand: string) {
+function handleFormatSelection(
+  text: string,
+  selectionStart: number,
+  selectionEnd: number,
+  formatCommand: string,
+) {
   const formatRule = getFormatRule(formatCommand);
   if (!text || selectionStart == null || selectionEnd == null || !formatRule) {
     return {updatedText: text, cursorOffset: 0};
@@ -24,11 +29,20 @@ function handleFormatSelection(text: string, selectionStart: number, selectionEn
   // Remove formatting if the selection is already formatted.
   const markdownRanges = parseExpensiMark(text);
   for (const range of markdownRanges) {
-    if (range && range.type === formatRule.markdownType && range.start != null && range.length != null) {
+    if (
+      range &&
+      range.type === formatRule.markdownType &&
+      range.start != null &&
+      range.length != null
+    ) {
       const rangeEnd = range.start + range.length;
-      const isExactMatch = range.start === selectionStart && rangeEnd === selectionEnd;
-      const isEnclosedMatch = range.start - 1 === selectionStart && rangeEnd + 1 === selectionEnd;
-      const isRangeBetweenSyntaxes = text[range.start - 1] === formatRule.syntax && text[rangeEnd] === formatRule.syntax;
+      const isExactMatch =
+        range.start === selectionStart && rangeEnd === selectionEnd;
+      const isEnclosedMatch =
+        range.start - 1 === selectionStart && rangeEnd + 1 === selectionEnd;
+      const isRangeBetweenSyntaxes =
+        text[range.start - 1] === formatRule.syntax &&
+        text[rangeEnd] === formatRule.syntax;
       if ((isExactMatch || isEnclosedMatch) && isRangeBetweenSyntaxes) {
         const prefix = text.slice(0, range.start - 1);
         const suffix = text.slice(rangeEnd + 1);

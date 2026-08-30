@@ -1,6 +1,7 @@
 package app.getbullet.marcus
 
 import android.os.Trace
+import app.getbullet.marcus.MarkdownParser.Companion.shared
 import com.facebook.soloader.SoLoader
 
 /**
