@@ -15,8 +15,8 @@ const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const entry = 'parser/index';
 
 for (const [format, dir, declaration] of [
-  ['cjs', 'lib/commonjs', 'export function parse'],
-  ['esm', 'lib/module', 'module.exports.parse = function parse'],
+  ['cjs', 'lib/commonjs', 'module.exports.parse = function parse'],
+  ['esm', 'lib/module', 'export function parse'],
 ]) {
   const outfile = join(root, dir, `${entry}.js`);
 
