@@ -37,7 +37,7 @@
   },
   "scripts": {
     "clean": "del-cli '{.,example}/{android,ios}/**/{build,.cxx}' lib",
-    "example": "npm run --workspace=react-native-marcus-example",
+    "example": "npm run --workspace=marcus-example",
     "prepare": "bob build && node scripts/bundle-parser.mjs",
     "test": "jest",
     "watch": "nodemon --watch src --ext 'ts tsx js jsx json' --exec npm run prepare"

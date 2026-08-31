@@ -1,25 +1,27 @@
-const {getDefaultConfig, mergeConfig} = require('@react-native/metro-config');
-const path = require('path');
+// Learn more https://docs.expo.io/guides/customizing-metro
+const { getDefaultConfig } = require("expo/metro-config")
+const { resolve } = require("path")
+const exclusionList = require("metro-config/private/defaults/exclusionList").default
+const pkg = require("../package.json")
 
-const root = path.resolve(__dirname, '..');
+const root = resolve(__dirname, "..")
 
-/**
- * Metro configuration
- * https://reactnative.dev/docs/metro
- *
- * @type {import('@react-native/metro-config').MetroConfig}
- */
-const config = {
+/** @type {import('expo/metro-config').MetroConfig} */
+const config = getDefaultConfig(__dirname)
+
+module.exports = {
+  ...config,
   watchFolders: [root, __dirname],
-
-  transformer: {
-    getTransformOptions: async () => ({
-      transform: {
-        experimentalImportSupport: false,
-        inlineRequires: true,
-      },
-    }),
+  resolver: {
+    ...config.resolver,
+    blockList: exclusionList([
+      new RegExp(
+        `^${root.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}/node_modules/${pkg.name}/.*$`,
+      ),
+    ]),
+    extraNodeModules: {
+      ...config.resolver.extraNodeModules,
+      [pkg.name]: root,
+    },
   },
-};
-
-module.exports = mergeConfig(getDefaultConfig(__dirname), config);
+}
