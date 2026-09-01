@@ -3,10 +3,22 @@
 #include "MarkdownGlobal.h"
 
 #include <stdexcept>
+#include <string>
 #include <utility>
 
 namespace bulletpoint {
 namespace marcus {
+
+namespace {
+
+bool
+requiresDepth(const std::string &type) {
+  return type == "blockquote";
+}
+
+constexpr int kMaxDepth = 6;
+
+} // namespace
 
 ParseResult
 parseMarkdown(const std::string &utf8Text, size_t textLengthUtf16, int parserId) {
@@ -44,10 +56,20 @@ parseMarkdown(const std::string &utf8Text, size_t textLengthUtf16, int parserId)
         static_cast<int>(item.getProperty(rt, "start").asNumber());
       const auto length =
         static_cast<int>(item.getProperty(rt, "length").asNumber());
-      const auto depth =
-        item.hasProperty(rt, "depth")
-          ? static_cast<int>(item.getProperty(rt, "depth").asNumber())
-          : 1;
+      int depth = 1;
+      if (item.hasProperty(rt, "depth")) {
+        depth = static_cast<int>(item.getProperty(rt, "depth").asNumber());
+
+        if (requiresDepth(type) && depth < 1) {
+          return {{}, "range of type '" + type + "' has a `depth` of " + std::to_string(depth) + ", which must be at least 1"};
+        }
+
+        if (depth > kMaxDepth) {
+          depth = kMaxDepth;
+        }
+      } else if (requiresDepth(type)) {
+        return {{}, "range of type '" + type + "' is missing `depth`"};
+      }
 
       // `start` is checked explicitly because the offsets come from JS and a
       // negative one would wrap when converted to an unsigned platform range.

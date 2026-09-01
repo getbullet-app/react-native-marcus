@@ -10,8 +10,11 @@ import { mentions } from "./micromark-extension-mentions"
 const EMOJI_TYPE = "emoji"
 const SYNTAX_TYPE = "syntax"
 
+const MAX_DEPTH = 6
+
 const TOKENS: {
   syntax: Set<TokenType>
+  block: Partial<Record<TokenType, MarkdownType>>
   special: Partial<Record<TokenType, MarkdownType>>
   scope: Partial<Record<TokenType, MarkdownType>>
   content: Partial<Record<TokenType, MarkdownType>>
@@ -74,6 +77,13 @@ const TOKENS: {
     "characterReferenceMarkerNumeric",
     "characterReferenceMarkerHexadecimal",
   ]),
+  block: {
+    blockQuote: "blockquote",
+
+    // TODO: lists need indent support in the native renderers first.
+    // listOrdered: "list",
+    // listUnordered: "list",
+  },
   special: {
     codeFenced: "codeblock",
     codeIndented: "codeblock",
@@ -84,14 +94,8 @@ const TOKENS: {
     strong: "bold",
     strikethrough: "strikethrough",
 
-    blockQuote: "blockquote",
-
     atxHeading: "h1",
     setextHeading: "h1",
-
-    // TODO:
-    // listOrdered: 'list',
-    // listUnordered: 'list',
   },
   content: {
     mention: "mention-user",
@@ -165,17 +169,21 @@ declare global {
 globalThis.__parse__micromark = function (markdown: string): MarkdownRange[] {
   const extensions = [gfmAutolinkLiteral(), gfmStrikethrough(), mentions()]
   const ranges: MarkdownRange[] = []
+  // Counted block containers, innermost last. Never exceeds MAX_DEPTH per type.
+  const openBlocks: MarkdownType[] = []
+  // One entry per open container, recording whether it made it into openBlocks.
+  const countedBlocks: boolean[] = []
   const events = postprocess(
     parse({ extensions }).document().write(preprocess()(markdown, "utf-8", true)),
   )
+  let lineStart = 0
 
   for (const event of events) {
     if (event[0] === "enter") {
       enter(event[1])
+    } else {
+      exit(event[1])
     }
-    // else {
-    //   exit(event[1]);
-    // }
   }
 
   excludeEmoji()
@@ -185,6 +193,28 @@ globalThis.__parse__micromark = function (markdown: string): MarkdownRange[] {
   function enter(token: Token) {
     if (EMOJI.scan.has(token.type)) {
       emitEmoji(token)
+    }
+
+    const block = TOKENS.block[token.type]
+
+    if (block) {
+      // Past the cap the container is ignored outright rather than counted and
+      // clamped on the way out, so nesting cannot grow the stack or the work
+      // flushLine does per line.
+      const counted = depthOf(block) < MAX_DEPTH
+      countedBlocks.push(counted)
+
+      if (counted) {
+        openBlocks.push(block)
+      }
+
+      return
+    }
+
+    if (token.type === "lineEnding" || token.type === "lineEndingBlank") {
+      flushLine(token.start.offset)
+      lineStart = token.end.offset
+      return
     }
 
     if (TOKENS.special[token.type]) {
@@ -218,7 +248,50 @@ globalThis.__parse__micromark = function (markdown: string): MarkdownRange[] {
     }
   }
 
-  // function exit(token: Token) {}
+  function exit(token: Token) {
+    if (!TOKENS.block[token.type]) {
+      return
+    }
+
+    flushLine(token.end.offset)
+
+    // Ignored containers were never pushed, so only counted ones pop. Skipped
+    // ones are always innermost, so this stays balanced.
+    if (countedBlocks.pop()) {
+      openBlocks.pop()
+    }
+  }
+
+  function depthOf(type: MarkdownType) {
+    let depth = 0
+
+    for (let i = 0; i < openBlocks.length; i++) {
+      if (openBlocks[i] === type) {
+        depth++
+      }
+    }
+
+    return depth
+  }
+
+  function flushLine(end: number) {
+    if (openBlocks.length === 0 || end <= lineStart) {
+      return
+    }
+
+    for (let i = 0; i < openBlocks.length; i++) {
+      const type = openBlocks[i]!
+
+      // Emit each distinct type once, at its first occurrence.
+      if (openBlocks.indexOf(type) !== i) {
+        continue
+      }
+
+      push(lineStart, end, type, depthOf(type))
+    }
+
+    lineStart = end
+  }
 
   function emit(token: Token, type: MarkdownType) {
     push(token.start.offset, token.end.offset, type)
@@ -262,21 +335,32 @@ globalThis.__parse__micromark = function (markdown: string): MarkdownRange[] {
     }
   }
 
-  function push(start: number, end: number, type: MarkdownType) {
+  function push(start: number, end: number, type: MarkdownType, depth?: number) {
     if (start >= end) return
 
     const previous = ranges[ranges.length - 1]
 
-    if (previous && previous.type === type && previous.start + previous.length === start) {
+    if (
+      depth === undefined &&
+      previous &&
+      previous.type === type &&
+      previous.start + previous.length === start
+    ) {
       previous.length = end - previous.start
       return
     }
 
-    ranges.push({
+    const range: MarkdownRange = {
       start,
       length: end - start,
       type,
-    })
+    }
+
+    if (depth !== undefined) {
+      range.depth = depth
+    }
+
+    ranges.push(range)
   }
 
   function excludeEmoji() {
