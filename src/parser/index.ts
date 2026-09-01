@@ -122,17 +122,7 @@ const TOKENS: {
   },
 }
 
-/**
- * A line inside a list that carries no marker of its own continues an item
- * started earlier. CommonMark folds it into that item's paragraph, which an
- * editor cannot do -- the line break is real text -- so it is treated as a hard
- * break and indented one level further, past where the marker sits, rather than
- * lining up underneath it.
- */
-const CONTINUATION: Partial<Record<MarkdownType, MarkdownType>> = {
-  "list-ordered": "list-ordered-continuation",
-  "list-unordered": "list-unordered-continuation",
-}
+const BLOCK_PREFIX = "block-prefix"
 
 const EMOJI: {
   scan: Set<TokenType>
@@ -189,9 +179,10 @@ globalThis.__parse__micromark = function (markdown: string): MarkdownRange[] {
   const countedBlocks: boolean[] = []
   // Heading awaiting the marker that states its level.
   let pendingHeading: Token | null = null
-  // Whether the line being built opens a list item, as opposed to continuing
-  // one started on an earlier line.
-  let lineOpensItem = false
+  // Where each open container's own marker ends on the line being built, if it
+  // has one there. Cleared per line: a container whose marker was on an earlier
+  // line is being continued, not opened.
+  const markerEnds = new Map<MarkdownType, number>()
   const events = postprocess(
     parse({ extensions }).document().write(preprocess()(markdown, "utf-8", true)),
   )
@@ -226,7 +217,16 @@ globalThis.__parse__micromark = function (markdown: string): MarkdownRange[] {
     } else if (token.type === "setextHeadingLineSequence") {
       emitHeading(markdown.charCodeAt(token.start.offset) === 61 ? 1 : 2)
     } else if (token.type === "listItemPrefix") {
-      lineOpensItem = true
+      const list = openBlocks[openBlocks.length - 1]
+
+      // Past the depth cap the item's own list was never opened, so its marker
+      // would be recorded against whatever encloses it.
+      if (list === "list-ordered" || list === "list-unordered") {
+        markerEnds.set(list, token.end.offset)
+      }
+    } else if (token.type === "blockQuotePrefix") {
+      // One per level, so the last one on the line covers all of `>>> `.
+      markerEnds.set("blockquote", token.end.offset)
     }
 
     const block = TOKENS.block[token.type]
@@ -335,38 +335,43 @@ globalThis.__parse__micromark = function (markdown: string): MarkdownRange[] {
     return depth
   }
 
+  /**
+   * Emits the containers the finished line sits in, each preceded by the run of
+   * text its own marker occupies there.
+   *
+   * The markers are real characters that the containers nested inside them are
+   * laid out around, and how wide they render is a question only the platform
+   * can answer -- so the offsets are handed over and the arithmetic is done
+   * where the font is known.
+   */
   function flushLine(end: number) {
-    if (openBlocks.length === 0 || end <= lineStart) {
-      return
-    }
+    if (openBlocks.length > 0 && end > lineStart) {
+      let prefixStart = lineStart
 
-    for (let i = 0; i < openBlocks.length; i++) {
-      const type = openBlocks[i]!
+      for (let i = 0; i < openBlocks.length; i++) {
+        const type = openBlocks[i]!
 
-      // Emit each distinct type once, at its first occurrence.
-      if (openBlocks.indexOf(type) !== i) {
-        continue
-      }
-
-      push(lineStart, end, type, depthOf(type))
-    }
-
-    // Emitted last, so it lands inside every container on the line. Folding the
-    // step into the list range instead would push a blockquote's ribbon right
-    // along with the text, breaking the vertical bar down the quote.
-    if (!lineOpensItem) {
-      for (let i = openBlocks.length - 1; i >= 0; i--) {
-        const continued = CONTINUATION[openBlocks[i]!]
-
-        if (continued) {
-          push(lineStart, end, continued, 1)
-          break
+        // Emit each distinct type once, at its first occurrence.
+        if (openBlocks.indexOf(type) !== i) {
+          continue
         }
+
+        const markerEnd = markerEnds.get(type)
+
+        if (markerEnd !== undefined && markerEnd > prefixStart) {
+          push(prefixStart, markerEnd, BLOCK_PREFIX)
+          prefixStart = markerEnd
+        }
+
+        push(lineStart, end, type, depthOf(type))
       }
     }
 
-    lineStart = end
-    lineOpensItem = false
+    if (end > lineStart) {
+      lineStart = end
+    }
+
+    markerEnds.clear()
   }
 
   function emit(token: Token, type: MarkdownType) {
@@ -418,6 +423,9 @@ globalThis.__parse__micromark = function (markdown: string): MarkdownRange[] {
 
     if (
       depth === undefined &&
+      // Two containers opening on one line put their prefixes back to back.
+      // Merging them would lose which prefix belongs to which container.
+      type !== BLOCK_PREFIX &&
       previous &&
       previous.type === type &&
       previous.start + previous.length === start

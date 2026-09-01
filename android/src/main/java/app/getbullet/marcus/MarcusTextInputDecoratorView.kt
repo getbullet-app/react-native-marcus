@@ -32,7 +32,7 @@ class MarcusTextInputDecoratorView(context: Context) : ReactViewGroup(context) {
 
     val child = getChildAt(0)
     if (child is ReactEditText) {
-      val utils = MarkdownUtils(context as ReactContext)
+      val utils = MarkdownUtils(context as ReactContext, child.paint)
       utils.markdownStyle = markdownStyle
       utils.parserId = parserId
       markdownUtils = utils

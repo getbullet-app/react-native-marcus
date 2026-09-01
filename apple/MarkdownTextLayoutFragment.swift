@@ -10,7 +10,9 @@ final class MarkdownTextLayoutFragment: NSTextLayoutFragment {
 
   var markdownStyle: RCTMarcusStyle?
   var depth: Int = 0
-  /// Head indent contributed by containers nesting outside the blockquote.
+  /// Distance from the paragraph's left edge to the blockquote's own box:
+  /// whatever containers nesting outside it indent by, plus the room left for a
+  /// list marker drawn in front of the ribbons.
   var outerIndent: CGFloat = 0
   var mentions: [MarkdownTextBackgroundWithRange] = []
 
@@ -174,14 +176,16 @@ final class MarkdownTextLayoutFragment: NSTextLayoutFragment {
     let shift =
       style.blockquoteMarginLeft + borderWidth + style.blockquotePaddingLeft
 
-    // Walk back from the text to the blockquote's own left edge. The line's
-    // total indent can exceed the quote's own -- a list inside it adds more --
-    // so the quote's share is everything past what nests outside it, and using
-    // the text origin directly would push the ribbons in by the list's indent.
-    let headIndent =
-      firstLineParagraphStyle?.headIndent ?? shift * CGFloat(depth)
+    // The ribbons sit at a fixed offset from the paragraph's own left edge,
+    // which is the text origin less however far this line is indented. Walking
+    // back from the text by the quote's own indent instead would move the bar
+    // whenever the line's indent changes -- a list nested inside the quote adds
+    // some, a marker drawn in front of the ribbon takes some away -- and split
+    // the bar between the lines of one quote.
+    let indent =
+      firstLineParagraphStyle?.firstLineHeadIndent ?? shift * CGFloat(depth)
 
-    bounds.origin.x -= (headIndent - outerIndent) - style.blockquoteMarginLeft
+    bounds.origin.x -= indent - (outerIndent + style.blockquoteMarginLeft)
     bounds.size.width = borderWidth + shift * CGFloat(depth - 1)
     return bounds
   }

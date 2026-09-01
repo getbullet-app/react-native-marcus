@@ -3,11 +3,22 @@ package app.getbullet.marcus
 import android.os.Trace
 import android.text.SpannableStringBuilder
 import android.text.Spanned
+import android.text.TextPaint
 import android.text.TextUtils
 import com.facebook.react.bridge.ReactContext
 import com.facebook.react.util.RNLog
 
-class MarkdownUtils(private val reactContext: ReactContext) {
+/**
+ * @param textPaint the view's own paint, held live rather than copied: the
+ *   formatter measures block markers with it to work out where the containers
+ *   nested inside them start, and has to see the size the text is drawn at.
+ *   Null on the measure path, which has no view yet and carries the size on the
+ *   spannable instead.
+ */
+class MarkdownUtils @JvmOverloads constructor(
+  private val reactContext: ReactContext,
+  private val textPaint: TextPaint? = null
+) {
   private val markdownFormatter = MarkdownFormatter(reactContext.assets)
 
   // Hoisted rather than built per call: applyMarkdownFormatting runs several times per
@@ -43,7 +54,7 @@ class MarkdownUtils(private val reactContext: ReactContext) {
 
       val text = ssb.toString()
       val markdownRanges = MarkdownParser.shared.parse(text, parserId, onSchemaError)
-      markdownFormatter.format(ssb, markdownRanges, style)
+      markdownFormatter.format(ssb, markdownRanges, style, textPaint)
       stamp(ssb, text, style)
     } finally {
       Trace.endSection()
