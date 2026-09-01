@@ -20,4 +20,11 @@ FOUNDATION_EXPORT const NSAttributedStringKey
 FOUNDATION_EXPORT const NSAttributedStringKey
   RCTMarcusBlockquoteDepthAttributeName NS_SWIFT_NAME(marcusBlockquoteDepth);
 
+// Head indent the line already carried when the blockquote was applied, i.e.
+// everything nesting outside it. The ribbons are drawn from there rather than
+// from the text origin, which also includes indent added by containers nested
+// inside the quote (a list, say).
+FOUNDATION_EXPORT const NSAttributedStringKey
+  RCTMarcusBlockquoteIndentAttributeName NS_SWIFT_NAME(marcusBlockquoteIndent);
+
 NS_ASSUME_NONNULL_END

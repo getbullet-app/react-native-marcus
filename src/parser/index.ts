@@ -80,9 +80,11 @@ const TOKENS: {
   block: {
     blockQuote: "blockquote",
 
-    // TODO: lists need indent support in the native renderers first.
-    // listOrdered: "list",
-    // listUnordered: "list",
+    // Ordered and unordered stay separate types so a renderer can tell them
+    // apart. They nest independently: a line inside both carries one range of
+    // each, and the indents add up.
+    listOrdered: "list-ordered",
+    listUnordered: "list-unordered",
   },
   special: {
     codeFenced: "codeblock",
@@ -228,7 +230,20 @@ globalThis.__parse__micromark = function (markdown: string): MarkdownRange[] {
 
     if (token.type === "lineEnding" || token.type === "lineEndingBlank") {
       flushLine(token.start.offset)
-      lineStart = token.end.offset
+
+      // The token can reach past the break itself: micromark folds the next
+      // line's container prefix into it, so `\n>` arrives as one lineEnding.
+      // Resuming at token.end would swallow that line, leaving a gap in the
+      // quote. Resume just after the break instead.
+      let next = token.start.offset
+      if (markdown.charCodeAt(next) === 13) {
+        next++
+      }
+      if (markdown.charCodeAt(next) === 10) {
+        next++
+      }
+      lineStart = next > token.start.offset ? next : token.end.offset
+
       return
     }
 

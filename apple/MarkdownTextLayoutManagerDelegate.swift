@@ -41,6 +41,12 @@ public final class MarkdownTextLayoutManagerDelegate: NSObject,
         at: index,
         effectiveRange: nil
       ) as? NSNumber
+    let outerIndent =
+      textStorage.attribute(
+        .marcusBlockquoteIndent,
+        at: index,
+        effectiveRange: nil
+      ) as? NSNumber
 
     guard let paragraph = textElement as? NSTextParagraph else {
       return plain()
@@ -71,6 +77,7 @@ public final class MarkdownTextLayoutManagerDelegate: NSObject,
     )
     fragment.markdownStyle = markdownUtils.markdownStyle
     fragment.depth = depth?.intValue ?? 0
+    fragment.outerIndent = CGFloat(outerIndent?.doubleValue ?? 0)
     fragment.mentions = mentions
     return fragment
   }

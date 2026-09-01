@@ -11,6 +11,8 @@ type MarkdownType =
   | "code"
   | "pre"
   | "blockquote"
+  | "list-ordered"
+  | "list-unordered"
   | "heading"
   | "syntax"
   | "inline-image"

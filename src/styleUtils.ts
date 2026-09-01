@@ -38,6 +38,14 @@ function makeDefaultMarkdownStyle(): MarkdownStyle {
       marginLeft: 6,
       paddingLeft: 6,
     },
+    orderedList: {
+      marginLeft: 6,
+      paddingLeft: 18,
+    },
+    unorderedList: {
+      marginLeft: 6,
+      paddingLeft: 18,
+    },
     code: {
       fontFamily: FONT_FAMILY_MONOSPACE,
       fontSize: 16,

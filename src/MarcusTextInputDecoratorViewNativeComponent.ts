@@ -40,6 +40,16 @@ interface MarkdownStyle {
     marginLeft: Float
     paddingLeft: Float
   }
+  // Indent only, no gutter decoration. Kept as two separate entries so a
+  // renderer can style ordered and unordered lists differently.
+  orderedList: {
+    marginLeft: Float
+    paddingLeft: Float
+  }
+  unorderedList: {
+    marginLeft: Float
+    paddingLeft: Float
+  }
   code: CodeBlockStyle & {
     headingNestedFontSize?: Float
   }

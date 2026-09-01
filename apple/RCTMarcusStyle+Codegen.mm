@@ -23,6 +23,12 @@
     self.blockquoteMarginLeft = style.blockquote.marginLeft;
     self.blockquotePaddingLeft = style.blockquote.paddingLeft;
 
+    self.orderedListMarginLeft = style.orderedList.marginLeft;
+    self.orderedListPaddingLeft = style.orderedList.paddingLeft;
+
+    self.unorderedListMarginLeft = style.unorderedList.marginLeft;
+    self.unorderedListPaddingLeft = style.unorderedList.paddingLeft;
+
     self.codeFontFamily = RCTNSStringFromString(style.code.fontFamily);
     self.codeFontSize = style.code.fontSize;
     self.codeColor = RCTUIColorFromSharedColor(style.code.color);

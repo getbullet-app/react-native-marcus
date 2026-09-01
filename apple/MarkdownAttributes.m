@@ -5,3 +5,5 @@ const NSAttributedStringKey RCTMarcusTextBackgroundAttributeName =
   @"RCTMarcusTextBackground";
 const NSAttributedStringKey RCTMarcusBlockquoteDepthAttributeName =
   @"RCTMarcusBlockquoteDepth";
+const NSAttributedStringKey RCTMarcusBlockquoteIndentAttributeName =
+  @"RCTMarcusBlockquoteIndent";

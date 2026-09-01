@@ -193,24 +193,40 @@ import UIKit
       )
 
     case "blockquote":
-      let indent =
+      let outerIndent = addIndent(
         (style.blockquoteMarginLeft + style.blockquoteBorderWidth
-          + style.blockquotePaddingLeft) * CGFloat(depth)
-      let base = defaultTextAttributes[.paragraphStyle] as? NSParagraphStyle
-      let paragraphStyle =
-        (base?.mutableCopy() as? NSMutableParagraphStyle)
-        ?? NSMutableParagraphStyle()
-      paragraphStyle.firstLineHeadIndent = indent
-      paragraphStyle.headIndent = indent
-      attributedString.addAttribute(
-        .paragraphStyle,
-        value: paragraphStyle,
-        range: range
+          + style.blockquotePaddingLeft) * CGFloat(depth),
+        to: attributedString,
+        range: range,
+        defaultTextAttributes: defaultTextAttributes
       )
       attributedString.addAttribute(
         .marcusBlockquoteDepth,
         value: depth,
         range: range
+      )
+      attributedString.addAttribute(
+        .marcusBlockquoteIndent,
+        value: outerIndent,
+        range: range
+      )
+
+    case "list-ordered":
+      addIndent(
+        (style.orderedListMarginLeft + style.orderedListPaddingLeft)
+          * CGFloat(depth),
+        to: attributedString,
+        range: range,
+        defaultTextAttributes: defaultTextAttributes
+      )
+
+    case "list-unordered":
+      addIndent(
+        (style.unorderedListMarginLeft + style.unorderedListPaddingLeft)
+          * CGFloat(depth),
+        to: attributedString,
+        range: range,
+        defaultTextAttributes: defaultTextAttributes
       )
 
     case "pre":
@@ -260,6 +276,41 @@ import UIKit
 
   /// Re-centres text vertically within an explicit `lineHeight` after the fonts
   /// above have changed the natural line height.
+  /// Adds to whatever indent the range already carries rather than replacing
+  /// it, so a line inside more than one container is indented by all of them --
+  /// a list inside a blockquote, or an ordered list inside an unordered one,
+  /// each of which arrives as its own range.
+  @discardableResult
+  private static func addIndent(
+    _ indent: CGFloat,
+    to attributedString: NSMutableAttributedString,
+    range: NSRange,
+    defaultTextAttributes: [NSAttributedString.Key: Any]
+  ) -> CGFloat {
+    let existing =
+      attributedString.attribute(
+        .paragraphStyle,
+        at: range.location,
+        effectiveRange: nil
+      ) as? NSParagraphStyle
+      ?? defaultTextAttributes[.paragraphStyle] as? NSParagraphStyle
+
+    let paragraphStyle =
+      (existing?.mutableCopy() as? NSMutableParagraphStyle)
+      ?? NSMutableParagraphStyle()
+    let outer = paragraphStyle.headIndent
+    paragraphStyle.firstLineHeadIndent += indent
+    paragraphStyle.headIndent += indent
+
+    attributedString.addAttribute(
+      .paragraphStyle,
+      value: paragraphStyle,
+      range: range
+    )
+
+    return outer
+  }
+
   private static func applyBaselineOffset(
     to attributedText: NSMutableAttributedString,
     range: NSRange

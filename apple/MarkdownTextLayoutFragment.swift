@@ -10,6 +10,8 @@ final class MarkdownTextLayoutFragment: NSTextLayoutFragment {
 
   var markdownStyle: RCTMarcusStyle?
   var depth: Int = 0
+  /// Head indent contributed by containers nesting outside the blockquote.
+  var outerIndent: CGFloat = 0
   var mentions: [MarkdownTextBackgroundWithRange] = []
 
   // MARK: - NSTextLayoutFragment
@@ -172,9 +174,28 @@ final class MarkdownTextLayoutFragment: NSTextLayoutFragment {
     let shift =
       style.blockquoteMarginLeft + borderWidth + style.blockquotePaddingLeft
 
-    bounds.origin.x -=
-      (style.blockquotePaddingLeft + borderWidth) + shift * CGFloat(depth - 1)
+    // Walk back from the text to the blockquote's own left edge. The line's
+    // total indent can exceed the quote's own -- a list inside it adds more --
+    // so the quote's share is everything past what nests outside it, and using
+    // the text origin directly would push the ribbons in by the list's indent.
+    let headIndent =
+      firstLineParagraphStyle?.headIndent ?? shift * CGFloat(depth)
+
+    bounds.origin.x -= (headIndent - outerIndent) - style.blockquoteMarginLeft
     bounds.size.width = borderWidth + shift * CGFloat(depth - 1)
     return bounds
+  }
+
+  /// Paragraph style of the fragment's first non-empty line.
+  private var firstLineParagraphStyle: NSParagraphStyle? {
+    for lineFragment in textLineFragments
+    where lineFragment.characterRange.length != 0 {
+      return lineFragment.attributedString.attribute(
+        .paragraphStyle,
+        at: lineFragment.characterRange.location,
+        effectiveRange: nil
+      ) as? NSParagraphStyle
+    }
+    return nil
   }
 }

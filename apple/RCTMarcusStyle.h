@@ -14,6 +14,10 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic) CGFloat blockquoteBorderWidth;
 @property(nonatomic) CGFloat blockquoteMarginLeft;
 @property(nonatomic) CGFloat blockquotePaddingLeft;
+@property(nonatomic) CGFloat orderedListMarginLeft;
+@property(nonatomic) CGFloat orderedListPaddingLeft;
+@property(nonatomic) CGFloat unorderedListMarginLeft;
+@property(nonatomic) CGFloat unorderedListPaddingLeft;
 @property(nonatomic) NSString *codeFontFamily;
 @property(nonatomic) CGFloat codeFontSize;
 @property(nonatomic) UIColor *codeColor;

@@ -13,6 +13,7 @@ import app.getbullet.marcus.spans.MarkdownFontSizeSpan
 import app.getbullet.marcus.spans.MarkdownForegroundColorSpan
 import app.getbullet.marcus.spans.MarkdownItalicSpan
 import app.getbullet.marcus.spans.MarkdownLineHeightSpan
+import app.getbullet.marcus.spans.MarkdownListSpan
 import app.getbullet.marcus.spans.MarkdownSpan
 import app.getbullet.marcus.spans.MarkdownStrikethroughSpan
 import app.getbullet.marcus.spans.MarkdownUnderlineSpan
@@ -164,6 +165,28 @@ class MarkdownFormatter(private val assetManager: AssetManager) {
         // NOTE: size span must be set after line height span to avoid height jumps
         setSpan(ssb, MarkdownFontSizeSpan(fontSize), start, end)
       }
+
+      "list-ordered" -> setSpan(
+        ssb,
+        MarkdownListSpan(
+          markdownStyle.orderedListMarginLeft,
+          markdownStyle.orderedListPaddingLeft,
+          markdownRange.depth
+        ),
+        start,
+        end
+      )
+
+      "list-unordered" -> setSpan(
+        ssb,
+        MarkdownListSpan(
+          markdownStyle.unorderedListMarginLeft,
+          markdownStyle.unorderedListPaddingLeft,
+          markdownRange.depth
+        ),
+        start,
+        end
+      )
 
       "blockquote" -> setSpan(
         ssb,

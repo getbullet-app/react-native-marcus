@@ -25,6 +25,12 @@ class MarkdownStyle(map: ReadableMap, context: Context) {
   val blockquoteMarginLeft = parseFloat(map, "blockquote", "marginLeft")
   val blockquotePaddingLeft = parseFloat(map, "blockquote", "paddingLeft")
 
+  val orderedListMarginLeft = parseFloat(map, "orderedList", "marginLeft")
+  val orderedListPaddingLeft = parseFloat(map, "orderedList", "paddingLeft")
+
+  val unorderedListMarginLeft = parseFloat(map, "unorderedList", "marginLeft")
+  val unorderedListPaddingLeft = parseFloat(map, "unorderedList", "paddingLeft")
+
   val codeFontFamily = parseString(map, "code", "fontFamily")
   val codeFontSize = parseFloat(map, "code", "fontSize")
   @ColorInt val codeColor = parseColor(map, "code", "color", context)
