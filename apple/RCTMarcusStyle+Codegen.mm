@@ -11,7 +11,8 @@
 
     self.linkColor = RCTUIColorFromSharedColor(style.link.color);
 
-    self.h1FontSize = style.h1.fontSize;
+    self.headingFontSize = style.heading.fontSize;
+    self.headingScale = style.heading.scale;
 
     self.emojiFontSize = style.emoji.fontSize;
     self.emojiFontFamily = RCTNSStringFromString(style.emoji.fontFamily);

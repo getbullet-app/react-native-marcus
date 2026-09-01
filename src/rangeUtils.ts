@@ -7,7 +7,7 @@ function getTagPriority(tag: string) {
   switch (tag) {
     case "blockquote":
       return 2
-    case "h1":
+    case "heading":
       return 1
     case "emoji":
       return -1

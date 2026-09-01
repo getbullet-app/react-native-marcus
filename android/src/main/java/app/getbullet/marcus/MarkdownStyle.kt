@@ -13,7 +13,9 @@ class MarkdownStyle(map: ReadableMap, context: Context) {
   @ColorInt val syntaxColor = parseColor(map, "syntax", "color", context)
   @ColorInt val linkColor = parseColor(map, "link", "color", context)
 
-  val h1FontSize = parseFloat(map, "h1", "fontSize")
+  val headingFontSize = parseFloat(map, "heading", "fontSize")
+
+  val headingScale = parseFloat(map, "heading", "scale")
 
   val emojiFontSize = parseFloat(map, "emoji", "fontSize")
   val emojiFontFamily = parseString(map, "emoji", "fontFamily")

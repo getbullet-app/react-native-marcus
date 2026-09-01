@@ -13,7 +13,7 @@ namespace {
 
 bool
 requiresDepth(const std::string &type) {
-  return type == "blockquote";
+  return type == "blockquote" || type == "heading";
 }
 
 constexpr int kMaxDepth = 6;

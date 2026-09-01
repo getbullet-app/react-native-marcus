@@ -11,7 +11,7 @@ type MarkdownType =
   | "code"
   | "pre"
   | "blockquote"
-  | "h1"
+  | "heading"
   | "syntax"
   | "inline-image"
   | "codeblock"

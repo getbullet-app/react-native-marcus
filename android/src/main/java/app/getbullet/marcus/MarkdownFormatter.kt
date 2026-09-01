@@ -151,14 +151,18 @@ class MarkdownFormatter(private val assetManager: AssetManager) {
         setSpan(ssb, MarkdownBackgroundColorSpan(markdownStyle.preBackgroundColor), start, end)
       }
 
-      "h1" -> {
+      "heading" -> {
         setSpan(ssb, MarkdownBoldSpan(), start, end)
+        // Level N is the base size scaled N-1 times, so a single pair of style
+        // values covers all six.
+        var fontSize = markdownStyle.headingFontSize
+        repeat(maxOf(markdownRange.depth, 1) - 1) { fontSize *= markdownStyle.headingScale }
         val lineHeight = ReactLineHeight.find(ssb)
         if (lineHeight >= 0) {
-          setSpan(ssb, MarkdownLineHeightSpan(lineHeight * 1.5f), start, end)
+          setSpan(ssb, MarkdownLineHeightSpan(lineHeight * (fontSize / markdownStyle.headingFontSize) * 1.5f), start, end)
         }
         // NOTE: size span must be set after line height span to avoid height jumps
-        setSpan(ssb, MarkdownFontSizeSpan(markdownStyle.h1FontSize), start, end)
+        setSpan(ssb, MarkdownFontSizeSpan(fontSize), start, end)
       }
 
       "blockquote" -> setSpan(

@@ -94,8 +94,8 @@ const TOKENS: {
     strong: "bold",
     strikethrough: "strikethrough",
 
-    atxHeading: "h1",
-    setextHeading: "h1",
+    // Headings are absent: their level is only known once the marker token
+    // arrives, so they are emitted from emitHeading() instead.
   },
   content: {
     mention: "mention-user",
@@ -173,6 +173,8 @@ globalThis.__parse__micromark = function (markdown: string): MarkdownRange[] {
   const openBlocks: MarkdownType[] = []
   // One entry per open container, recording whether it made it into openBlocks.
   const countedBlocks: boolean[] = []
+  // Heading awaiting the marker that states its level.
+  let pendingHeading: Token | null = null
   const events = postprocess(
     parse({ extensions }).document().write(preprocess()(markdown, "utf-8", true)),
   )
@@ -193,6 +195,19 @@ globalThis.__parse__micromark = function (markdown: string): MarkdownRange[] {
   function enter(token: Token) {
     if (EMOJI.scan.has(token.type)) {
       emitEmoji(token)
+    }
+
+    // The heading itself opens before its marker, so it is held until the
+    // marker states the level. Both marker types also emit `syntax`, so this
+    // falls through rather than returning.
+    if (token.type === "atxHeading" || token.type === "setextHeading") {
+      pendingHeading = token
+    } else if (token.type === "atxHeadingSequence") {
+      // ATX level is the run of `#`. A closing run is ignored: the heading has
+      // already been emitted by then.
+      emitHeading(token.end.offset - token.start.offset)
+    } else if (token.type === "setextHeadingLineSequence") {
+      emitHeading(markdown.charCodeAt(token.start.offset) === 61 ? 1 : 2)
     }
 
     const block = TOKENS.block[token.type]
@@ -260,6 +275,20 @@ globalThis.__parse__micromark = function (markdown: string): MarkdownRange[] {
     if (countedBlocks.pop()) {
       openBlocks.pop()
     }
+  }
+
+  function emitHeading(level: number) {
+    if (!pendingHeading) {
+      return
+    }
+
+    push(
+      pendingHeading.start.offset,
+      pendingHeading.end.offset,
+      "heading",
+      level > MAX_DEPTH ? MAX_DEPTH : level,
+    )
+    pendingHeading = null
   }
 
   function depthOf(type: MarkdownType) {

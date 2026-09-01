@@ -59,7 +59,7 @@ import UIKit
     defaultTextAttributes: [NSAttributedString.Key: Any]
   ) {
     switch type {
-    case "bold", "italic", "code", "pre", "h1", "emoji":
+    case "bold", "italic", "code", "pre", "heading", "emoji":
       var font =
         attributedString.attribute(
           .font,
@@ -91,11 +91,17 @@ import UIKit
           variant: nil,
           scaleMultiplier: 0
         )
-      case "h1":
+      case "heading":
+        // Level N is the base size scaled N-1 times, so a single pair of style
+        // values covers all six.
+        var size = style.headingFontSize
+        for _ in 1..<max(depth, 1) {
+          size *= style.headingScale
+        }
         font = RCTFont.update(
           font,
           withFamily: nil,
-          size: NSNumber(value: Float(style.h1FontSize)),
+          size: NSNumber(value: Float(size)),
           weight: "bold",
           style: nil,
           variant: nil,

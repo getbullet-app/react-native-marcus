@@ -28,8 +28,11 @@ interface MarkdownStyle {
   link: {
     color: ColorValue
   }
-  h1: {
+  heading: {
     fontSize: Float
+    // Each level down multiplies the one above, so level N is
+    // fontSize * scale^(N - 1). Six levels, matching HTML.
+    scale: Float
   }
   blockquote: {
     borderColor: ColorValue
@@ -38,7 +41,7 @@ interface MarkdownStyle {
     paddingLeft: Float
   }
   code: CodeBlockStyle & {
-    h1NestedFontSize?: Float
+    headingNestedFontSize?: Float
   }
   pre: CodeBlockStyle
   mentionHere: {

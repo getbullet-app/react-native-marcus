@@ -24,11 +24,12 @@ function makeDefaultMarkdownStyle(): MarkdownStyle {
     link: {
       color: "blue",
     },
-    h1: {
-      fontSize: 25,
+    heading: {
+      fontSize: 38,
+      scale: 0.85,
     },
     emoji: {
-      fontSize: 20,
+      fontSize: 16,
       fontFamily: FONT_FAMILY_EMOJI,
     },
     blockquote: {
@@ -39,7 +40,7 @@ function makeDefaultMarkdownStyle(): MarkdownStyle {
     },
     code: {
       fontFamily: FONT_FAMILY_MONOSPACE,
-      fontSize: 20,
+      fontSize: 16,
       color: "black",
       backgroundColor: "lightgray",
       borderColor: "gray",
@@ -50,7 +51,7 @@ function makeDefaultMarkdownStyle(): MarkdownStyle {
     },
     pre: {
       fontFamily: FONT_FAMILY_MONOSPACE,
-      fontSize: 20,
+      fontSize: 16,
       color: "black",
       backgroundColor: "lightgray",
       borderColor: "gray",

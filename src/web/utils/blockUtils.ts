@@ -67,9 +67,9 @@ function addStyleToBlock(
         overflowWrap: "anywhere",
       })
       break
-    case "h1":
+    case "heading":
       Object.assign(node.style, {
-        ...markdownStyle.h1,
+        ...markdownStyle.heading,
         fontWeight: "bold",
       })
       break
@@ -123,8 +123,8 @@ function addCodeBlockStyles(
       Object.assign(node.style, {
         ...markdownStyle.code,
         fontSize:
-          markdownStyle.code?.h1NestedFontSize && isChildOfMarkdownElement(node, "h1")
-            ? markdownStyle.code.h1NestedFontSize
+          markdownStyle.code?.headingNestedFontSize && isChildOfMarkdownElement(node, "heading")
+            ? markdownStyle.code.headingNestedFontSize
             : markdownStyle.code?.fontSize,
         padding: `${codeVerticalPadding}px ${codeHorizontalPadding}px`,
         lineHeight: 1.5,
