@@ -14,7 +14,9 @@ namespace {
 bool
 requiresDepth(const std::string &type) {
   return type == "blockquote" || type == "heading" ||
-    type == "list-ordered" || type == "list-unordered";
+    type == "list-ordered" || type == "list-unordered" ||
+    type == "list-ordered-continuation" ||
+    type == "list-unordered-continuation";
 }
 
 constexpr int kMaxDepth = 6;

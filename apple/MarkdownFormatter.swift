@@ -211,7 +211,9 @@ import UIKit
         range: range
       )
 
-    case "list-ordered":
+    // The continuation type arrives as its own one-step range, so both are the
+    // same arithmetic.
+    case "list-ordered", "list-ordered-continuation":
       addIndent(
         (style.orderedListMarginLeft + style.orderedListPaddingLeft)
           * CGFloat(depth),
@@ -220,7 +222,7 @@ import UIKit
         defaultTextAttributes: defaultTextAttributes
       )
 
-    case "list-unordered":
+    case "list-unordered", "list-unordered-continuation":
       addIndent(
         (style.unorderedListMarginLeft + style.unorderedListPaddingLeft)
           * CGFloat(depth),

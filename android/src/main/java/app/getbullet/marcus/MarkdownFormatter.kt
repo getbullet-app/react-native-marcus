@@ -166,7 +166,9 @@ class MarkdownFormatter(private val assetManager: AssetManager) {
         setSpan(ssb, MarkdownFontSizeSpan(fontSize), start, end)
       }
 
-      "list-ordered" -> setSpan(
+      // The continuation type arrives as its own one-step range, so both are
+      // the same arithmetic.
+      "list-ordered", "list-ordered-continuation" -> setSpan(
         ssb,
         MarkdownListSpan(
           markdownStyle.orderedListMarginLeft,
@@ -177,7 +179,7 @@ class MarkdownFormatter(private val assetManager: AssetManager) {
         end
       )
 
-      "list-unordered" -> setSpan(
+      "list-unordered", "list-unordered-continuation" -> setSpan(
         ssb,
         MarkdownListSpan(
           markdownStyle.unorderedListMarginLeft,

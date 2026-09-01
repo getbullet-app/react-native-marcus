@@ -122,6 +122,18 @@ const TOKENS: {
   },
 }
 
+/**
+ * A line inside a list that carries no marker of its own continues an item
+ * started earlier. CommonMark folds it into that item's paragraph, which an
+ * editor cannot do -- the line break is real text -- so it is treated as a hard
+ * break and indented one level further, past where the marker sits, rather than
+ * lining up underneath it.
+ */
+const CONTINUATION: Partial<Record<MarkdownType, MarkdownType>> = {
+  "list-ordered": "list-ordered-continuation",
+  "list-unordered": "list-unordered-continuation",
+}
+
 const EMOJI: {
   scan: Set<TokenType>
   exclude: Set<MarkdownType>
@@ -177,6 +189,9 @@ globalThis.__parse__micromark = function (markdown: string): MarkdownRange[] {
   const countedBlocks: boolean[] = []
   // Heading awaiting the marker that states its level.
   let pendingHeading: Token | null = null
+  // Whether the line being built opens a list item, as opposed to continuing
+  // one started on an earlier line.
+  let lineOpensItem = false
   const events = postprocess(
     parse({ extensions }).document().write(preprocess()(markdown, "utf-8", true)),
   )
@@ -210,6 +225,8 @@ globalThis.__parse__micromark = function (markdown: string): MarkdownRange[] {
       emitHeading(token.end.offset - token.start.offset)
     } else if (token.type === "setextHeadingLineSequence") {
       emitHeading(markdown.charCodeAt(token.start.offset) === 61 ? 1 : 2)
+    } else if (token.type === "listItemPrefix") {
+      lineOpensItem = true
     }
 
     const block = TOKENS.block[token.type]
@@ -334,7 +351,22 @@ globalThis.__parse__micromark = function (markdown: string): MarkdownRange[] {
       push(lineStart, end, type, depthOf(type))
     }
 
+    // Emitted last, so it lands inside every container on the line. Folding the
+    // step into the list range instead would push a blockquote's ribbon right
+    // along with the text, breaking the vertical bar down the quote.
+    if (!lineOpensItem) {
+      for (let i = openBlocks.length - 1; i >= 0; i--) {
+        const continued = CONTINUATION[openBlocks[i]!]
+
+        if (continued) {
+          push(lineStart, end, continued, 1)
+          break
+        }
+      }
+    }
+
     lineStart = end
+    lineOpensItem = false
   }
 
   function emit(token: Token, type: MarkdownType) {

@@ -13,6 +13,8 @@ type MarkdownType =
   | "blockquote"
   | "list-ordered"
   | "list-unordered"
+  | "list-ordered-continuation"
+  | "list-unordered-continuation"
   | "heading"
   | "syntax"
   | "inline-image"

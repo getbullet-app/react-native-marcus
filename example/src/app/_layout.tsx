@@ -12,6 +12,9 @@ export default function TabLayout() {
         <NativeTabs.Trigger name="index">
           <NativeTabs.Trigger.Label>Marcus</NativeTabs.Trigger.Label>
         </NativeTabs.Trigger>
+        <NativeTabs.Trigger name="lists">
+          <NativeTabs.Trigger.Label>Lists</NativeTabs.Trigger.Label>
+        </NativeTabs.Trigger>
         <NativeTabs.Trigger name="expensify">
           <NativeTabs.Trigger.Label>Expensify</NativeTabs.Trigger.Label>
         </NativeTabs.Trigger>
