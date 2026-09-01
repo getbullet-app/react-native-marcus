@@ -37,6 +37,7 @@
   },
   "scripts": {
     "clean": "del-cli '{.,example}/{android,ios}/**/{build,.cxx}' lib",
+    "clean:codegen": "del-cli '{.,example}/{android,ios}/**/build/generated' && npx --workspace=marcus-example pod-install",
     "example": "npm run --workspace=marcus-example",
     "postinstall": "patch-package",
     "prepare": "bob build && node scripts/bundle-parser.mjs",
