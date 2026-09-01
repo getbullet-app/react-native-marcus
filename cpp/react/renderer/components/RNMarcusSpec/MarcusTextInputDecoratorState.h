@@ -6,16 +6,16 @@
 namespace facebook {
 namespace react {
 
-class JSI_EXPORT MarkdownTextInputDecoratorState final {
+class JSI_EXPORT MarcusTextInputDecoratorState final {
 public:
-  using Shared = std::shared_ptr<const MarkdownTextInputDecoratorState>;
+  using Shared = std::shared_ptr<const MarcusTextInputDecoratorState>;
 
-  MarkdownTextInputDecoratorState() {};
+  MarcusTextInputDecoratorState() {};
 
 // TODO: Simplify once RN 0.81 is the lowest supported version
 #if (defined(ANDROID) && REACT_NATIVE_MINOR_VERSION < 81) || (defined(RN_SERIALIZABLE_STATE) && REACT_NATIVE_MINOR_VERSION >= 81)
-  MarkdownTextInputDecoratorState(
-    MarkdownTextInputDecoratorState const &previousState, folly::dynamic data
+  MarcusTextInputDecoratorState(
+    MarcusTextInputDecoratorState const &previousState, folly::dynamic data
   ) {};
 
   folly::dynamic

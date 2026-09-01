@@ -15,7 +15,7 @@
 #include <ReactCommon/TurboModule.h>
 #include <jsi/jsi.h>
 
-#include <react/renderer/components/RNMarcusSpec/MarkdownTextInputDecoratorViewComponentDescriptor.h>
+#include <react/renderer/components/RNMarcusSpec/MarcusTextInputDecoratorViewComponentDescriptor.h>
 
 namespace facebook {
 namespace react {

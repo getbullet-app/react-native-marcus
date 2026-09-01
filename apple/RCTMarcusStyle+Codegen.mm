@@ -1,11 +1,11 @@
-#import <RNMarcus/RCTMarkdownStyle+Codegen.h>
+#import <RNMarcus/RCTMarcusStyle+Codegen.h>
 
 #import <React/RCTConversions.h>
 
-@implementation RCTMarkdownStyle (Codegen)
+@implementation RCTMarcusStyle (Codegen)
 
 - (instancetype)initWithStruct:
-  (const facebook::react::MarkdownTextInputDecoratorViewMarkdownStyleStruct &)style {
+  (const facebook::react::MarcusTextInputDecoratorViewMarkdownStyleStruct &)style {
   if (self = [super init]) {
     self.syntaxColor = RCTUIColorFromSharedColor(style.syntax.color);
 

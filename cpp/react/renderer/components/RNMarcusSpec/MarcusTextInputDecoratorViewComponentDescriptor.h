@@ -1,14 +1,14 @@
 #pragma once
 
-#include "MarkdownTextInputDecoratorShadowNode.h"
+#include "MarcusTextInputDecoratorShadowNode.h"
 #include <react/debug/react_native_assert.h>
 #include <react/renderer/core/ConcreteComponentDescriptor.h>
 
 namespace facebook {
 namespace react {
 
-class MarkdownTextInputDecoratorViewComponentDescriptor final
-    : public ConcreteComponentDescriptor<MarkdownTextInputDecoratorShadowNode> {
+class MarcusTextInputDecoratorViewComponentDescriptor final
+    : public ConcreteComponentDescriptor<MarcusTextInputDecoratorShadowNode> {
 public:
   using ConcreteComponentDescriptor::ConcreteComponentDescriptor;
 };

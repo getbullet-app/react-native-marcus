@@ -2,7 +2,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface MarkdownTextInputDecoratorViewManager : RCTViewManager
+@interface MarcusTextInputDecoratorViewManager : RCTViewManager
 @end
 
 NS_ASSUME_NONNULL_END

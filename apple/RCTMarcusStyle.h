@@ -2,7 +2,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface RCTMarkdownStyle : NSObject
+@interface RCTMarcusStyle : NSObject
 
 @property(nonatomic) UIColor *syntaxColor;
 @property(nonatomic) UIColor *linkColor;

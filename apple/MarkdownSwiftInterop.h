@@ -12,9 +12,9 @@
 #import <React/RCTUITextField.h>
 #import <React/RCTUITextView.h>
 
-#import <RNMarcus/MarkdownRange.h>
-#import <RNMarcus/RCTMarkdownStyle.h>
-#import <RNMarcus/RCTMarkdownUtils.h>
+#import <RNMarcus/MarcusRange.h>
+#import <RNMarcus/RCTMarcusStyle.h>
+#import <RNMarcus/RCTMarcusUtils.h>
 
 #if __has_include(<RNMarcus/RNMarcus-Swift.h>)
 #import <RNMarcus/RNMarcus-Swift.h>

@@ -1,6 +1,6 @@
-#import "MarkdownRange.h"
+#import "MarcusRange.h"
 
-@implementation MarkdownRange
+@implementation MarcusRange
 
 - (instancetype)initWithType:(NSString *)type range:(NSRange)range depth:(NSUInteger)depth {
   self = [super init];

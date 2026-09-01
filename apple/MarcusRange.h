@@ -2,7 +2,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface MarkdownRange : NSObject
+@interface MarcusRange : NSObject
 
 @property(nonatomic, strong) NSString *type;
 @property(nonatomic) NSRange range;

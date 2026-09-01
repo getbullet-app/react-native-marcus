@@ -1,7 +1,7 @@
 #pragma once
 
 #include <react/renderer/components/RNMarcusSpec/EventEmitters.h>
-#include <react/renderer/components/RNMarcusSpec/MarkdownTextInputDecoratorState.h>
+#include <react/renderer/components/RNMarcusSpec/MarcusTextInputDecoratorState.h>
 #include <react/renderer/components/RNMarcusSpec/Props.h>
 #include <react/renderer/components/iostextinput/TextInputShadowNode.h>
 
@@ -14,14 +14,14 @@
 namespace facebook {
 namespace react {
 
-JSI_EXPORT extern const char MarkdownTextInputDecoratorViewComponentName[];
+JSI_EXPORT extern const char MarcusTextInputDecoratorViewComponentName[];
 
-class JSI_EXPORT MarkdownTextInputDecoratorShadowNode final
-    : public ConcreteViewShadowNode<MarkdownTextInputDecoratorViewComponentName, MarkdownTextInputDecoratorViewProps, MarkdownTextInputDecoratorViewEventEmitter, MarkdownTextInputDecoratorState> {
+class JSI_EXPORT MarcusTextInputDecoratorShadowNode final
+    : public ConcreteViewShadowNode<MarcusTextInputDecoratorViewComponentName, MarcusTextInputDecoratorViewProps, MarcusTextInputDecoratorViewEventEmitter, MarcusTextInputDecoratorState> {
 public:
-  MarkdownTextInputDecoratorShadowNode(ShadowNodeFragment const &fragment, ShadowNodeFamily::Shared const &family, ShadowNodeTraits traits);
+  MarcusTextInputDecoratorShadowNode(ShadowNodeFragment const &fragment, ShadowNodeFamily::Shared const &family, ShadowNodeTraits traits);
 
-  MarkdownTextInputDecoratorShadowNode(ShadowNode const &sourceShadowNode, ShadowNodeFragment const &fragment);
+  MarcusTextInputDecoratorShadowNode(ShadowNode const &sourceShadowNode, ShadowNodeFragment const &fragment);
 
   void
   appendChild(const std::shared_ptr<const ShadowNode> &child) override;

@@ -1,0 +1,53 @@
+diff --git a/node_modules/expensify-common/dist/ExpensiMark.js b/node_modules/expensify-common/dist/ExpensiMark.js
+index aa68b9d..72a596b 100644
+--- a/node_modules/expensify-common/dist/ExpensiMark.js
++++ b/node_modules/expensify-common/dist/ExpensiMark.js
+@@ -1665,10 +1665,17 @@ class ExpensiMark {
+         return Utils.escapeText(originalContent);
+     }
+ }
+-ExpensiMark.Log = new Logger_1.default({
+-    serverLoggingCallback: () => undefined,
+-    // eslint-disable-next-line no-console
+-    clientLoggingCallback: (message) => console.warn(message),
+-    isDebug: true,
+-});
++// PATCHED (react-native-marcus): `Logger` is a class instance, and
++// react-native-worklets >= 0.10 refuses to copy class instances into a worklet
++// runtime ("Cannot copy value of type `Logger`"). `parseExpensiMark` captures
++// the ExpensiMark class in its worklet closure, which drags this static along,
++// so it has to be a plain object. Only `alert` is ever called, on the
++// missing-report-name path in the <mention-report> replacement.
++ExpensiMark.Log = {
++    alert: () => undefined,
++    info: () => undefined,
++    warn: () => undefined,
++    hmmm: () => undefined,
++    client: () => undefined,
++};
+ exports.default = ExpensiMark;
+diff --git a/node_modules/expensify-common/dist/Log.js b/node_modules/expensify-common/dist/Log.js
+index 2c791a4..b36582c 100644
+--- a/node_modules/expensify-common/dist/Log.js
++++ b/node_modules/expensify-common/dist/Log.js
+@@ -66,8 +66,15 @@ function clientLoggingCallback(message) {
+         console.log(message);
+     }
+ }
+-exports.default = new Logger_1.default({
+-    serverLoggingCallback,
+-    clientLoggingCallback,
+-    isDebug: Utils.isWindowAvailable() ? window.DEBUG : false,
+-});
++// PATCHED (react-native-marcus): `Logger` is a class instance, and
++// react-native-worklets >= 0.10 refuses to copy class instances into a worklet
++// runtime ("Cannot copy value of type `Logger`"). `parseExpensiMark` captures
++// `Str` in its worklet closure, `Str` references this default export, so it has
++// to be a plain object to survive serialization.
++exports.default = {
++    info: () => undefined,
++    alert: () => undefined,
++    warn: () => undefined,
++    hmmm: () => undefined,
++    client: () => undefined,
++};

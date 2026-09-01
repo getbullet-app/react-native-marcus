@@ -1,7 +1,7 @@
 #import <RNMarcus/MarkdownSwiftInterop.h>
-#import <RNMarcus/RCTMarkdownUtils.h>
+#import <RNMarcus/RCTMarcusUtils.h>
 
-@implementation RCTMarkdownUtils
+@implementation RCTMarcusUtils
 
 - (void)applyMarkdownFormatting:
           (nonnull NSMutableAttributedString *)attributedString
@@ -13,7 +13,7 @@
     return;
   }
 
-  NSArray<MarkdownRange *> *markdownRanges =
+  NSArray<MarcusRange *> *markdownRanges =
     [[MarkdownParser sharedParser] parse:attributedString.string
                             withParserId:_parserId];
 

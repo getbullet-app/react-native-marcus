@@ -7,7 +7,7 @@ import com.facebook.react.bridge.ReactContext
 import com.facebook.react.views.textinput.ReactEditText
 import com.facebook.react.views.view.ReactViewGroup
 
-class MarkdownTextInputDecoratorView(context: Context) : ReactViewGroup(context) {
+class MarcusTextInputDecoratorView(context: Context) : ReactViewGroup(context) {
 
   private var markdownUtils: MarkdownUtils? = null
   private var reactEditText: ReactEditText? = null

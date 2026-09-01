@@ -1,4 +1,4 @@
-#include "MarkdownTextInputDecoratorShadowNode.h"
+#include "MarcusTextInputDecoratorShadowNode.h"
 
 #include <fbjni/fbjni.h>
 #include <react/fabric/JFabricUIManager.h>
@@ -13,10 +13,10 @@
 namespace facebook {
 namespace react {
 
-extern const char MarkdownTextInputDecoratorViewComponentName[] =
-  "MarkdownTextInputDecoratorView";
+extern const char MarcusTextInputDecoratorViewComponentName[] =
+  "MarcusTextInputDecoratorView";
 
-MarkdownTextInputDecoratorShadowNode::MarkdownTextInputDecoratorShadowNode(
+MarcusTextInputDecoratorShadowNode::MarcusTextInputDecoratorShadowNode(
   ShadowNodeFragment const &fragment, ShadowNodeFamily::Shared const &family, ShadowNodeTraits traits
 )
     : ConcreteViewShadowNode(fragment, family, traits) {
@@ -29,14 +29,14 @@ MarkdownTextInputDecoratorShadowNode::MarkdownTextInputDecoratorShadowNode(
   }
 }
 
-MarkdownTextInputDecoratorShadowNode::MarkdownTextInputDecoratorShadowNode(
+MarcusTextInputDecoratorShadowNode::MarcusTextInputDecoratorShadowNode(
   ShadowNode const &sourceShadowNode, ShadowNodeFragment const &fragment
 )
     : ConcreteViewShadowNode(sourceShadowNode, fragment) {
   initialize();
 
   const auto &sourceDecorator =
-    static_cast<const MarkdownTextInputDecoratorShadowNode &>(
+    static_cast<const MarcusTextInputDecoratorShadowNode &>(
       sourceShadowNode
     );
 
@@ -53,7 +53,7 @@ MarkdownTextInputDecoratorShadowNode::MarkdownTextInputDecoratorShadowNode(
 }
 
 void
-MarkdownTextInputDecoratorShadowNode::initialize() {
+MarcusTextInputDecoratorShadowNode::initialize() {
   // Setting display: contents style results in ForceFlattenView trait being set
   // on the shadow node. This trait causes the node not to have a host view. By
   // removing the trait, it's possible to force RN to create a host view, layout
@@ -62,14 +62,14 @@ MarkdownTextInputDecoratorShadowNode::initialize() {
 }
 
 void
-MarkdownTextInputDecoratorShadowNode::makeChildNodeMutable() {
+MarcusTextInputDecoratorShadowNode::makeChildNodeMutable() {
   // When the decorator is cloned and has a child node, the child node should be
   // cloned as well to ensure it is mutable.
   const auto &children = getChildren();
   if (!children.empty()) {
     react_native_assert(
       children.size() == 1 &&
-      "MarkdownTextInputDecoratorView received more than one child"
+      "MarcusTextInputDecoratorView received more than one child"
     );
 
     const auto clonedChild = children[0]->clone({});
@@ -78,7 +78,7 @@ MarkdownTextInputDecoratorShadowNode::makeChildNodeMutable() {
 }
 
 void
-MarkdownTextInputDecoratorShadowNode::createCustomContextContainer() {
+MarcusTextInputDecoratorShadowNode::createCustomContextContainer() {
   static const auto customFabricUIManagerClass =
     jni::findClassStatic("app/getbullet/marcus/CustomFabricUIManager");
   static const auto createMethod =
@@ -121,7 +121,7 @@ MarkdownTextInputDecoratorShadowNode::createCustomContextContainer() {
 }
 
 void
-MarkdownTextInputDecoratorShadowNode::
+MarcusTextInputDecoratorShadowNode::
   updateCustomContextContainerIfNeeded() {
   const auto &rawProps = this->getProps()->rawProps;
   const auto &markdownStyleIt = rawProps.find("markdownStyle");
@@ -138,14 +138,14 @@ MarkdownTextInputDecoratorShadowNode::
 }
 
 void
-MarkdownTextInputDecoratorShadowNode::overwriteTextLayoutManager() {
+MarcusTextInputDecoratorShadowNode::overwriteTextLayoutManager() {
   const auto &children = getChildren();
   if (children.empty()) {
     return;
   }
   react_native_assert(
     children.size() == 1 &&
-    "MarkdownTextInputDecoratorView received more than one child"
+    "MarcusTextInputDecoratorView received more than one child"
   );
 
   const auto child =
@@ -153,7 +153,7 @@ MarkdownTextInputDecoratorShadowNode::overwriteTextLayoutManager() {
 
   react_native_assert(
     child != nullptr &&
-    "MarkdownTextInputDecoratorView received child other than a TextInput"
+    "MarcusTextInputDecoratorView received child other than a TextInput"
   );
   child->ensureUnsealed();
 
@@ -165,7 +165,7 @@ MarkdownTextInputDecoratorShadowNode::overwriteTextLayoutManager() {
 }
 
 void
-MarkdownTextInputDecoratorShadowNode::appendChild(
+MarcusTextInputDecoratorShadowNode::appendChild(
   const std::shared_ptr<const ShadowNode> &child
 ) {
   YogaLayoutableShadowNode::appendChild(child);
@@ -174,7 +174,7 @@ MarkdownTextInputDecoratorShadowNode::appendChild(
 }
 
 void
-MarkdownTextInputDecoratorShadowNode::replaceChild(
+MarcusTextInputDecoratorShadowNode::replaceChild(
   const ShadowNode &oldChild,
   const std::shared_ptr<const ShadowNode> &newChild,
   size_t suggestedIndex
@@ -185,13 +185,13 @@ MarkdownTextInputDecoratorShadowNode::replaceChild(
 }
 
 void
-MarkdownTextInputDecoratorShadowNode::layout(LayoutContext layoutContext) {
+MarcusTextInputDecoratorShadowNode::layout(LayoutContext layoutContext) {
   YogaLayoutableShadowNode::layout(layoutContext);
 
   const auto &children = getChildren();
   react_native_assert(
     children.size() == 1 &&
-    "MarkdownTextInputDecoratorView didn't receive exactly one child"
+    "MarcusTextInputDecoratorView didn't receive exactly one child"
   );
 
   auto child =

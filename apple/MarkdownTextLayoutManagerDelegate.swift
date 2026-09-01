@@ -8,9 +8,9 @@ public final class MarkdownTextLayoutManagerDelegate: NSObject,
 {
 
   private let textStorage: NSTextStorage
-  private let markdownUtils: RCTMarkdownUtils
+  private let markdownUtils: RCTMarcusUtils
 
-  @objc public init(textStorage: NSTextStorage, markdownUtils: RCTMarkdownUtils)
+  @objc public init(textStorage: NSTextStorage, markdownUtils: RCTMarcusUtils)
   {
     self.textStorage = textStorage
     self.markdownUtils = markdownUtils

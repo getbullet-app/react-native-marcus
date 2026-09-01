@@ -38,6 +38,7 @@
   "scripts": {
     "clean": "del-cli '{.,example}/{android,ios}/**/{build,.cxx}' lib",
     "example": "npm run --workspace=marcus-example",
+    "postinstall": "patch-package",
     "prepare": "bob build && node scripts/bundle-parser.mjs",
     "test": "jest",
     "watch": "nodemon --watch src --ext 'ts tsx js jsx json' --exec npm run prepare"
@@ -143,7 +144,7 @@
     },
     "ios": {
       "componentProvider": {
-        "MarkdownTextInputDecoratorView": "MarkdownTextInputDecoratorComponentView"
+        "MarcusTextInputDecoratorView": "MarcusTextInputDecoratorComponentView"
       }
     }
   }

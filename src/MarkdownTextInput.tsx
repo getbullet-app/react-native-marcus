@@ -3,8 +3,8 @@ import React from "react"
 import type { TextInputProps } from "react-native"
 import { createSerializable, createWorkletRuntime } from "react-native-worklets"
 import type { SerializableRef, WorkletFunction, WorkletRuntime } from "react-native-worklets"
-import MarkdownTextInputDecoratorViewNativeComponent from "./MarkdownTextInputDecoratorViewNativeComponent"
-import type { MarkdownStyle } from "./MarkdownTextInputDecoratorViewNativeComponent"
+import MarcusTextInputDecoratorViewNativeComponent from "./MarcusTextInputDecoratorViewNativeComponent"
+import type { MarkdownStyle } from "./MarcusTextInputDecoratorViewNativeComponent"
 import NativeMarcusModule from "./NativeMarcusModule"
 import { mergeMarkdownStyleWithDefault } from "./styleUtils"
 import type { PartialMarkdownStyle } from "./styleUtils"
@@ -12,13 +12,13 @@ import type { InlineImagesInputProps, MarkdownRange } from "./commonTypes"
 
 declare global {
   // eslint-disable-next-line no-var
-  var jsi_setMarkdownRuntime: (runtime: WorkletRuntime) => void
+  var jsi_setMarcusRuntime: (runtime: WorkletRuntime) => void
   // eslint-disable-next-line no-var
-  var jsi_registerMarkdownWorklet: (
+  var jsi_registerMarcusWorklet: (
     shareableWorklet: SerializableRef<WorkletFunction<[string], MarkdownRange[]>>,
   ) => number
   // eslint-disable-next-line no-var
-  var jsi_unregisterMarkdownWorklet: (parserId: number) => void
+  var jsi_unregisterMarcusWorklet: (parserId: number) => void
 }
 
 let initialized = false
@@ -40,11 +40,11 @@ function initializeMarcusIfNeeded() {
   if (NativeMarcusModule) {
     NativeMarcusModule.install()
   }
-  if (!global.jsi_setMarkdownRuntime) {
-    throw new Error("[react-native-marcus] global.jsi_setMarkdownRuntime is not available")
+  if (!global.jsi_setMarcusRuntime) {
+    throw new Error("[react-native-marcus] global.jsi_setMarcusRuntime is not available")
   }
   workletRuntime = createWorkletRuntime({ name: "MarcusRuntime" })
-  global.jsi_setMarkdownRuntime(workletRuntime)
+  global.jsi_setMarcusRuntime(workletRuntime)
   initialized = true
 }
 
@@ -53,12 +53,12 @@ function registerParser(parser: (input: string) => MarkdownRange[]): number {
   const serializableWorklet = createSerializable(
     parser as WorkletFunction<[string], MarkdownRange[]>,
   )
-  const parserId = global.jsi_registerMarkdownWorklet(serializableWorklet)
+  const parserId = global.jsi_registerMarcusWorklet(serializableWorklet)
   return parserId
 }
 
 function unregisterParser(parserId: number) {
-  global.jsi_unregisterMarkdownWorklet(parserId)
+  global.jsi_unregisterMarcusWorklet(parserId)
 }
 
 interface MarkdownTextInputProps extends TextInputProps, InlineImagesInputProps {
@@ -126,13 +126,13 @@ const MarkdownTextInput = React.forwardRef<MarkdownTextInput, MarkdownTextInputP
     }, [parserId])
 
     return (
-      <MarkdownTextInputDecoratorViewNativeComponent
+      <MarcusTextInputDecoratorViewNativeComponent
         style={styles.displayContents}
         markdownStyle={markdownStyle}
         parserId={parserId}
       >
         <TextInput {...props} ref={ref} />
-      </MarkdownTextInputDecoratorViewNativeComponent>
+      </MarcusTextInputDecoratorViewNativeComponent>
     )
   },
 )

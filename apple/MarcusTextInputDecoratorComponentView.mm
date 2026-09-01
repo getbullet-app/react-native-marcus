@@ -4,9 +4,9 @@
 #import <react/renderer/components/RNMarcusSpec/Props.h>
 
 #import <RNMarcus/MarkdownSwiftInterop.h>
-#import <RNMarcus/MarkdownTextInputDecoratorComponentView.h>
-#import <RNMarcus/MarkdownTextInputDecoratorViewComponentDescriptor.h>
-#import <RNMarcus/RCTMarkdownStyle+Codegen.h>
+#import <RNMarcus/MarcusTextInputDecoratorComponentView.h>
+#import <RNMarcus/MarcusTextInputDecoratorViewComponentDescriptor.h>
+#import <RNMarcus/RCTMarcusStyle+Codegen.h>
 #import <RNMarcus/RCTTextInput+AdaptiveImageGlyph.h>
 
 using namespace facebook::react;
@@ -16,13 +16,13 @@ using namespace facebook::react;
 // Only the parts that RCTComponentViewProtocol forces into Objective-C++ live
 // here -- the component descriptor, the C++ props update, and view recycling.
 // Everything else is delegated to Swift.
-@implementation MarkdownTextInputDecoratorComponentView {
+@implementation MarcusTextInputDecoratorComponentView {
   MarkdownDecorator *_decorator;
 }
 
 + (ComponentDescriptorProvider)componentDescriptorProvider {
   return concreteComponentDescriptorProvider<
-    MarkdownTextInputDecoratorViewComponentDescriptor>();
+    MarcusTextInputDecoratorViewComponentDescriptor>();
 }
 
 // Needed because of this: https://github.com/facebook/react-native/pull/37274
@@ -33,7 +33,7 @@ using namespace facebook::react;
 - (instancetype)initWithFrame:(CGRect)frame {
   if (self = [super initWithFrame:frame]) {
     static const auto defaultProps =
-      std::make_shared<const MarkdownTextInputDecoratorViewProps>();
+      std::make_shared<const MarcusTextInputDecoratorViewProps>();
     _props = defaultProps;
     _decorator = [MarkdownDecorator new];
   }
@@ -44,11 +44,11 @@ using namespace facebook::react;
 - (void)didAddSubview:(UIView *)subview {
   [super didAddSubview:subview];
 
-  react_native_assert(!_decorator.isAttached && "MarkdownTextInputDecoratorComponentView tried to add "
+  react_native_assert(!_decorator.isAttached && "MarcusTextInputDecoratorComponentView tried to add "
                                                 "TextInput observers while they were attached");
   react_native_assert(
     [subview isKindOfClass:[RCTTextInputComponentView class]] &&
-    "Child component of MarkdownTextInputDecoratorComponentView is not an "
+    "Child component of MarcusTextInputDecoratorComponentView is not an "
     "instance of RCTTextInputComponentView."
   );
 
@@ -76,11 +76,11 @@ using namespace facebook::react;
 - (void)updateProps:(Props::Shared const &)props
            oldProps:(Props::Shared const &)oldProps {
   const auto &oldViewProps =
-    *std::static_pointer_cast<MarkdownTextInputDecoratorViewProps const>(
+    *std::static_pointer_cast<MarcusTextInputDecoratorViewProps const>(
       _props
     );
   const auto &newViewProps =
-    *std::static_pointer_cast<MarkdownTextInputDecoratorViewProps const>(
+    *std::static_pointer_cast<MarcusTextInputDecoratorViewProps const>(
       props
     );
 
@@ -95,7 +95,7 @@ using namespace facebook::react;
   // whenever the props object is recreated -- but hand-written equality over
   // ~27 fields would rot silently the moment a style prop is added.
   _decorator.markdownStyle =
-    [[RCTMarkdownStyle alloc] initWithStruct:newViewProps.markdownStyle];
+    [[RCTMarcusStyle alloc] initWithStruct:newViewProps.markdownStyle];
 
   [_decorator applyNewStyles];
 
@@ -103,19 +103,19 @@ using namespace facebook::react;
 }
 
 - (void)prepareForRecycle {
-  react_native_assert(!_decorator.isAttached && "MarkdownTextInputDecoratorComponentView was being "
+  react_native_assert(!_decorator.isAttached && "MarcusTextInputDecoratorComponentView was being "
                                                 "recycled with TextInput observers still attached");
   [super prepareForRecycle];
 
   static const auto defaultProps =
-    std::make_shared<const MarkdownTextInputDecoratorViewProps>();
+    std::make_shared<const MarcusTextInputDecoratorViewProps>();
   _props = defaultProps;
   [_decorator reset];
 }
 
 Class<RCTComponentViewProtocol>
-MarkdownTextInputDecoratorViewCls(void) {
-  return MarkdownTextInputDecoratorComponentView.class;
+MarcusTextInputDecoratorViewCls(void) {
+  return MarcusTextInputDecoratorComponentView.class;
 }
 
 @end

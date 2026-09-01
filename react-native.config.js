@@ -2,7 +2,7 @@ module.exports = {
   dependency: {
     platforms: {
       android: {
-        componentDescriptors: ["MarkdownTextInputDecoratorViewComponentDescriptor"],
+        componentDescriptors: ["MarcusTextInputDecoratorViewComponentDescriptor"],
         cmakeListsPath: "../android/src/main/new_arch/CMakeLists.txt",
       },
     },

@@ -13,8 +13,8 @@ import UIKit
   public static func format(
     _ attributedString: NSMutableAttributedString,
     defaultTextAttributes: [NSAttributedString.Key: Any],
-    ranges: [MarkdownRange],
-    style: RCTMarkdownStyle
+    ranges: [MarcusRange],
+    style: RCTMarcusStyle
   ) {
     let fullRange = NSRange(location: 0, length: attributedString.length)
 
@@ -55,7 +55,7 @@ import UIKit
     to attributedString: NSMutableAttributedString,
     range: NSRange,
     depth: Int,
-    style: RCTMarkdownStyle,
+    style: RCTMarcusStyle,
     defaultTextAttributes: [NSAttributedString.Key: Any]
   ) {
     switch type {

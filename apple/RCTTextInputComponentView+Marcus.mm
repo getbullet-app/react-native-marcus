@@ -1,11 +1,11 @@
 #import <RNMarcus/MarkdownAttributes.h>
-#import <RNMarcus/MarkdownTextInputDecoratorComponentView.h>
-#import <RNMarcus/RCTTextInputComponentView+Markdown.h>
+#import <RNMarcus/MarcusTextInputDecoratorComponentView.h>
+#import <RNMarcus/RCTTextInputComponentView+Marcus.h>
 #import <objc/message.h>
 
-@implementation RCTTextInputComponentView (Markdown)
+@implementation RCTTextInputComponentView (Marcus)
 
-- (BOOL)markdown__textOf:(NSAttributedString *)newText
+- (BOOL)marcus__textOf:(NSAttributedString *)newText
                   equals:(NSAttributedString *)oldText {
   __block BOOL isMarkdownTextInput = false;
   [oldText enumerateAttribute:RCTMarcusTextAttributeName
@@ -21,11 +21,11 @@
     return [newText.string isEqualToString:oldText.string];
   }
 
-  return [self markdown__textOf:newText equals:oldText];
+  return [self marcus__textOf:newText equals:oldText];
 }
 
-- (void)markdown_didAddSubview:(UIView *)subview {
-  [self markdown_didAddSubview:subview];
+- (void)marcus_didAddSubview:(UIView *)subview {
+  [self marcus_didAddSubview:subview];
 
   // React Native swaps `_backedTextInputView` in place when `multiline`
   // changes: it removes the old view from this component view and adds a new
@@ -33,8 +33,8 @@
   // does not fire and its observers would stay bound to the discarded view --
   // keeping it alive and leaving the new, visible one unformatted.
   UIView *parent = self.superview;
-  if ([parent isKindOfClass:[MarkdownTextInputDecoratorComponentView class]]) {
-    [(MarkdownTextInputDecoratorComponentView *)
+  if ([parent isKindOfClass:[MarcusTextInputDecoratorComponentView class]]) {
+    [(MarcusTextInputDecoratorComponentView *)
         parent reattachTextInputObservers];
   }
 }
@@ -69,10 +69,10 @@ RCTMarcusSwizzle(Class cls, SEL originalSelector, SEL swizzledSelector) {
     Class cls = [self class];
 
     // Implemented by this class, so this is a plain exchange.
-    RCTMarcusSwizzle(cls, @selector(_textOf:equals:), @selector(markdown__textOf:equals:));
+    RCTMarcusSwizzle(cls, @selector(_textOf:equals:), @selector(marcus__textOf:equals:));
 
     // Inherited from UIView, so this must go through class_addMethod.
-    RCTMarcusSwizzle(cls, @selector(didAddSubview:), @selector(markdown_didAddSubview:));
+    RCTMarcusSwizzle(cls, @selector(didAddSubview:), @selector(marcus_didAddSubview:));
   });
 }
 

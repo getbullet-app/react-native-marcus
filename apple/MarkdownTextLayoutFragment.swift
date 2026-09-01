@@ -8,7 +8,7 @@ import UIKit
 /// to the Swift half of the module.
 final class MarkdownTextLayoutFragment: NSTextLayoutFragment {
 
-  var markdownStyle: RCTMarkdownStyle?
+  var markdownStyle: RCTMarcusStyle?
   var depth: Int = 0
   var mentions: [MarkdownTextBackgroundWithRange] = []
 

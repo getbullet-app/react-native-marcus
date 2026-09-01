@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { TextStyle } from "react-native"
-import type { MarkdownStyle } from "../../MarkdownTextInputDecoratorViewNativeComponent"
+import type { MarkdownStyle } from "../../MarcusTextInputDecoratorViewNativeComponent"
 import { mergeMarkdownStyleWithDefault } from "../../styleUtils"
 
 let createReactDOMStyle: (style: any) => any

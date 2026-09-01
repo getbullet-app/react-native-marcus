@@ -1,11 +1,11 @@
-// Objective-C++ half of MarkdownTextInputDecoratorShadowNode.
+// Objective-C++ half of MarcusTextInputDecoratorShadowNode.
 //
 // Everything that needs to cross into Objective-C lives here; the rest of the
-// class is plain C++ in MarkdownTextInputDecoratorShadowNode.cpp. Splitting a
+// class is plain C++ in MarcusTextInputDecoratorShadowNode.cpp. Splitting a
 // class across translation units is fine -- these are just two object files
 // that link together.
 
-#include "MarkdownTextInputDecoratorShadowNode.h"
+#include "MarcusTextInputDecoratorShadowNode.h"
 
 #import <React/RCTUtils.h>
 #include <react/renderer/core/ConcreteState.h>
@@ -14,7 +14,7 @@
 #include <atomic>
 #include <memory>
 
-#import "RCTMarkdownStyle+Codegen.h"
+#import "RCTMarcusStyle+Codegen.h"
 #import <RNMarcus/MarkdownSwiftInterop.h>
 
 namespace facebook {
@@ -22,7 +22,7 @@ namespace react {
 
 namespace {
 
-using DecoratorState = ConcreteState<MarkdownTextInputDecoratorState>;
+using DecoratorState = ConcreteState<MarcusTextInputDecoratorState>;
 
 // Formats `string` in place.
 //
@@ -41,14 +41,14 @@ void
 ApplyMarkdownFormatting(
   NSMutableAttributedString *string,
   NSDictionary<NSAttributedStringKey, id> *defaultTextAttributes,
-  RCTMarkdownStyle *markdownStyle,
+  RCTMarcusStyle *markdownStyle,
   NSNumber *parserId,
   MarkdownParser *parser,
   std::shared_ptr<std::atomic_bool> needsRemeasure,
   std::shared_ptr<const DecoratorState> state
 ) {
   NSString *text = string.string;
-  NSArray<MarkdownRange *> *markdownRanges =
+  NSArray<MarcusRange *> *markdownRanges =
     [parser cachedRangesForText:text
                    withParserId:parserId];
 
@@ -69,7 +69,7 @@ ApplyMarkdownFormatting(
                        // Changes nothing; it exists only to schedule a
                        // commit. updateState() is safe from any thread and
                        // handles an already-gone family.
-                       state->updateState(MarkdownTextInputDecoratorState{});
+                       state->updateState(MarcusTextInputDecoratorState{});
                      }
                    }];
       return;
@@ -89,12 +89,12 @@ ApplyMarkdownFormatting(
 } // namespace
 
 Float
-MarkdownTextInputDecoratorShadowNode::fontSizeMultiplier() {
+MarcusTextInputDecoratorShadowNode::fontSizeMultiplier() {
   return RCTFontSizeMultiplier();
 }
 
 void
-MarkdownTextInputDecoratorShadowNode::
+MarcusTextInputDecoratorShadowNode::
   applyMarkdownFormattingToTextInputState(
     std::shared_ptr<TextInputShadowNode> textInput,
     const LayoutContext &layoutContext
@@ -108,7 +108,7 @@ MarkdownTextInputDecoratorShadowNode::
   const auto fontSizeMultiplier = layoutContext.fontSizeMultiplier;
 
   const auto &decoratorProps =
-    *std::static_pointer_cast<MarkdownTextInputDecoratorViewProps const>(
+    *std::static_pointer_cast<MarcusTextInputDecoratorViewProps const>(
       getProps()
     );
   const auto &textInputProps =
@@ -127,8 +127,8 @@ MarkdownTextInputDecoratorShadowNode::
     needsRemeasure_ = std::make_shared<std::atomic_bool>(false);
   }
 
-  RCTMarkdownStyle *markdownStyle =
-    [[RCTMarkdownStyle alloc] initWithStruct:decoratorProps.markdownStyle];
+  RCTMarcusStyle *markdownStyle =
+    [[RCTMarcusStyle alloc] initWithStruct:decoratorProps.markdownStyle];
   NSNumber *parserId = [NSNumber numberWithInt:decoratorProps.parserId];
 
   // convert the attibuted string stored in state to

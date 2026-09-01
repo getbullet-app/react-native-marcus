@@ -33,7 +33,7 @@ import {
   setCursorPosition,
 } from "./web/utils/cursorUtils"
 import "./web/MarkdownTextInput.css"
-import type { MarkdownStyle } from "./MarkdownTextInputDecoratorViewNativeComponent"
+import type { MarkdownStyle } from "./MarcusTextInputDecoratorViewNativeComponent"
 import {
   getElementHeight,
   getPlaceholderValue,

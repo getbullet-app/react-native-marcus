@@ -87,7 +87,7 @@ interface NativeProps extends ViewProps {
   parserId: Int32
 }
 
-export default codegenNativeComponent<NativeProps>("MarkdownTextInputDecoratorView", {
+export default codegenNativeComponent<NativeProps>("MarcusTextInputDecoratorView", {
   interfaceOnly: true,
 })
 

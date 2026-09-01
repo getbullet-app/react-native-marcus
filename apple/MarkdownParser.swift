@@ -19,7 +19,7 @@ import MarkdownCxx
   private struct CacheEntry {
     let text: String
     let parserId: Int
-    let ranges: [MarkdownRange]
+    let ranges: [MarcusRange]
   }
 
   /// One entry is not enough once the main thread is restricted to cached
@@ -57,7 +57,7 @@ import MarkdownCxx
   @objc public func cachedRanges(
     forText text: String,
     withParserId parserId: NSNumber
-  ) -> [MarkdownRange]? {
+  ) -> [MarcusRange]? {
     lock.lock()
     defer { lock.unlock() }
 
@@ -76,7 +76,7 @@ import MarkdownCxx
   }
 
   private func store(
-    _ ranges: [MarkdownRange],
+    _ ranges: [MarcusRange],
     forText text: String,
     parserId: NSNumber
   ) {
@@ -98,7 +98,7 @@ import MarkdownCxx
   /// Returns cached ranges when there are any, otherwise parses and caches.
   /// Never call this from the main thread on a layout path.
   @objc public func parse(_ text: String, withParserId parserId: NSNumber)
-    -> [MarkdownRange]
+    -> [MarcusRange]
   {
     if let cached = cachedRanges(forText: text, withParserId: parserId) {
       return cached
@@ -112,7 +112,7 @@ import MarkdownCxx
   }
 
   private func parseUncached(_ text: String, parserId: NSNumber)
-    -> [MarkdownRange]
+    -> [MarcusRange]
   {
     // `utf16.count` is the unit the worklet reports range offsets in.
     let result = bulletpoint.marcus.parseMarkdown(
@@ -129,7 +129,7 @@ import MarkdownCxx
     }
 
     return result.ranges.map { range in
-      MarkdownRange(
+      MarcusRange(
         type: String(range.type),
         range: NSRange(location: Int(range.start), length: Int(range.length)),
         depth: UInt(range.depth)
