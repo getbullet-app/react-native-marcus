@@ -19,6 +19,9 @@ import UIKit
   /// backed view can be skipped.
   private weak var attachedBackedTextInputView: UIView?
 
+  /// The backed view's own smart-dashes setting, restored on detach.
+  private var previousSmartDashesType: UITextSmartDashesType?
+
   private var layoutManagerDelegate: MarkdownTextLayoutManagerDelegate?
   private var backedTextInputDelegate: MarkdownBackedTextInputDelegate?
   private var textStorageDelegate: MarkdownTextStorageDelegate?
@@ -96,6 +99,7 @@ import UIKit
           context: nil
         )
       }
+      setSmartDashesEnabled(true, on: textView)
       setAdaptiveImageGlyphSupport(false, on: textView)
       textViewObserver = nil
       textStorageDelegate = nil
@@ -128,6 +132,7 @@ import UIKit
           context: nil
         )
       }
+      setSmartDashesEnabled(true, on: textField)
       setAdaptiveImageGlyphSupport(false, on: textField)
       textFieldObserver = nil
       self.textField = nil
@@ -155,6 +160,7 @@ import UIKit
     // Formatting would be overwritten otherwise.
     assert(textField.adjustsFontSizeToFitWidth == false)
 
+    setSmartDashesEnabled(false, on: textField)
     setAdaptiveImageGlyphSupport(true, on: textField)
 
     let observer = MarkdownTextFieldObserver(
@@ -215,6 +221,7 @@ import UIKit
   private func attach(toTextView textView: RCTUITextView) {
     self.textView = textView
 
+    setSmartDashesEnabled(false, on: textView)
     setAdaptiveImageGlyphSupport(true, on: textView)
 
     assert(textView.textStorage.delegate == nil)
@@ -259,6 +266,39 @@ import UIKit
 
   private static func reversed(_ value: String) -> String {
     String(value.reversed())
+  }
+
+  /// Turns off the keyboard's `--` to em dash substitution while the input is
+  /// decorated, restoring whatever it was on detach so a recycled view is not
+  /// left changed.
+  ///
+  /// Smart punctuation rewrites the characters as they are typed, so `--` and
+  /// `---` never reach the parser: a setext heading or thematic break silently
+  /// stays plain text, while pasting the same characters works. Markdown syntax
+  /// is not prose, so the substitution is wrong here even though it is right in
+  /// a renderer.
+  ///
+  /// React Native does not expose this trait (it has `smartInsertDelete`, which
+  /// is unrelated), and `autoCorrect={false}` does not cover it either -- smart
+  /// dashes are independent of autocorrection.
+  private func setSmartDashesEnabled(_ enabled: Bool, on textView: RCTUITextView) {
+    if enabled {
+      textView.smartDashesType = previousSmartDashesType ?? .default
+      previousSmartDashesType = nil
+    } else {
+      previousSmartDashesType = textView.smartDashesType
+      textView.smartDashesType = .no
+    }
+  }
+
+  private func setSmartDashesEnabled(_ enabled: Bool, on textField: RCTUITextField) {
+    if enabled {
+      textField.smartDashesType = previousSmartDashesType ?? .default
+      previousSmartDashesType = nil
+    } else {
+      previousSmartDashesType = textField.smartDashesType
+      textField.smartDashesType = .no
+    }
   }
 
   private func setAdaptiveImageGlyphSupport(
