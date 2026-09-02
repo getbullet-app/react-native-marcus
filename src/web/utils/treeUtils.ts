@@ -1,7 +1,7 @@
 import type { HTMLMarkdownElement } from "../../MarkdownTextInput.web"
 import type { MarkdownRange, MarkdownType } from "../../commonTypes"
 
-type NodeType = MarkdownType | "line" | "text" | "br" | "block" | "root"
+type NodeType = MarkdownType | "line" | "text" | "br" | "root"
 
 type TreeNode = Omit<MarkdownRange, "type"> & {
   element: HTMLMarkdownElement
@@ -12,10 +12,10 @@ type TreeNode = Omit<MarkdownRange, "type"> & {
   isGeneratingNewline: boolean
 }
 
-function createRootTreeNode(target: HTMLMarkdownElement, length = 0): TreeNode {
+function createRootTreeNode(target: HTMLMarkdownElement, length = 0, start = 0): TreeNode {
   return {
     element: target,
-    start: 0,
+    start,
     length,
     parentNode: null,
     childNodes: [],
@@ -25,11 +25,19 @@ function createRootTreeNode(target: HTMLMarkdownElement, length = 0): TreeNode {
   }
 }
 
+/**
+ * @param start Where the node begins in the text, when the caller knows it. A markdown range
+ * carries its own offset, and taking it is the only way to be right when ranges do not tile the
+ * line -- overlapping emphasis split across lines leaves gaps, and a node placed at wherever its
+ * previous sibling happened to end then reports an offset the text never had. Text and line breaks
+ * genuinely do follow on from what precedes them, so they still accumulate.
+ */
 function addNodeToTree(
   element: HTMLMarkdownElement,
   parentTreeNode: TreeNode,
   type: NodeType,
   length: number | null = null,
+  start: number | null = null,
 ) {
   const contentLength =
     length || (element.nodeName === "BR" || type === "br" ? 1 : element.value?.length) || 0
@@ -41,15 +49,14 @@ function addNodeToTree(
     )
   const parentChildrenCount = parentTreeNode?.childNodes.length || 0
   let startIndex = parentTreeNode.start
-  if (parentChildrenCount > 0) {
+  if (start !== null) {
+    startIndex = start
+  } else if (parentChildrenCount > 0) {
     const lastParentChild = parentTreeNode.childNodes[parentChildrenCount - 1]
     if (lastParentChild) {
       startIndex = lastParentChild.start + lastParentChild.length
       startIndex +=
-        lastParentChild.isGeneratingNewline ||
-        (type !== "block" && element.style.display === "block")
-          ? 1
-          : 0
+        lastParentChild.isGeneratingNewline || element.style.display === "block" ? 1 : 0
     }
   }
 
@@ -69,32 +76,8 @@ function addNodeToTree(
 
   element.setAttribute("data-id", item.orderIndex)
   parentTreeNode.childNodes.push(item)
+
   return item
-}
-
-function updateTreeElementRefs(treeRoot: TreeNode, element: HTMLMarkdownElement) {
-  const stack: TreeNode[] = [treeRoot]
-  const treeElements = element.querySelectorAll("[data-id]") as NodeListOf<HTMLMarkdownElement>
-  const dataIDToElementMap: Record<string, HTMLMarkdownElement> = {}
-  treeElements.forEach((el) => {
-    const dataID = el.getAttribute("data-id")
-    if (!dataID) {
-      return
-    }
-    dataIDToElementMap[dataID] = el
-  })
-
-  while (stack.length > 0) {
-    const node = stack.pop() as TreeNode
-    stack.push(...node.childNodes)
-
-    const currentElement = dataIDToElementMap[node.orderIndex]
-    if (currentElement) {
-      node.element = currentElement
-    }
-  }
-
-  return treeRoot
 }
 
 function findHTMLElementInTree(treeRoot: TreeNode, element: HTMLElement): TreeNode | null {
@@ -161,12 +144,6 @@ function getTreeNodeByIndex(treeRoot: TreeNode, index: number): TreeNode | null 
   return null
 }
 
-export {
-  addNodeToTree,
-  findHTMLElementInTree,
-  getTreeNodeByIndex,
-  updateTreeElementRefs,
-  createRootTreeNode,
-}
+export { addNodeToTree, findHTMLElementInTree, getTreeNodeByIndex, createRootTreeNode }
 
 export type { TreeNode, NodeType }

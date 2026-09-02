@@ -3,18 +3,14 @@ import type { ColorValue, ViewProps } from "react-native"
 
 import type { Float, Int32 } from "react-native/Libraries/Types/CodegenTypes"
 
+// Font, colour and background, and nothing else: neither formatter draws a
+// border or reserves padding around a code run, so there is nothing to
+// configure.
 interface CodeBlockStyle {
   fontFamily: string
   fontSize: Float
   color: ColorValue
   backgroundColor: ColorValue
-  borderColor?: ColorValue
-  borderWidth?: Float
-  borderRadius?: Float
-  borderStyle?: string
-  padding?: Float
-  paddingVertical?: Float
-  paddingHorizontal?: Float
 }
 
 interface MarkdownStyle {
@@ -50,9 +46,7 @@ interface MarkdownStyle {
     marginLeft: Float
     paddingLeft: Float
   }
-  code: CodeBlockStyle & {
-    headingNestedFontSize?: Float
-  }
+  code: CodeBlockStyle
   pre: CodeBlockStyle
   mentionHere: {
     color: ColorValue
@@ -68,30 +62,6 @@ interface MarkdownStyle {
     color: ColorValue
     backgroundColor: ColorValue
     borderRadius?: Float
-  }
-  inlineImage: {
-    minWidth: Float
-    minHeight: Float
-    maxWidth: Float
-    maxHeight: Float
-    marginTop: Float
-    marginBottom: Float
-    borderRadius: Float
-  }
-  loadingIndicatorContainer?: {
-    backgroundColor?: ColorValue
-    borderWidth?: Float
-    borderColor?: ColorValue
-    borderRadius?: Float
-    width?: Float
-    height?: Float
-  }
-  loadingIndicator?: {
-    primaryColor?: ColorValue
-    secondaryColor?: ColorValue
-    width?: Float
-    height?: Float
-    borderWidth?: Float
   }
 }
 

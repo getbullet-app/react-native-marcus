@@ -343,6 +343,14 @@ globalThis.__parse__micromark = function (markdown: string): MarkdownRange[] {
    * laid out around, and how wide they render is a question only the platform
    * can answer -- so the offsets are handed over and the arithmetic is done
    * where the font is known.
+   *
+   * This prefix-then-container order is the contract the native formatters read
+   * (`apple/MarkdownFormatter.swift`, `android/.../MarkdownFormatter.kt`): each
+   * holds the `block-prefix` it just saw and hands it to the next container, so
+   * laying out a line is one left-to-right walk. It is deliberately *not* tree
+   * order -- a container arrives after the marker it encloses -- so the web
+   * builder re-sorts into containment order via `sortRanges`. Reordering the
+   * emission to suit web would break the pairing on both native platforms.
    */
   function flushLine(end: number) {
     if (openBlocks.length > 0 && end > lineStart) {
@@ -426,6 +434,13 @@ globalThis.__parse__micromark = function (markdown: string): MarkdownRange[] {
       // Two containers opening on one line put their prefixes back to back.
       // Merging them would lose which prefix belongs to which container.
       type !== BLOCK_PREFIX &&
+      // Adjacent syntax belongs to whatever encloses it, and neighbors often sit in different
+      // enclosures: `` >` `` is a quote marker then a code fence, `` ~a~` `` closes a
+      // strikethrough then opens one. A merged range would cover both and so straddle the end of
+      // the first one's container -- overlapping it without containing it or being contained by
+      // it, which is not a tree and renders the shared characters once per range. Runs that do
+      // share an enclosure, like `>>`, cost only an extra span.
+      type !== SYNTAX_TYPE &&
       previous &&
       previous.type === type &&
       previous.start + previous.length === start

@@ -1,17 +1,19 @@
 import type { HTMLMarkdownElement, MarkdownTextInputElement } from "../../MarkdownTextInput.web"
-import { addNodeToTree, createRootTreeNode, updateTreeElementRefs } from "./treeUtils"
+import { addNodeToTree, createRootTreeNode } from "./treeUtils"
 import type { NodeType, TreeNode } from "./treeUtils"
 import type { PartialMarkdownStyle } from "../../styleUtils"
 import { getCurrentCursorPosition, moveCursorToEnd, setCursorPosition } from "./cursorUtils"
 import {
+  addBlockPrefixGap,
+  addLineLayout,
   addStyleToBlock,
-  extendBlockStructure,
-  getFirstBlockMarkdownRange,
-  isBlockMarkdownType,
   isMultilineMarkdownType,
 } from "./blockUtils"
-import type { InlineImagesInputProps, MarkdownRange } from "../../commonTypes"
-import { getAnimationCurrentTimes, updateAnimationsTime } from "./animationUtils"
+import { layoutBlocks } from "./blockLayout"
+import type { LineLayout } from "./blockLayout"
+import { createTextMeasurer } from "./measureUtils"
+import type { TextMeasurer } from "./measureUtils"
+import type { MarkdownRange, MarkdownType } from "../../commonTypes"
 import { sortRanges, ungroupRanges } from "../../rangeUtils"
 
 type Paragraph = {
@@ -19,6 +21,8 @@ type Paragraph = {
   start: number
   length: number
   markdownRanges: MarkdownRange[]
+  /** Where the containers this line sits in put its text, once they are all placed. */
+  layout?: LineLayout
 }
 
 function splitTextIntoLines(text: string): Paragraph[] {
@@ -72,10 +76,15 @@ function splitRangeIntoSeparateLines(
   correspondingLineIndexes: number[],
 ) {
   const mainLineRangeLength = currentLine.start + currentLine.length - range.start
-  currentLine.markdownRanges.push({
-    ...range,
-    length: mainLineRangeLength,
-  })
+  // A range starting exactly at the newline has nothing on this line. Pushing the empty portion
+  // anyway made the builder render an empty span, and an empty span is given a `<br>` to keep the
+  // line height -- a line break in the text that the user never typed.
+  if (mainLineRangeLength > 0) {
+    currentLine.markdownRanges.push({
+      ...range,
+      length: mainLineRangeLength,
+    })
+  }
 
   let rangeLength = range.length - mainLineRangeLength
   correspondingLineIndexes.forEach((lineIndex) => {
@@ -147,8 +156,9 @@ function appendNode(
   parentTreeNode: TreeNode,
   type: NodeType,
   length: number,
+  start: number | null = null,
 ) {
-  const node = addNodeToTree(element, parentTreeNode, type, length)
+  const node = addNodeToTree(element, parentTreeNode, type, length, start)
   parentTreeNode.element.appendChild(element)
   return node
 }
@@ -194,12 +204,14 @@ function addParagraph(
   node: TreeNode,
   text: string | null,
   length: number,
+  layout: LineLayout | undefined,
+  markdownStyle: PartialMarkdownStyle,
   disableInlineStyles = false,
 ) {
   const p = document.createElement("p")
   p.setAttribute("data-type", "line")
   if (!disableInlineStyles) {
-    addStyleToBlock(p, "line", {})
+    addLineLayout(p, layout, markdownStyle)
   }
 
   const pNode = appendNode(p as unknown as HTMLMarkdownElement, node, "line", length)
@@ -214,15 +226,214 @@ function addParagraph(
   return pNode
 }
 
-function addBlockWrapper(
-  targetNode: TreeNode,
-  length: number,
+/**
+ * `syntax`, `block-prefix` and `emoji` decorate whatever they sit in, so where ranges cover exactly
+ * the same text those three have to come last: the container, then the `block-prefix` holding its
+ * marker, then the `syntax` of the marker itself. Typing a bare `>` produces all three over one
+ * character, and the parser emits them in precisely the wrong order -- `flushLine` hands the marker
+ * over before the container it belongs to, because that is the pairing the native formatters read.
+ * Inverting that is the whole job of `getTagPriority`.
+ *
+ * Every other tie is already right. A range is emitted when its construct opens, so emission order
+ * is containment order, and a stable sort leaves it alone. That is also the only thing that *can*
+ * order two containers of the same size: `> - a` and `- > a` are the same pair of containers over
+ * the same line, nested opposite ways, and no table of types can say which.
+ *
+ * So the one thing worth checking is a decoration that sorted ahead of something it belongs to --
+ * which is what a container type missing from `getTagPriority` produces. The builder then renders
+ * that text once per range, silently, multiplying with every keystroke. Nothing about that failure
+ * points at the missing table entry, so say it out loud instead.
+ */
+const INNERMOST_TYPES = new Set<MarkdownType>(["block-prefix", "syntax", "emoji"])
+
+function reportAmbiguousNesting(ranges: MarkdownRange[]) {
+  for (let i = 1; i < ranges.length; i++) {
+    const previous = ranges[i - 1] as MarkdownRange
+    const current = ranges[i] as MarkdownRange
+
+    if (
+      previous.start === current.start &&
+      previous.length === current.length &&
+      INNERMOST_TYPES.has(previous.type) &&
+      !INNERMOST_TYPES.has(current.type)
+    ) {
+      // eslint-disable-next-line no-console
+      console.error(
+        `[react-native-marcus] \`${previous.type}\` sorts ahead of \`${current.type}\` over the same text, so the marker ends up outside what it belongs to and renders once per range. Give \`${current.type}\` a higher priority in src/rangeUtils.ts.`,
+      )
+    }
+  }
+}
+
+/**
+ * Builds one `<p data-type="line">` under `rootNode`.
+ *
+ * Lines are independent: nothing carries across from the previous one, which is what lets an update
+ * rebuild a single line and leave the rest of the document alone.
+ */
+function addLine(
+  rootNode: TreeNode,
+  line: Paragraph,
+  textLength: number,
+  hasRanges: boolean,
+  isMultiline: boolean,
   markdownStyle: PartialMarkdownStyle,
+  disableInlineStyles: boolean,
 ) {
-  const span = document.createElement("span") as HTMLMarkdownElement
-  span.setAttribute("data-type", "block")
-  addStyleToBlock(span, "block", markdownStyle)
-  return appendNode(span, targetNode, "block", length)
+  if (!hasRanges) {
+    return addParagraph(
+      rootNode,
+      line.text,
+      line.length,
+      line.layout,
+      markdownStyle,
+      disableInlineStyles,
+    )
+  }
+
+  const lineNode = addParagraph(
+    rootNode,
+    null,
+    line.length,
+    line.layout,
+    markdownStyle,
+    disableInlineStyles,
+  )
+  let currentParentNode: TreeNode = lineNode
+
+  if (line.markdownRanges.length === 0) {
+    addTextToElement(currentParentNode, line.text, isMultiline)
+  }
+
+  let lastRangeEndIndex = line.start
+  const lineMarkdownRanges = [...line.markdownRanges]
+  // go through all markdown ranges in the line
+  while (lineMarkdownRanges.length > 0) {
+    const range = lineMarkdownRanges.shift()
+    if (!range) {
+      break
+    }
+
+    const endOfCurrentRange = range.start + range.length
+    const nextRangeStartIndex =
+      lineMarkdownRanges.length > 0 && !!lineMarkdownRanges[0]
+        ? lineMarkdownRanges[0].start || 0
+        : textLength
+
+    // add text before the markdown range. Ranges that start behind the cursor are already
+    // rendered; without the guard `substring` would swap its arguments and emit that text again.
+    const textBeforeRange =
+      range.start > lastRangeEndIndex
+        ? line.text.substring(lastRangeEndIndex - line.start, range.start - line.start)
+        : ""
+    if (textBeforeRange) {
+      addTextToElement(currentParentNode, textBeforeRange, isMultiline)
+    }
+
+    // create markdown span element
+    const span = document.createElement("span") as HTMLMarkdownElement
+    span.setAttribute("data-type", range.type)
+
+    const spanNode = appendNode(span, currentParentNode, range.type, range.length, range.start)
+
+    // Styled once it is in the tree, not before: a heading's size depends on how many heading
+    // levels enclose it, and an element with no parent looks like the outermost one.
+    if (!disableInlineStyles) {
+      addStyleToBlock(span, range.type, markdownStyle, isMultiline)
+      if (range.type === "block-prefix") {
+        addBlockPrefixGap(span, line.layout?.gaps.get(range.start))
+      }
+    }
+
+    if (
+      lineMarkdownRanges.length > 0 &&
+      nextRangeStartIndex < endOfCurrentRange &&
+      range.type !== "syntax"
+    ) {
+      // tag nesting
+      currentParentNode = spanNode
+      lastRangeEndIndex = range.start
+    } else {
+      // adding markdown tag
+      addTextToElement(spanNode, line.text.substring(range.start - line.start, endOfCurrentRange - line.start), isMultiline)
+      currentParentNode.element.value =
+        (currentParentNode.element.value || "") + (spanNode.element.value || "")
+      lastRangeEndIndex = endOfCurrentRange
+      // tag unnesting and adding text after the tag
+      while (
+        currentParentNode.parentNode !== null &&
+        nextRangeStartIndex >= currentParentNode.start + currentParentNode.length
+      ) {
+        const parentEndIndex = currentParentNode.start + currentParentNode.length
+        const textAfterRange =
+          parentEndIndex > lastRangeEndIndex
+            ? line.text.substring(lastRangeEndIndex - line.start, parentEndIndex - line.start)
+            : ""
+        if (textAfterRange) {
+          addTextToElement(currentParentNode, textAfterRange, isMultiline)
+        }
+        // Never backwards: an enclosing range can end before the text already consumed inside it
+        // -- a list whose item holds a code block runs to the end of its marker line while the
+        // block inside it runs on for several more. Letting it rewind made the paragraph re-emit
+        // everything from there, so the line rendered twice.
+        lastRangeEndIndex = parentEndIndex > lastRangeEndIndex ? parentEndIndex : lastRangeEndIndex
+        // A line's content never escapes its own paragraph. Without this the walk could reach the
+        // root, and every later range on the line was appended there instead -- a stray top-level
+        // element between the paragraphs, which shifts every `data-id` after it and leaves the
+        // line it belonged to rendered in two places.
+        if (currentParentNode === lineNode) {
+          break
+        }
+        if (currentParentNode.parentNode.type !== "root") {
+          currentParentNode.parentNode.element.value = currentParentNode.element.value || ""
+        }
+        currentParentNode = currentParentNode.parentNode || rootNode
+      }
+    }
+  }
+
+  return lineNode
+}
+
+/** Splits the text into lines and hands each the markdown ranges that fall inside it. */
+function prepareLines(
+  text: string,
+  ranges: MarkdownRange[],
+  markdownStyle: PartialMarkdownStyle,
+  measure: TextMeasurer,
+) {
+  const lines = splitTextIntoLines(text)
+
+  if (ranges.length === 0) {
+    return lines
+  }
+
+  // Before anything reorders them: the block walk reads the ranges in the order the parser emits
+  // them -- each marker immediately before the container it belongs to -- and `sortRanges` sorts
+  // that order away in place.
+  const layouts = layoutBlocks(text, ranges, markdownStyle, measure)
+
+  // Sort all ranges by start position, length, and by tag hierarchy so the styles and text are applied in correct order
+  const sortedRanges = sortRanges(ranges)
+  if (typeof __DEV__ !== "undefined" && __DEV__) {
+    reportAmbiguousNesting(sortedRanges)
+  }
+
+  const normalized = normalizeLines(lines, ungroupRanges(sortedRanges))
+
+  // Ranges reach a line in document order, but a range spanning several lines hands its tail to
+  // those lines as it is processed -- ahead of ranges that start later on the same line and should
+  // have come first. `1. *l\nd**` puts an italic that opened on line 1 in front of the list its
+  // second half sits inside, and the builder then nests the list *within* the italic and renders
+  // the overlap twice. Restoring the order per line costs nothing on lines that were already
+  // sorted, which is nearly all of them.
+  normalized.forEach((paragraph) => {
+    const line = paragraph
+    sortRanges(line.markdownRanges)
+    line.layout = layouts.get(line.start)
+  })
+
+  return normalized
 }
 
 /** Builds HTML DOM structure based on passed text and markdown ranges */
@@ -232,147 +443,292 @@ function parseRangesToHTMLNodes(
   isMultiline = true,
   markdownStyle: PartialMarkdownStyle = {},
   disableInlineStyles = false,
-  currentInput: MarkdownTextInputElement | null = null,
-  inlineImagesProps: InlineImagesInputProps = {},
+  measure: TextMeasurer = createTextMeasurer(null),
 ) {
   const rootElement: HTMLMarkdownElement = document.createElement("span") as HTMLMarkdownElement
   const textLength = text.length
   const rootNode: TreeNode = createRootTreeNode(rootElement, textLength)
 
-  let currentParentNode: TreeNode = rootNode
-  let lines = splitTextIntoLines(text)
-
-  if (ranges.length === 0) {
-    lines.forEach((line) => {
-      addParagraph(rootNode, line.text, line.length, disableInlineStyles)
-    })
-    return { dom: rootElement, tree: rootNode }
-  }
-
-  // Sort all ranges by start position, length, and by tag hierarchy so the styles and text are applied in correct order
-  const sortedRanges = sortRanges(ranges)
-  const markdownRanges = ungroupRanges(sortedRanges)
-  lines = normalizeLines(lines, markdownRanges)
-
-  let lastRangeEndIndex = 0
-  while (lines.length > 0) {
-    const line = lines.shift()
-    if (!line) {
-      break
-    }
-
-    // preparing line paragraph element for markdown text
-    currentParentNode = addParagraph(rootNode, null, line.length, disableInlineStyles)
-    rootElement.value = (rootElement.value || "") + line.text
-    if (lines.length > 0) {
-      rootElement.value = `${rootElement.value || ""}\n`
-    }
-
-    if (line.markdownRanges.length === 0) {
-      addTextToElement(currentParentNode, line.text, isMultiline)
-    }
-
-    let wasBlockGenerated = false
-
-    lastRangeEndIndex = line.start
-    const lineMarkdownRanges = line.markdownRanges
-    // go through all markdown ranges in the line
-    while (lineMarkdownRanges.length > 0) {
-      const range = lineMarkdownRanges.shift()
-      if (!range) {
-        break
-      }
-
-      const endOfCurrentRange = range.start + range.length
-      const nextRangeStartIndex =
-        lineMarkdownRanges.length > 0 && !!lineMarkdownRanges[0]
-          ? lineMarkdownRanges[0].start || 0
-          : textLength
-
-      // wrap all elements before the first block type markdown range with a span element
-      const blockRange = getFirstBlockMarkdownRange([range, ...lineMarkdownRanges])
-      if (!wasBlockGenerated && blockRange) {
-        currentParentNode = addBlockWrapper(
-          currentParentNode,
-          line.text.substring(
-            lastRangeEndIndex - line.start,
-            blockRange.start + blockRange.length - line.start,
-          ).length,
-          markdownStyle,
-        )
-        wasBlockGenerated = true
-      }
-      // add text before the markdown range
-      const textBeforeRange = line.text.substring(
-        lastRangeEndIndex - line.start,
-        range.start - line.start,
-      )
-      if (textBeforeRange) {
-        addTextToElement(currentParentNode, textBeforeRange, isMultiline)
-      }
-
-      // create markdown span element
-      const span = document.createElement("span") as HTMLMarkdownElement
-      span.setAttribute("data-type", range.type)
-
-      if (!disableInlineStyles) {
-        addStyleToBlock(span, range.type, markdownStyle, isMultiline)
-      }
-
-      const spanNode = appendNode(span, currentParentNode, range.type, range.length)
-
-      if (isMultiline && !disableInlineStyles && currentInput) {
-        currentParentNode = extendBlockStructure(
-          currentInput,
-          currentParentNode,
-          range,
-          lineMarkdownRanges,
-          text,
-          markdownStyle,
-          inlineImagesProps,
-        )
-      }
-
-      if (
-        lineMarkdownRanges.length > 0 &&
-        nextRangeStartIndex < endOfCurrentRange &&
-        range.type !== "syntax"
-      ) {
-        // tag nesting
-        currentParentNode = spanNode
-        lastRangeEndIndex = range.start
-      } else {
-        // adding markdown tag
-        addTextToElement(spanNode, text.substring(range.start, endOfCurrentRange), isMultiline)
-        currentParentNode.element.value =
-          (currentParentNode.element.value || "") + (spanNode.element.value || "")
-        lastRangeEndIndex = endOfCurrentRange
-        // tag unnesting and adding text after the tag
-        while (
-          currentParentNode.parentNode !== null &&
-          nextRangeStartIndex >= currentParentNode.start + currentParentNode.length
-        ) {
-          const textAfterRange = line.text.substring(
-            lastRangeEndIndex - line.start,
-            currentParentNode.start - line.start + currentParentNode.length,
-          )
-          if (textAfterRange) {
-            addTextToElement(currentParentNode, textAfterRange, isMultiline)
-          }
-          lastRangeEndIndex = currentParentNode.start + currentParentNode.length
-          if (currentParentNode.parentNode.type !== "root") {
-            currentParentNode.parentNode.element.value = currentParentNode.element.value || ""
-          }
-          if (isBlockMarkdownType(currentParentNode.type)) {
-            wasBlockGenerated = false
-          }
-          currentParentNode = currentParentNode.parentNode || rootNode
-        }
-      }
-    }
-  }
+  // Built line by line, exactly as an update builds the lines it has to replace, so the two agree
+  // by construction and each line sits at the offset the text gives it rather than at wherever the
+  // line before it happened to end.
+  prepareLines(text, ranges, markdownStyle, measure).forEach((line, index) => {
+    const node = buildLine(
+      line,
+      index,
+      textLength,
+      ranges.length > 0,
+      isMultiline,
+      markdownStyle,
+      disableInlineStyles,
+    )
+    node.parentNode = rootNode
+    rootNode.childNodes.push(node)
+    rootElement.appendChild(node.element)
+  })
 
   return { dom: rootElement, tree: rootNode }
+}
+
+/**
+ * A line as it was last rendered: what it was built from, the markup it produced, and its subtree.
+ */
+type CachedLine = {
+  signature: string
+  html: string
+  node: TreeNode
+}
+
+type LineCache = {
+  markdownStyle: PartialMarkdownStyle
+  isMultiline: boolean
+  lines: CachedLine[]
+}
+
+/**
+ * Everything a line's markup depends on, as a string.
+ *
+ * A line is rendered from its own text and the ranges falling inside it, and nothing else -- so two
+ * lines with equal signatures render identically and the second one need not be built at all. Range
+ * offsets go in relative to the line, so a line that only moved still matches.
+ */
+function signatureOf(line: Paragraph, hasRanges: boolean) {
+  let signature = hasRanges ? "r" : "-"
+  signature += line.text
+
+  line.markdownRanges.forEach((range) => {
+    signature += `\u0000${range.start - line.start},${range.length},${range.type},${range.depth ?? ""}`
+  })
+
+  // The layout is not derived from this line alone -- a continuation line indents past a marker
+  // that belongs to the line that opened the block, and every width comes out of the font the
+  // input happens to be rendering in. Both reach the line only through these numbers, so they are
+  // what the signature has to compare.
+  const layout = line.layout
+  if (layout) {
+    signature += `\u0000${layout.firstLineIndent},${layout.indent},${layout.ribbons.join(":")}`
+    layout.gaps.forEach((gap, start) => {
+      signature += `,${start - line.start}:${gap}`
+    })
+  }
+
+  return signature
+}
+
+/** Moves a subtree along the text by `delta`, for a line that shifted without changing. */
+function shiftSubtree(node: TreeNode, delta: number) {
+  const target = node
+  target.start += delta
+  target.childNodes.forEach((child) => shiftSubtree(child, delta))
+}
+
+/** Renumbers a subtree, for a line whose index changed because lines were added or removed above. */
+function restampSubtree(node: TreeNode, orderIndex: string) {
+  const target = node
+  target.orderIndex = orderIndex
+  target.element.setAttribute("data-id", orderIndex)
+  target.childNodes.forEach((child, index) => restampSubtree(child, `${orderIndex},${index}`))
+}
+
+/**
+ * Grows every node to at least cover its children.
+ *
+ * A container range can be shorter than what the builder puts inside it -- a list item's own range
+ * stops at the end of its marker line, while a fenced code block opened there runs on for several
+ * more. The tree is what maps a text offset onto a node, so a parent that does not reach the end of
+ * its own children leaves that overhang mapping to nothing and the caret cannot be placed in it.
+ *
+ * It runs once the line is built, never during: a node's length decides where its next sibling
+ * starts and how far the builder thinks it has got, so growing one mid-build changes the markup.
+ */
+function coverChildren(node: TreeNode) {
+  const target = node
+  let end = target.start + target.length
+
+  target.childNodes.forEach((child) => {
+    coverChildren(child)
+    const childEnd = child.start + child.length
+    if (childEnd > end) {
+      end = childEnd
+    }
+  })
+
+  target.length = end - target.start
+}
+
+/** Builds one line on its own, then places it at the offset and index it occupies in the document. */
+function buildLine(
+  line: Paragraph,
+  index: number,
+  textLength: number,
+  hasRanges: boolean,
+  isMultiline: boolean,
+  markdownStyle: PartialMarkdownStyle,
+  disableInlineStyles = false,
+) {
+  // The scratch root carries the line's offset, so the subtree comes out with the absolute `start`
+  // values the builder compares against range offsets -- the same ones it would get if the whole
+  // document had been built in one pass.
+  const scratch = createRootTreeNode(
+    document.createElement("span") as HTMLMarkdownElement,
+    line.length,
+    line.start,
+  )
+  const node = addLine(
+    scratch,
+    line,
+    textLength,
+    hasRanges,
+    isMultiline,
+    markdownStyle,
+    disableInlineStyles,
+  )
+
+  coverChildren(node)
+  restampSubtree(node, `${index}`)
+
+  return node
+}
+
+/**
+ * A cached line can be reused only if it would be rebuilt identically *and* the live element is
+ * still exactly what was put there.
+ *
+ * The identity check matters as much as the signature: the browser edits the input directly as the
+ * user types, and it is free to merge, split or wrap the top-level elements. Requiring the live
+ * node to be the very one this entry rendered means anything the browser introduced falls outside
+ * the reusable prefix and suffix, and so lands in the run that gets replaced.
+ */
+function canReuseLine(
+  cached: CachedLine | undefined,
+  signature: string | undefined,
+  liveNode: ChildNode | undefined,
+) {
+  return (
+    !!cached &&
+    cached.signature === signature &&
+    liveNode === cached.node.element &&
+    (liveNode as HTMLElement).outerHTML === cached.html
+  )
+}
+
+/**
+ * Renders `lines` into the input, building only the ones that changed.
+ *
+ * Rebuilding every line and then diffing meant the expensive half of an update happened whatever
+ * the edit was -- construction is the dominant cost, not applying the result. Matching lines are
+ * skipped from both ends by signature, so a keystroke builds one line and the rest of the document
+ * keeps the elements and the subtrees it already had. Lines after the edit are shifted along the
+ * text, and renumbered if lines were added or removed above them; both are cheap walks that touch
+ * no element beyond a `data-id`.
+ */
+function reconcileLines(
+  targetElement: MarkdownTextInputElement,
+  lines: Paragraph[],
+  textLength: number,
+  hasRanges: boolean,
+  isMultiline: boolean,
+  markdownStyle: PartialMarkdownStyle,
+  shouldForceDOMUpdate: boolean,
+) {
+  const signatures = lines.map((line) => signatureOf(line, hasRanges))
+  const cache = targetElement.lineCache
+  const previous =
+    !shouldForceDOMUpdate &&
+    cache &&
+    cache.markdownStyle === markdownStyle &&
+    cache.isMultiline === isMultiline
+      ? cache.lines
+      : []
+  const live = Array.from(targetElement.childNodes)
+
+  let head = 0
+  while (
+    head < lines.length &&
+    head < previous.length &&
+    canReuseLine(previous[head], signatures[head], live[head])
+  ) {
+    head += 1
+  }
+
+  let tail = lines.length
+  let previousTail = previous.length
+  let liveTail = live.length
+  while (
+    tail > head &&
+    previousTail > head &&
+    liveTail > head &&
+    canReuseLine(previous[previousTail - 1], signatures[tail - 1], live[liveTail - 1])
+  ) {
+    tail -= 1
+    previousTail -= 1
+    liveTail -= 1
+  }
+
+  const fresh: TreeNode[] = []
+  for (let i = head; i < tail; i += 1) {
+    fresh.push(
+      buildLine(
+        lines[i] as Paragraph,
+        i,
+        textLength,
+        hasRanges,
+        isMultiline,
+        markdownStyle,
+      ),
+    )
+  }
+
+  // Read before removing anything: this is the first live node of the matching tail, which stays.
+  const anchor = live[liveTail] ?? null
+  for (let i = head; i < liveTail; i += 1) {
+    live[i]?.remove()
+  }
+
+  if (fresh.length > 0) {
+    const fragment = document.createDocumentFragment()
+    fresh.forEach((node) => fragment.appendChild(node.element))
+    targetElement.insertBefore(fragment, anchor)
+  }
+
+  const rootNode = createRootTreeNode(targetElement, textLength)
+  const nextCache: CachedLine[] = []
+
+  for (let i = 0; i < lines.length; i += 1) {
+    const line = lines[i] as Paragraph
+    let node: TreeNode
+    let html: string
+
+    if (i < head) {
+      const cached = previous[i] as CachedLine
+      node = cached.node
+      html = cached.html
+    } else if (i < tail) {
+      node = fresh[i - head] as TreeNode
+      html = (node.element as HTMLElement).outerHTML
+    } else {
+      const cached = previous[previousTail + (i - tail)] as CachedLine
+      node = cached.node
+      const delta = line.start - node.start
+      if (delta !== 0) {
+        shiftSubtree(node, delta)
+      }
+      if (node.orderIndex !== `${i}`) {
+        restampSubtree(node, `${i}`)
+        html = (node.element as HTMLElement).outerHTML
+      } else {
+        html = cached.html
+      }
+    }
+
+    node.parentNode = rootNode
+    rootNode.childNodes.push(node)
+    nextCache.push({ signature: signatures[i] as string, html, node })
+  }
+
+  targetElement.lineCache = { markdownStyle, isMultiline, lines: nextCache }
+
+  return rootNode
 }
 
 function moveCursor(
@@ -403,7 +759,6 @@ function updateInputStructure(
   alwaysMoveCursorToTheEnd = false,
   shouldForceDOMUpdate = false,
   shouldScrollIntoView = false,
-  inlineImagesProps: InlineImagesInputProps = {},
 ) {
   const targetElement = target
 
@@ -429,26 +784,15 @@ function updateInputStructure(
 
   // We don't want to parse text with single '\n', because contentEditable represents it as invisible <br />
   if (text) {
-    const { dom, tree } = parseRangesToHTMLNodes(
-      text,
-      markdownRanges,
+    targetElement.tree = reconcileLines(
+      targetElement,
+      prepareLines(text, markdownRanges, markdownStyle, createTextMeasurer(targetElement)),
+      text.length,
+      markdownRanges.length > 0,
       isMultiline,
       markdownStyle,
-      false,
-      targetElement,
-      inlineImagesProps,
+      shouldForceDOMUpdate,
     )
-
-    if (shouldForceDOMUpdate || targetElement.innerHTML !== dom.innerHTML) {
-      const animationTimes = getAnimationCurrentTimes(targetElement)
-      targetElement.innerHTML = ""
-      targetElement.innerText = ""
-      targetElement.innerHTML = dom.innerHTML
-      updateAnimationsTime(targetElement, animationTimes)
-    }
-
-    updateTreeElementRefs(tree, targetElement)
-    targetElement.tree = tree
 
     moveCursor(
       isFocused,
@@ -459,10 +803,11 @@ function updateInputStructure(
     )
   } else {
     targetElement.tree = createRootTreeNode(targetElement)
+    targetElement.lineCache = undefined
   }
 
   return { text, cursorPosition: cursorPosition || 0 }
 }
 
 export { updateInputStructure, parseRangesToHTMLNodes, normalizeLines }
-export type { Paragraph }
+export type { Paragraph, LineCache }

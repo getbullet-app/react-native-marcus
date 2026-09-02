@@ -51,22 +51,12 @@ function makeDefaultMarkdownStyle(): MarkdownStyle {
       fontSize: 16,
       color: "black",
       backgroundColor: "lightgray",
-      borderColor: "gray",
-      borderWidth: 1,
-      borderRadius: 4,
-      borderStyle: "solid",
-      padding: 0,
     },
     pre: {
       fontFamily: FONT_FAMILY_MONOSPACE,
       fontSize: 16,
       color: "black",
       backgroundColor: "lightgray",
-      borderColor: "gray",
-      borderWidth: 1,
-      borderRadius: 4,
-      borderStyle: "solid",
-      padding: 2,
     },
     mentionHere: {
       color: "green",
@@ -82,19 +72,6 @@ function makeDefaultMarkdownStyle(): MarkdownStyle {
       color: "red",
       backgroundColor: "pink",
       borderRadius: 5,
-    },
-    inlineImage: {
-      minWidth: 50,
-      minHeight: 50,
-      maxWidth: 150,
-      maxHeight: 150,
-      marginTop: 5,
-      marginBottom: 0,
-      borderRadius: 5,
-    },
-    loadingIndicator: {
-      primaryColor: "gray",
-      secondaryColor: "lightgray",
     },
   }
 }
@@ -118,13 +95,6 @@ function mergeMarkdownStyleWithDefault(input: PartialMarkdownStyle | undefined):
   return output
 }
 
-function parseStringWithUnitToNumber(value: string | number | null): number {
-  if (typeof value === "number") {
-    return value
-  }
-  return value ? parseInt(value.replace("px", ""), 10) : 0
-}
-
 export type { PartialMarkdownStyle }
 
-export { mergeMarkdownStyleWithDefault, parseStringWithUnitToNumber }
+export { mergeMarkdownStyleWithDefault }

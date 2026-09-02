@@ -25,6 +25,7 @@ import type {
 } from "react"
 import { StyleSheet, TextInput as RNTextInput } from "react-native"
 import { updateInputStructure } from "./web/utils/parserUtils"
+import type { LineCache } from "./web/utils/parserUtils"
 import InputHistory from "./web/InputHistory"
 import type { TreeNode } from "./web/utils/treeUtils"
 import {
@@ -46,20 +47,13 @@ import {
   parseToReactDOMStyle,
   processMarkdownStyle,
 } from "./web/utils/webStyleUtils"
-import { forceRefreshAllImages } from "./web/inputElements/inlineImage"
-import type { MarkdownRange, InlineImagesInputProps } from "./commonTypes"
+import type { MarkdownRange } from "./commonTypes"
 
 const useClientEffect = typeof window === "undefined" ? useEffect : useLayoutEffect
 
-interface MarkdownTextInputProps extends TextInputProps, InlineImagesInputProps {
+interface MarkdownTextInputProps extends TextInputProps {
   markdownStyle?: MarkdownStyle
   parser: (text: string) => MarkdownRange[]
-  formatSelection?: (
-    text: string,
-    selectionStart: number,
-    selectionEnd: number,
-    formatCommand: string,
-  ) => FormatSelectionResult
   onClick?: (e: MouseEvent<HTMLDivElement>) => void
   dir?: string
   disabled?: boolean
@@ -83,11 +77,6 @@ type Dimensions = {
   height: number
 }
 
-type FormatSelectionResult = {
-  updatedText: string
-  cursorOffset: number
-}
-
 type ParseTextResult = {
   text: string
   cursorPosition: number | null
@@ -100,7 +89,8 @@ type MarkdownTextInputElement = HTMLDivElement &
     tree: TreeNode
     uniqueId: string
     selection: Selection
-    imageElements: HTMLImageElement[]
+    /** What each line was last rendered from, so an update can skip rebuilding the unchanged ones. */
+    lineCache?: LineCache
   }
 
 type HTMLMarkdownElement = HTMLElement & {
@@ -125,7 +115,6 @@ const MarkdownTextInput = React.forwardRef<MarkdownTextInput, MarkdownTextInputP
       multiline = false,
       markdownStyle,
       parser,
-      formatSelection,
       onBlur,
       onChange,
       onChangeText,
@@ -147,8 +136,6 @@ const MarkdownTextInput = React.forwardRef<MarkdownTextInput, MarkdownTextInputP
       inputMode,
       onTouchStart,
       maxLength,
-      addAuthTokenToImageURLCallback,
-      imagePreviewAuthRequiredURLs,
     },
     ref,
   ) => {
@@ -224,10 +211,6 @@ const MarkdownTextInput = React.forwardRef<MarkdownTextInput, MarkdownTextInputP
           false,
           shouldForceDOMUpdate,
           shouldScrollIntoView,
-          {
-            addAuthTokenToImageURLCallback,
-            imagePreviewAuthRequiredURLs,
-          },
         )
         divRef.current.value = parsedText.text
 
@@ -237,7 +220,7 @@ const MarkdownTextInput = React.forwardRef<MarkdownTextInput, MarkdownTextInputP
 
         return parsedText
       },
-      [addAuthTokenToImageURLCallback, imagePreviewAuthRequiredURLs, multiline],
+      [multiline],
     )
 
     const processedMarkdownStyle = useMemo(() => {
@@ -314,44 +297,6 @@ const MarkdownTextInput = React.forwardRef<MarkdownTextInput, MarkdownTextInputP
         )
       },
       [parser, parseText, processedMarkdownStyle],
-    )
-
-    const handleFormatSelection = useCallback(
-      (
-        target: MarkdownTextInputElement,
-        parsedText: string,
-        cursorPosition: number,
-        formatCommand: string,
-      ): ParseTextResult => {
-        if (
-          !contentSelection.current ||
-          contentSelection.current.end - contentSelection.current.start < 1
-        ) {
-          throw new Error(
-            "[react-native-marcus] Trying to apply format command on empty selection",
-          )
-        }
-
-        if (!formatSelection) {
-          return parseText(parser, target, parsedText, processedMarkdownStyle, cursorPosition)
-        }
-
-        const { updatedText, cursorOffset } = formatSelection(
-          parsedText,
-          contentSelection.current.start,
-          contentSelection.current.end,
-          formatCommand,
-        )
-        return parseText(
-          parser,
-          target,
-          updatedText,
-          processedMarkdownStyle,
-          cursorPosition + cursorOffset,
-          true,
-        )
-      },
-      [parser, parseText, formatSelection, processedMarkdownStyle],
     )
 
     // Placeholder text color logic
@@ -510,16 +455,6 @@ const MarkdownTextInput = React.forwardRef<MarkdownTextInput, MarkdownTextInputP
           case "historyRedo":
             newInputUpdate = redo(divRef.current)
             break
-          case "formatBold":
-          case "formatItalic":
-          case "formatUnderline":
-            newInputUpdate = handleFormatSelection(
-              divRef.current,
-              parsedText,
-              newCursorPosition,
-              inputType,
-            )
-            break
           default:
             newInputUpdate = parseText(
               parser,
@@ -595,7 +530,6 @@ const MarkdownTextInput = React.forwardRef<MarkdownTextInput, MarkdownTextInputP
         handleContentSizeChange,
         undo,
         redo,
-        handleFormatSelection,
         parseText,
         parser,
         processedMarkdownStyle,
@@ -947,20 +881,6 @@ const MarkdownTextInput = React.forwardRef<MarkdownTextInput, MarkdownTextInputP
       updateRefSelectionVariables(newSelection)
       setCursorPosition(divRef.current, newSelection.start, newSelection.end)
     }, [selection, updateRefSelectionVariables])
-
-    useEffect(() => {
-      const handleReconnect = () => {
-        forceRefreshAllImages(
-          divRef.current as MarkdownTextInputElement,
-          processedMarkdownStyle,
-        )
-      }
-
-      window.addEventListener("online", handleReconnect)
-      return () => {
-        window.removeEventListener("online", handleReconnect)
-      }
-    }, [processedMarkdownStyle])
 
     return (
       // eslint-disable-next-line jsx-a11y/no-static-element-interactions

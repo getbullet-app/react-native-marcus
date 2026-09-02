@@ -1,0 +1,107 @@
+diff --git a/node_modules/@expensify/react-native-live-markdown/lib/commonjs/parseExpensiMark.js b/node_modules/@expensify/react-native-live-markdown/lib/commonjs/parseExpensiMark.js
+index d2095e8..f92b7fb 100644
+--- a/node_modules/@expensify/react-native-live-markdown/lib/commonjs/parseExpensiMark.js
++++ b/node_modules/@expensify/react-native-live-markdown/lib/commonjs/parseExpensiMark.js
+@@ -4,7 +4,6 @@
+ Object.defineProperty(exports, "__esModule", {
+   value: true
+ });
+-exports.default = void 0;
+ var _reactNative = require("react-native");
+ var _expensifyCommon = require("expensify-common");
+ var _utils = require("expensify-common/utils");
+diff --git a/node_modules/@expensify/react-native-live-markdown/lib/commonjs/web/utils/browserUtils.js b/node_modules/@expensify/react-native-live-markdown/lib/commonjs/web/utils/browserUtils.js
+index 249f721..083dd07 100644
+--- a/node_modules/@expensify/react-native-live-markdown/lib/commonjs/web/utils/browserUtils.js
++++ b/node_modules/@expensify/react-native-live-markdown/lib/commonjs/web/utils/browserUtils.js
+@@ -4,15 +4,34 @@ Object.defineProperty(exports, "__esModule", {
+   value: true
+ });
+ exports.default = void 0;
++const canUseDOM = typeof window !== 'undefined' && typeof navigator !== 'undefined';
++function memoize(compute) {
++  let value;
++  return () => {
++    if (value === undefined) {
++      value = canUseDOM && compute();
++    }
++    return value;
++  };
++}
++const isFirefox = memoize(() => navigator.userAgent.toLowerCase().includes('firefox'));
++const isChromium = memoize(() => 'chrome' in window);
++/**
++ * Whether the platform is a mobile browser.
++ * Copied from Expensify App https://github.com/Expensify/App/blob/90dee7accae79c49debf30354c160cab6c52c423/src/libs/Browser/index.website.ts#L41
++ *
++ */
++const isMobile = memoize(() => /Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Silk|Opera Mini/i.test(navigator.userAgent));
+ const BrowserUtils = {
+-  isFirefox: navigator.userAgent.toLowerCase().includes('firefox'),
+-  isChromium: 'chrome' in window,
+-  /**
+-   * Whether the platform is a mobile browser.
+-   * Copied from Expensify App https://github.com/Expensify/App/blob/90dee7accae79c49debf30354c160cab6c52c423/src/libs/Browser/index.website.ts#L41
+-   *
+-   */
+-  isMobile: /Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Silk|Opera Mini/i.test(navigator.userAgent)
++  get isFirefox() {
++    return isFirefox();
++  },
++  get isChromium() {
++    return isChromium();
++  },
++  get isMobile() {
++    return isMobile();
++  }
+ };
+ var _default = exports.default = BrowserUtils;
+ //# sourceMappingURL=browserUtils.js.map
+\ No newline at end of file
+diff --git a/node_modules/@expensify/react-native-live-markdown/lib/module/web/utils/browserUtils.js b/node_modules/@expensify/react-native-live-markdown/lib/module/web/utils/browserUtils.js
+index 6323248..7a22c63 100644
+--- a/node_modules/@expensify/react-native-live-markdown/lib/module/web/utils/browserUtils.js
++++ b/node_modules/@expensify/react-native-live-markdown/lib/module/web/utils/browserUtils.js
+@@ -1,14 +1,33 @@
+ "use strict";
+ 
++const canUseDOM = typeof window !== 'undefined' && typeof navigator !== 'undefined';
++function memoize(compute) {
++  let value;
++  return () => {
++    if (value === undefined) {
++      value = canUseDOM && compute();
++    }
++    return value;
++  };
++}
++const isFirefox = memoize(() => navigator.userAgent.toLowerCase().includes('firefox'));
++const isChromium = memoize(() => 'chrome' in window);
++/**
++ * Whether the platform is a mobile browser.
++ * Copied from Expensify App https://github.com/Expensify/App/blob/90dee7accae79c49debf30354c160cab6c52c423/src/libs/Browser/index.website.ts#L41
++ *
++ */
++const isMobile = memoize(() => /Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Silk|Opera Mini/i.test(navigator.userAgent));
+ const BrowserUtils = {
+-  isFirefox: navigator.userAgent.toLowerCase().includes('firefox'),
+-  isChromium: 'chrome' in window,
+-  /**
+-   * Whether the platform is a mobile browser.
+-   * Copied from Expensify App https://github.com/Expensify/App/blob/90dee7accae79c49debf30354c160cab6c52c423/src/libs/Browser/index.website.ts#L41
+-   *
+-   */
+-  isMobile: /Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Silk|Opera Mini/i.test(navigator.userAgent)
++  get isFirefox() {
++    return isFirefox();
++  },
++  get isChromium() {
++    return isChromium();
++  },
++  get isMobile() {
++    return isMobile();
++  }
+ };
+ export default BrowserUtils;
+ //# sourceMappingURL=browserUtils.js.map
+\ No newline at end of file

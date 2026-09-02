@@ -27,9 +27,4 @@ interface MarkdownRange {
   syntaxType?: "opening" | "closing"
 }
 
-type InlineImagesInputProps = {
-  addAuthTokenToImageURLCallback?: (url: string) => string
-  imagePreviewAuthRequiredURLs?: string[]
-}
-
-export type { MarkdownType, MarkdownRange, InlineImagesInputProps }
+export type { MarkdownType, MarkdownRange }

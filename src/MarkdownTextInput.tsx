@@ -8,7 +8,7 @@ import type { MarkdownStyle } from "./MarcusTextInputDecoratorViewNativeComponen
 import NativeMarcusModule from "./NativeMarcusModule"
 import { mergeMarkdownStyleWithDefault } from "./styleUtils"
 import type { PartialMarkdownStyle } from "./styleUtils"
-import type { InlineImagesInputProps, MarkdownRange } from "./commonTypes"
+import type { MarkdownRange } from "./commonTypes"
 
 declare global {
   // eslint-disable-next-line no-var
@@ -61,20 +61,9 @@ function unregisterParser(parserId: number) {
   global.jsi_unregisterMarcusWorklet(parserId)
 }
 
-interface MarkdownTextInputProps extends TextInputProps, InlineImagesInputProps {
+interface MarkdownTextInputProps extends TextInputProps {
   markdownStyle?: PartialMarkdownStyle
-  formatSelection?: (
-    text: string,
-    selectionStart: number,
-    selectionEnd: number,
-    formatCommand: string,
-  ) => FormatSelectionResult
   parser: (value: string) => MarkdownRange[]
-}
-
-type FormatSelectionResult = {
-  updatedText: string
-  cursorOffset: number
 }
 
 type MarkdownTextInput = TextInput & React.Component<MarkdownTextInputProps>
