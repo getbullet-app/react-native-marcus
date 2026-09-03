@@ -1,6 +1,6 @@
 {
   "name": "react-native-marcus",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Drop-in replacement for React Native's TextInput component with Markdown formatting.",
   "author": {
     "name": "Tomas Ravinskas",
