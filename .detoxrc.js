@@ -14,14 +14,35 @@ const { join } = require("node:path")
  * concrete device. `MARCUS_IOS_SIMULATOR` and `MARCUS_ANDROID_AVD` override.
  */
 
-function newestIphone() {
-  // The android configuration is the only one a Linux runner can use, and
-  // Detox may touch every device entry while composing its config -- so this
-  // has to be answerable without `xcrun` rather than throw on the way past.
-  if (process.platform !== "darwin") {
-    return { type: "iPhone" }
+/**
+ * The configuration this process was asked for, if it was asked for one.
+ *
+ * Detox composes the entire config before it runs anything, reading every entry
+ * under `devices` on the way past -- a getter defers a lookup but not far
+ * enough. Discovering unconditionally means an iOS run on a Mac goes looking
+ * for an AVD and an Android run on a Linux box shells out to `xcrun`, and on a
+ * CI runner both of those are fatal. Only the selected configuration is worth
+ * answering for.
+ */
+function selection() {
+  // `detox test` resolves the config a second time inside the runner child,
+  // where the choice arrives as an environment variable rather than on argv.
+  if (process.env.DETOX_CONFIGURATION) {
+    return process.env.DETOX_CONFIGURATION
   }
 
+  const index = process.argv.findIndex((arg) => arg === "-c" || arg === "--configuration")
+
+  if (index !== -1) {
+    return process.argv[index + 1]
+  }
+
+  return process.argv.find((arg) => arg.startsWith("--configuration="))?.split("=")[1]
+}
+
+const SELECTED = selection()
+
+function newestIphone() {
   if (process.env.MARCUS_IOS_SIMULATOR) {
     return { type: process.env.MARCUS_IOS_SIMULATOR }
   }
@@ -37,7 +58,9 @@ function newestIphone() {
     .find((entry) => entry.isAvailable && entry.name.startsWith("iPhone"))
 
   if (!device) {
-    throw new Error("No available iPhone simulator. Install one via Xcode > Settings > Platforms.")
+    throw new Error(
+      "No available iPhone simulator. Install one via Xcode > Settings > Platforms.",
+    )
   }
 
   return { id: device.udid }
@@ -53,7 +76,9 @@ function firstAvd() {
     process.env.ANDROID_SDK_ROOT ??
     join(process.env.HOME, "Library/Android/sdk")
 
-  const [avd] = execFileSync(join(sdk, "emulator/emulator"), ["-list-avds"], { encoding: "utf8" })
+  const [avd] = execFileSync(join(sdk, "emulator/emulator"), ["-list-avds"], {
+    encoding: "utf8",
+  })
     .split("\n")
     .filter(Boolean)
 
@@ -100,8 +125,20 @@ module.exports = {
   },
 
   devices: {
-    simulator: { type: "ios.simulator", get device() { return newestIphone() } },
-    emulator: { type: "android.emulator", get device() { return firstAvd() } },
+    // The placeholders are never launched. They exist so that the entry Detox
+    // reads on its way to the one you asked for still satisfies its schema.
+    simulator: {
+      type: "ios.simulator",
+      get device() {
+        return SELECTED === "ios" ? newestIphone() : { type: "iPhone" }
+      },
+    },
+    emulator: {
+      type: "android.emulator",
+      get device() {
+        return SELECTED === "android" ? firstAvd() : { avdName: "unselected" }
+      },
+    },
   },
 
   configurations: {

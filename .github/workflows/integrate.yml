@@ -20,7 +20,7 @@ env:
 
 jobs:
   js:
-    name: parser and units
+    name: parser and unit
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
