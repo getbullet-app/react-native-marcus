@@ -1,0 +1,583 @@
+bold
+     0..8    bold
+     0..2    color(#808080)
+     6..8    color(#808080)
+italic-star
+     0..8    italic
+     0..1    color(#808080)
+     7..8    color(#808080)
+italic-underscore
+     0..8    italic
+     0..1    color(#808080)
+     7..8    color(#808080)
+bold-underscore
+     0..8    bold
+     0..2    color(#808080)
+     6..8    color(#808080)
+bold-italic-underscore
+     0..10   italic
+     0..1    color(#808080)
+     1..9    bold
+     1..3    color(#808080)
+     7..9    color(#808080)
+     9..10   color(#808080)
+bold-underscore-mixed
+     0..8    bold
+     0..2    color(#808080)
+     6..8    color(#808080)
+    13..21   bold
+    13..15   color(#808080)
+    19..21   color(#808080)
+bold-underscore-intraword
+  (no spans)
+strikethrough
+     0..10   strikethrough
+     0..2    color(#808080)
+     8..10   color(#808080)
+emphasis-nested
+     0..26   bold
+     0..2    color(#808080)
+     7..19   italic
+     7..8    color(#808080)
+    18..19   color(#808080)
+    24..26   color(#808080)
+emphasis-adjacent-syntax
+     0..3    strikethrough
+     0..1    color(#808080)
+     2..3    color(#808080)
+     3..4    color(#808080)
+     4..8    background(#D3D3D3)
+     4..8    color(#000000)
+     4..8    font-family
+     4..8    font-size(16)
+     8..9    color(#808080)
+emphasis-unterminated
+  (no spans)
+emphasis-intraword
+  (no spans)
+heading-h1
+     0..5    bold
+     0..5    font-size(38)
+     0..1    color(#808080)
+heading-h3
+     0..9    bold
+     0..9    font-size(27)
+     0..3    color(#808080)
+heading-h6
+     0..10   bold
+     0..10   font-size(16)
+     0..6    color(#808080)
+heading-closed
+     0..9    bold
+     0..9    font-size(32)
+     0..2    color(#808080)
+     7..9    color(#808080)
+heading-setext
+     0..11   bold
+     0..11   font-size(38)
+     6..11   color(#808080)
+heading-with-emphasis
+     0..18   bold
+     0..18   font-size(38)
+     0..1    color(#808080)
+     4..12   bold
+     4..6    color(#808080)
+    10..12   color(#808080)
+blockquote
+     0..8    indent(18,20)
+     0..1    color(#808080)
+blockquote-multiline
+     0..5    indent(18,20)
+     0..1    color(#808080)
+     6..11   indent(18,20)
+     6..7    color(#808080)
+blockquote-lazy
+     0..5    indent(18,20)
+     0..1    color(#808080)
+     6..9    indent(20,20)
+blockquote-nested
+     0..7    indent(36,39)
+     0..1    color(#808080)
+     1..2    color(#808080)
+blockquote-triple
+     0..10   indent(54,58)
+     0..1    color(#808080)
+     1..2    color(#808080)
+     2..3    color(#808080)
+list-dash
+     0..5    indent(24,26)
+     0..1    color(#808080)
+     6..11   indent(24,26)
+     6..7    color(#808080)
+list-star
+     0..5    indent(24,26)
+     0..1    color(#808080)
+     6..11   indent(24,26)
+     6..7    color(#808080)
+list-plus
+     0..5    indent(24,26)
+     0..1    color(#808080)
+     6..11   indent(24,26)
+     6..7    color(#808080)
+list-ordered
+     0..6    indent(24,27)
+     0..1    color(#808080)
+     1..2    color(#808080)
+     7..13   indent(24,27)
+     7..8    color(#808080)
+     8..9    color(#808080)
+list-ordered-paren
+     0..6    indent(24,27)
+     0..1    color(#808080)
+     1..2    color(#808080)
+     7..13   indent(24,27)
+     7..8    color(#808080)
+     8..9    color(#808080)
+list-ordered-offset
+     0..8    indent(24,27)
+     0..1    color(#808080)
+     1..2    color(#808080)
+     9..16   indent(24,27)
+     9..10   color(#808080)
+    10..11   color(#808080)
+list-item-multiline
+     0..12   indent(24,26)
+     0..1    color(#808080)
+    13..26   indent(26,26)
+list-nested
+     0..5    indent(24,26)
+     0..1    color(#808080)
+     6..13   indent(48,52)
+     8..9    color(#808080)
+    14..25   indent(72,78)
+    18..19   color(#808080)
+list-nested-mixed
+     0..6    indent(24,27)
+     0..1    color(#808080)
+     1..2    color(#808080)
+     7..15   indent(51,56)
+    10..11   color(#808080)
+    16..26   indent(51,56)
+    19..20   color(#808080)
+blockquote-in-list
+     0..20   indent(24,46)
+     0..1    color(#808080)
+     1..2    gap
+     2..3    color(#808080)
+list-in-blockquote
+     0..19   indent(18,46)
+     0..1    color(#808080)
+     1..2    gap
+     2..3    color(#808080)
+nesting-deep-mixed
+     0..13   indent(36,93)
+     0..1    color(#808080)
+     1..2    gap
+     2..3    color(#808080)
+     3..4    gap
+     4..5    color(#808080)
+     6..7    color(#808080)
+     7..8    color(#808080)
+nesting-repeat-split
+     0..7    indent(36,64)
+     0..1    color(#808080)
+     1..2    gap
+     2..3    color(#808080)
+     4..5    color(#808080)
+nesting-repeat-split-mirrored
+     0..7    indent(48,70)
+     0..1    color(#808080)
+     1..2    gap
+     2..3    color(#808080)
+     4..5    color(#808080)
+nesting-repeat-adjacent
+     0..6    indent(36,65)
+     0..1    color(#808080)
+     1..2    color(#808080)
+     2..3    gap
+     3..4    color(#808080)
+code-inline
+     5..6    color(#808080)
+     6..10   background(#D3D3D3)
+     6..10   color(#000000)
+     6..10   font-family
+     6..10   font-size(16)
+    10..11   color(#808080)
+code-inline-double
+     2..4    color(#808080)
+     4..9    background(#D3D3D3)
+     4..9    color(#000000)
+     4..9    font-family
+     4..9    font-size(16)
+     9..11   color(#808080)
+code-fenced
+     0..3    color(#808080)
+     4..11   background(#D3D3D3)
+     4..11   color(#000000)
+     4..11   font-family
+     4..11   font-size(16)
+    11..14   color(#808080)
+code-fenced-lang
+     0..3    color(#808080)
+     6..18   background(#D3D3D3)
+     6..18   color(#000000)
+     6..18   font-family
+     6..18   font-size(16)
+    18..21   color(#808080)
+code-fenced-unterminated
+     0..3    color(#808080)
+     4..10   background(#D3D3D3)
+     4..10   color(#000000)
+     4..10   font-family
+     4..10   font-size(16)
+code-indented
+     4..13   background(#D3D3D3)
+     4..13   color(#000000)
+     4..13   font-family
+     4..13   font-size(16)
+code-in-blockquote
+     0..5    indent(18,20)
+     0..1    color(#808080)
+     2..5    color(#808080)
+     6..14   indent(18,20)
+     6..7    color(#808080)
+     8..15   background(#D3D3D3)
+     8..15   color(#000000)
+     8..15   font-family
+     8..15   font-size(16)
+    15..20   indent(18,20)
+    15..16   color(#808080)
+    17..20   color(#808080)
+link-inline
+     0..1    color(#808080)
+     5..6    color(#808080)
+     6..7    color(#808080)
+     7..26   color(#0000FF)
+     7..26   underline
+    26..27   color(#808080)
+link-title
+     0..1    color(#808080)
+     5..6    color(#808080)
+     6..7    color(#808080)
+     7..26   color(#0000FF)
+     7..26   underline
+    27..28   color(#808080)
+    33..34   color(#808080)
+    34..35   color(#808080)
+link-reference
+     0..1    color(#808080)
+     5..6    color(#808080)
+     6..7    color(#808080)
+    10..11   color(#808080)
+    13..14   color(#808080)
+    17..18   color(#808080)
+    18..19   color(#808080)
+    20..39   color(#0000FF)
+    20..39   underline
+autolink-http
+     0..19   color(#0000FF)
+     0..19   underline
+autolink-www
+     0..15   color(#0000FF)
+     0..15   underline
+autolink-email
+     0..16   color(#0000FF)
+     0..16   underline
+autolink-angle
+     0..1    color(#808080)
+     1..20   color(#0000FF)
+     1..20   underline
+    20..21   color(#808080)
+image-inline
+     0..1    color(#808080)
+     1..2    color(#808080)
+     5..6    color(#808080)
+     6..7    color(#808080)
+     7..32   color(#0000FF)
+     7..32   underline
+    32..33   color(#808080)
+mention
+     4..12   background-shape
+     4..12   color(#0000FF)
+mention-hyphen
+  (no spans)
+mention-trailing-hyphen
+  (no spans)
+mention-in-bold
+     0..12   bold
+     0..2    color(#808080)
+     2..10   background-shape
+     2..10   color(#0000FF)
+    10..12   color(#808080)
+emoji
+     6..8    font-family
+     6..8    font-size(16)
+emoji-in-bold
+     0..7    bold
+     0..2    color(#808080)
+     7..9    font-family
+     7..9    font-size(16)
+     9..16   bold
+    14..16   color(#808080)
+emoji-zwj-family
+     0..11   font-family
+     0..11   font-size(16)
+emoji-flag
+     5..9    font-family
+     5..9    font-size(16)
+emoji-skin-tone
+     5..9    font-family
+     5..9    font-size(16)
+emoji-only
+     0..2    font-family
+     0..2    font-size(16)
+unicode-astral
+     0..14   bold
+     0..2    color(#808080)
+    12..14   color(#808080)
+unicode-astral-minimal
+     0..6    bold
+     0..2    color(#808080)
+     4..6    color(#808080)
+unicode-astral-in-list
+     0..12   indent(24,26)
+     0..1    color(#808080)
+unicode-combining
+     7..13   italic
+     7..8    color(#808080)
+    12..13   color(#808080)
+unicode-nfd
+  (no spans)
+unicode-variation-selector
+     0..2    font-family
+     0..2    font-size(16)
+     3..10   bold
+     3..5    color(#808080)
+     8..10   color(#808080)
+unicode-keycap
+     0..3    font-family
+     0..3    font-size(16)
+unicode-tag-sequence
+     0..14   font-family
+     0..14   font-size(16)
+unicode-zwnj
+     4..10   italic
+     4..5    color(#808080)
+     9..10   color(#808080)
+unicode-nbsp
+     4..12   bold
+     4..6    color(#808080)
+    10..12   color(#808080)
+unicode-bom
+     1..10   bold
+     1..10   font-size(38)
+     1..2    color(#808080)
+unicode-line-separator
+  (no spans)
+unicode-soft-hyphen
+    12..20   bold
+    12..14   color(#808080)
+    18..20   color(#808080)
+unicode-cjk
+     0..12   bold
+     0..2    color(#808080)
+    10..12   color(#808080)
+cjk-chinese
+     0..8    bold
+     0..2    color(#808080)
+     6..8    color(#808080)
+cjk-punctuation-after
+     0..6    bold
+     0..2    color(#808080)
+     4..6    color(#808080)
+cjk-punctuation-before
+     1..7    bold
+     1..3    color(#808080)
+     5..7    color(#808080)
+cjk-korean
+     0..10   bold
+     0..2    color(#808080)
+     8..10   color(#808080)
+cjk-kana
+     0..6    italic
+     0..1    color(#808080)
+     5..6    color(#808080)
+     9..17   bold
+     9..11   color(#808080)
+    15..17   color(#808080)
+cjk-fullwidth-asterisk
+  (no spans)
+cjk-ideographic-space
+  (no spans)
+cjk-heading
+     0..5    bold
+     0..5    font-size(38)
+     0..1    color(#808080)
+cjk-list
+     0..5    indent(24,26)
+     0..1    color(#808080)
+     6..11   indent(24,26)
+     6..7    color(#808080)
+cjk-blockquote
+     0..5    indent(18,20)
+     0..1    color(#808080)
+cjk-code
+     0..1    color(#808080)
+     1..5    background(#D3D3D3)
+     1..5    color(#000000)
+     1..5    font-family
+     1..5    font-size(16)
+     5..6    color(#808080)
+cjk-link
+     0..1    color(#808080)
+     5..6    color(#808080)
+     6..7    color(#808080)
+     7..29   color(#0000FF)
+     7..29   underline
+    29..30   color(#808080)
+cjk-mention
+     4..8    background-shape
+     4..8    color(#0000FF)
+cjk-combining-dakuten
+  (no spans)
+unicode-rtl
+     0..9    bold
+     0..2    color(#808080)
+     7..9    color(#808080)
+rtl-arabic
+     0..17   bold
+     0..2    color(#808080)
+    15..17   color(#808080)
+rtl-hebrew
+     0..13   bold
+     0..2    color(#808080)
+    11..13   color(#808080)
+rtl-hebrew-niqqud
+     8..14   italic
+     8..9    color(#808080)
+    13..14   color(#808080)
+rtl-mixed
+     6..15   bold
+     6..8    color(#808080)
+    13..15   color(#808080)
+rtl-list
+     0..10   indent(24,26)
+     0..1    color(#808080)
+    11..22   indent(24,26)
+    11..12   color(#808080)
+rtl-blockquote
+     0..8    indent(18,20)
+     0..1    color(#808080)
+rtl-heading
+     0..7    bold
+     0..7    font-size(38)
+     0..1    color(#808080)
+rtl-link
+     0..1    color(#808080)
+     8..9    color(#808080)
+     9..10   color(#808080)
+    10..29   color(#0000FF)
+    10..29   underline
+    29..30   color(#808080)
+rtl-code
+     0..1    color(#808080)
+     1..5    background(#D3D3D3)
+     1..5    color(#000000)
+     1..5    font-family
+     1..5    font-size(16)
+     5..6    color(#808080)
+rtl-arabic-indic-digits
+  (no spans)
+rtl-marks
+     8..16   bold
+     8..10   color(#808080)
+    14..16   color(#808080)
+rtl-isolates
+    11..19   bold
+    11..13   color(#808080)
+    17..19   color(#808080)
+rtl-lam-alef
+     3..11   bold
+     3..5    color(#808080)
+     9..11   color(#808080)
+rtl-punctuation
+     0..8    bold
+     0..2    color(#808080)
+     6..8    color(#808080)
+rtl-mention
+     0..7    background-shape
+     0..7    color(#0000FF)
+empty
+  (no spans)
+whitespace-only
+  (no spans)
+plain-text
+  (no spans)
+crlf
+     0..5    bold
+     0..5    font-size(38)
+     0..1    color(#808080)
+     9..14   indent(18,20)
+     9..10   color(#808080)
+tabs
+     0..5    indent(24,26)
+     0..1    color(#808080)
+     6..11   indent(24,26)
+     6..7    color(#808080)
+escaped-emphasis
+     0..1    color(#808080)
+    10..11   color(#808080)
+hard-break
+     3..5    color(#808080)
+thematic-break
+     5..8    color(#808080)
+character-reference
+     0..1    color(#808080)
+     4..5    color(#808080)
+    10..11   color(#808080)
+    11..12   color(#808080)
+    14..15   color(#808080)
+kitchen-sink
+     0..9    bold
+     0..9    font-size(38)
+     0..1    color(#808080)
+    16..24   bold
+    16..18   color(#808080)
+    22..24   color(#808080)
+    26..34   italic
+    26..27   color(#808080)
+    33..34   color(#808080)
+    39..49   strikethrough
+    39..41   color(#808080)
+    47..49   color(#808080)
+    60..61   color(#808080)
+    61..65   background(#D3D3D3)
+    61..65   color(#000000)
+    61..65   font-family
+    61..65   font-size(16)
+    65..66   color(#808080)
+    69..113  indent(18,20)
+    69..70   color(#808080)
+    86..87   color(#808080)
+    91..92   color(#808080)
+    92..93   color(#808080)
+    93..112  color(#0000FF)
+    93..112  underline
+   112..113  color(#808080)
+   115..125  indent(24,26)
+   115..116  color(#808080)
+   126..136  indent(24,26)
+   126..127  color(#808080)
+   137..148  indent(50,55)
+   139..140  color(#808080)
+   140..141  color(#808080)
+   150..153  color(#808080)
+   156..168  background(#D3D3D3)
+   156..168  color(#000000)
+   156..168  font-family
+   156..168  font-size(16)
+   168..171  color(#808080)
+   177..185  background-shape
+   177..185  color(#0000FF)
+   186..188  font-family
+   186..188  font-size(16)

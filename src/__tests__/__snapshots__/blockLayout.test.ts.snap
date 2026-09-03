@@ -1,0 +1,91 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`layoutBlocks is stable across every block fixture 1`] = `
+"bold-italic-underscore
+    (none)
+emphasis-nested
+    (none)
+heading-with-emphasis
+    (none)
+blockquote
+    0: first=18 indent=38 ribbons=[6] gaps={}
+blockquote-multiline
+    0: first=18 indent=38 ribbons=[6] gaps={}
+    6: first=18 indent=38 ribbons=[6] gaps={}
+blockquote-lazy
+    0: first=18 indent=38 ribbons=[6] gaps={}
+    6: first=38 indent=38 ribbons=[6] gaps={}
+blockquote-nested
+    0: first=36 indent=66 ribbons=[6,24] gaps={}
+blockquote-triple
+    0: first=54 indent=94 ribbons=[6,24,42] gaps={}
+list-dash
+    0: first=24 indent=44 ribbons=[] gaps={}
+    6: first=24 indent=44 ribbons=[] gaps={}
+list-star
+    0: first=24 indent=44 ribbons=[] gaps={}
+    6: first=24 indent=44 ribbons=[] gaps={}
+list-plus
+    0: first=24 indent=44 ribbons=[] gaps={}
+    6: first=24 indent=44 ribbons=[] gaps={}
+list-ordered
+    0: first=24 indent=54 ribbons=[] gaps={}
+    7: first=24 indent=54 ribbons=[] gaps={}
+list-ordered-paren
+    0: first=24 indent=54 ribbons=[] gaps={}
+    7: first=24 indent=54 ribbons=[] gaps={}
+list-ordered-offset
+    0: first=24 indent=54 ribbons=[] gaps={}
+    9: first=24 indent=54 ribbons=[] gaps={}
+list-item-multiline
+    0: first=24 indent=44 ribbons=[] gaps={}
+    13: first=44 indent=44 ribbons=[] gaps={}
+list-nested
+    0: first=24 indent=44 ribbons=[] gaps={}
+    6: first=48 indent=88 ribbons=[] gaps={}
+    14: first=72 indent=132 ribbons=[] gaps={}
+list-nested-mixed
+    0: first=24 indent=54 ribbons=[] gaps={}
+    7: first=78 indent=128 ribbons=[] gaps={}
+    16: first=78 indent=128 ribbons=[] gaps={}
+blockquote-in-list
+    0: first=24 indent=82 ribbons=[50] gaps={0:18}
+list-in-blockquote
+    0: first=18 indent=82 ribbons=[6] gaps={0:24}
+nesting-deep-mixed
+    0: first=36 indent=174 ribbons=[6,24] gaps={0:24,2:24}
+nesting-repeat-split
+    0: first=36 indent=100 ribbons=[6,24] gaps={0:24}
+nesting-repeat-split-mirrored
+    0: first=48 indent=106 ribbons=[74] gaps={0:18}
+nesting-repeat-adjacent
+    0: first=36 indent=110 ribbons=[6,24] gaps={0:24}
+code-in-blockquote
+    0: first=18 indent=38 ribbons=[6] gaps={}
+    6: first=18 indent=38 ribbons=[6] gaps={}
+    15: first=18 indent=38 ribbons=[6] gaps={}
+mention-in-bold
+    (none)
+unicode-astral-in-list
+    0: first=24 indent=44 ribbons=[] gaps={}
+cjk-list
+    0: first=24 indent=44 ribbons=[] gaps={}
+    6: first=24 indent=44 ribbons=[] gaps={}
+cjk-blockquote
+    0: first=18 indent=38 ribbons=[6] gaps={}
+rtl-list
+    0: first=24 indent=44 ribbons=[] gaps={}
+    11: first=24 indent=44 ribbons=[] gaps={}
+rtl-blockquote
+    0: first=18 indent=38 ribbons=[6] gaps={}
+rtl-arabic-indic-digits
+    (none)
+tabs
+    0: first=24 indent=44 ribbons=[] gaps={}
+    6: first=24 indent=44 ribbons=[] gaps={}
+kitchen-sink
+    69: first=18 indent=38 ribbons=[6] gaps={}
+    115: first=24 indent=44 ribbons=[] gaps={}
+    126: first=24 indent=44 ribbons=[] gaps={}
+    137: first=68 indent=118 ribbons=[] gaps={}"
+`;

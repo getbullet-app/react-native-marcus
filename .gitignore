@@ -68,3 +68,14 @@ lib/
 
 # jest
 coverage/
+
+# playwright
+test-results/
+playwright-report/
+
+# detox
+artifacts/
+
+# swiftpm
+ios-tests/.build/
+ios-tests/.swiftpm/

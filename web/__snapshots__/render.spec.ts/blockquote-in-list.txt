@@ -1,0 +1,17 @@
+p[line] background-image:linear-gradient(gray, gray) background-position-x:<measured> background-position-y:0px background-repeat:no-repeat background-size:6px 100% margin-bottom:0px margin-left:0px margin-right:0px margin-top:0px padding-bottom:0px padding-left:<measured> padding-right:0px padding-top:0px text-indent:<measured>
+  span[list-unordered] overflow-wrap:anywhere
+    span[blockquote] overflow-wrap:anywhere
+      span[block-prefix] margin-right:18px
+        span[syntax] color:gray
+          span[text]
+            #text "-"
+        span[text]
+          #text " "
+      span[block-prefix]
+        span[syntax] color:gray
+          span[text]
+            #text ">"
+        span[text]
+          #text " "
+      span[text]
+        #text "quoted in a list"

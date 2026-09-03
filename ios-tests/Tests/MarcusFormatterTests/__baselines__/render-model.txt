@@ -1,0 +1,615 @@
+bold
+     0..8    bold
+     0..2    color(#808080)
+     6..8    color(#808080)
+italic-star
+     0..8    italic
+     0..1    color(#808080)
+     7..8    color(#808080)
+italic-underscore
+     0..8    italic
+     0..1    color(#808080)
+     7..8    color(#808080)
+bold-underscore
+     0..8    bold
+     0..2    color(#808080)
+     6..8    color(#808080)
+bold-italic-underscore
+     0..10   italic
+     0..3    color(#808080)
+     1..9    bold
+     7..10   color(#808080)
+bold-underscore-mixed
+     0..8    bold
+     0..2    color(#808080)
+     6..8    color(#808080)
+    13..21   bold
+    13..15   color(#808080)
+    19..21   color(#808080)
+bold-underscore-intraword
+  (no spans)
+strikethrough
+     0..10   strikethrough
+     0..2    color(#808080)
+     8..10   color(#808080)
+emphasis-nested
+     0..26   bold
+     0..2    color(#808080)
+     7..19   italic
+     7..8    color(#808080)
+    18..19   color(#808080)
+    24..26   color(#808080)
+emphasis-adjacent-syntax
+     0..3    strikethrough
+     0..1    color(#808080)
+     2..4    color(#808080)
+     4..8    background(#AAAAAA)
+     4..8    color(#000000)
+     4..8    font-family(Courier)
+     8..9    color(#808080)
+emphasis-unterminated
+  (no spans)
+emphasis-intraword
+  (no spans)
+heading-h1
+     0..5    bold
+     0..5    font-size(38)
+     0..1    color(#808080)
+heading-h3
+     0..9    bold
+     0..9    font-size(27)
+     0..3    color(#808080)
+heading-h6
+     0..10   bold
+     0..10   font-size(17)
+     0..6    color(#808080)
+heading-closed
+     0..9    bold
+     0..9    font-size(32)
+     0..2    color(#808080)
+     7..9    color(#808080)
+heading-setext
+     0..11   bold
+     0..11   font-size(38)
+     6..11   color(#808080)
+heading-with-emphasis
+     0..18   bold
+     0..18   font-size(38)
+     0..1    color(#808080)
+     4..6    color(#808080)
+    10..12   color(#808080)
+blockquote
+     0..8    indent(18,32)
+     0..8    quote-depth(1)
+     0..8    quote-indent(0)
+     0..1    color(#808080)
+blockquote-multiline
+     0..11   indent(18,32)
+     0..5    quote-depth(1)
+     0..5    quote-indent(0)
+     0..1    color(#808080)
+     6..11   quote-depth(1)
+     6..11   quote-indent(0)
+     6..7    color(#808080)
+blockquote-lazy
+     0..6    indent(18,32)
+     0..5    quote-depth(1)
+     0..5    quote-indent(0)
+     0..1    color(#808080)
+     6..9    indent(32,32)
+     6..9    quote-depth(1)
+     6..9    quote-indent(0)
+blockquote-nested
+     0..7    indent(36,60)
+     0..7    quote-depth(2)
+     0..7    quote-indent(0)
+     0..2    color(#808080)
+blockquote-triple
+     0..10   indent(54,87)
+     0..10   quote-depth(3)
+     0..10   quote-indent(0)
+     0..3    color(#808080)
+list-dash
+     0..11   indent(24,34)
+     0..1    color(#808080)
+     6..7    color(#808080)
+list-star
+     0..11   indent(24,35)
+     0..1    color(#808080)
+     6..7    color(#808080)
+list-plus
+     0..11   indent(24,38)
+     0..1    color(#808080)
+     6..7    color(#808080)
+list-ordered
+     0..13   indent(24,42)
+     0..2    color(#808080)
+     7..9    color(#808080)
+list-ordered-paren
+     0..13   indent(24,43)
+     0..2    color(#808080)
+     7..9    color(#808080)
+list-ordered-offset
+     0..16   indent(24,42)
+     0..2    color(#808080)
+     9..11   color(#808080)
+list-item-multiline
+     0..13   indent(24,34)
+     0..1    color(#808080)
+    13..26   indent(34,34)
+list-nested
+     0..6    indent(24,34)
+     0..1    color(#808080)
+     6..14   indent(48,67)
+     8..9    color(#808080)
+    14..25   indent(72,100)
+    18..19   color(#808080)
+list-nested-mixed
+     0..7    indent(24,42)
+     0..2    color(#808080)
+     7..26   indent(66,90)
+    10..11   color(#808080)
+    19..20   color(#808080)
+blockquote-in-list
+     0..20   indent(24,66)
+     0..20   quote-depth(1)
+     0..20   quote-indent(34)
+     0..1    color(#808080)
+     1..2    gap
+     2..3    color(#808080)
+list-in-blockquote
+     0..19   indent(18,66)
+     0..19   quote-depth(1)
+     0..19   quote-indent(0)
+     0..1    color(#808080)
+     1..2    gap
+     2..3    color(#808080)
+nesting-deep-mixed
+     0..14   indent(36,140)
+     0..13   quote-depth(2)
+     0..13   quote-indent(0)
+     0..1    color(#808080)
+     1..2    gap
+     2..3    color(#808080)
+     3..4    gap
+     4..5    color(#808080)
+     6..8    color(#808080)
+nesting-repeat-split
+     0..7    indent(36,84)
+     0..7    quote-depth(2)
+     0..7    quote-indent(0)
+     0..1    color(#808080)
+     1..2    gap
+     2..3    color(#808080)
+     4..5    color(#808080)
+nesting-repeat-split-mirrored
+     0..7    indent(48,90)
+     0..7    quote-depth(1)
+     0..7    quote-indent(58)
+     0..1    color(#808080)
+     1..2    gap
+     2..3    color(#808080)
+     4..5    color(#808080)
+nesting-repeat-adjacent
+     0..6    indent(36,94)
+     0..6    quote-depth(2)
+     0..6    quote-indent(0)
+     0..2    color(#808080)
+     2..3    gap
+     3..4    color(#808080)
+code-inline
+     5..6    color(#808080)
+     6..10   background(#AAAAAA)
+     6..10   color(#000000)
+     6..10   font-family(Courier)
+    10..11   color(#808080)
+code-inline-double
+     2..4    color(#808080)
+     4..9    background(#AAAAAA)
+     4..9    color(#000000)
+     4..9    font-family(Courier)
+     9..11   color(#808080)
+code-fenced
+     0..3    color(#808080)
+     4..11   background(#AAAAAA)
+     4..11   color(#000000)
+     4..11   font-family(Courier)
+    11..14   color(#808080)
+code-fenced-lang
+     0..3    color(#808080)
+     6..18   background(#AAAAAA)
+     6..18   color(#000000)
+     6..18   font-family(Courier)
+    18..21   color(#808080)
+code-fenced-unterminated
+     0..3    color(#808080)
+     4..10   background(#AAAAAA)
+     4..10   color(#000000)
+     4..10   font-family(Courier)
+code-indented
+     4..13   background(#AAAAAA)
+     4..13   color(#000000)
+     4..13   font-family(Courier)
+code-in-blockquote
+     0..20   indent(18,32)
+     0..5    quote-depth(1)
+     0..5    quote-indent(0)
+     0..1    color(#808080)
+     2..5    color(#808080)
+     6..14   quote-depth(1)
+     6..14   quote-indent(0)
+     6..7    color(#808080)
+     8..15   background(#AAAAAA)
+     8..15   color(#000000)
+     8..15   font-family(Courier)
+    15..20   quote-depth(1)
+    15..20   quote-indent(0)
+    15..16   color(#808080)
+    17..20   color(#808080)
+link-inline
+     0..1    color(#808080)
+     5..7    color(#808080)
+     7..26   color(#0000FF)
+     7..26   underline
+    26..27   color(#808080)
+link-title
+     0..1    color(#808080)
+     5..7    color(#808080)
+     7..26   color(#0000FF)
+     7..26   underline
+    27..28   color(#808080)
+    33..35   color(#808080)
+link-reference
+     0..1    color(#808080)
+     5..7    color(#808080)
+    10..11   color(#808080)
+    13..14   color(#808080)
+    17..19   color(#808080)
+    20..39   color(#0000FF)
+    20..39   underline
+autolink-http
+     0..19   color(#0000FF)
+     0..19   underline
+autolink-www
+     0..15   color(#0000FF)
+     0..15   underline
+autolink-email
+     0..16   color(#0000FF)
+     0..16   underline
+autolink-angle
+     0..1    color(#808080)
+     1..20   color(#0000FF)
+     1..20   underline
+    20..21   color(#808080)
+image-inline
+     0..2    color(#808080)
+     5..7    color(#808080)
+     7..32   color(#0000FF)
+     7..32   underline
+    32..33   color(#808080)
+mention
+     4..12   background-shape
+     4..12   color(#0000FF)
+mention-hyphen
+  (no spans)
+mention-trailing-hyphen
+  (no spans)
+mention-in-bold
+     0..12   bold
+     0..2    color(#808080)
+     2..10   background-shape
+     2..10   color(#0000FF)
+    10..12   color(#808080)
+emoji
+     6..8    font-family(Apple Color Emoji)
+emoji-in-bold
+     0..7    bold
+     0..2    color(#808080)
+     7..9    font-family(Apple Color Emoji)
+     9..16   bold
+    14..16   color(#808080)
+emoji-zwj-family
+     0..11   font-family(Apple Color Emoji)
+emoji-flag
+     5..9    font-family(Apple Color Emoji)
+emoji-skin-tone
+     5..9    font-family(Apple Color Emoji)
+emoji-only
+     0..2    font-family(Apple Color Emoji)
+unicode-astral
+     0..2    bold
+     0..2    color(#808080)
+     2..12   font-family(STIX Two Math)
+    12..14   bold
+    12..14   color(#808080)
+unicode-astral-minimal
+     0..2    bold
+     0..2    color(#808080)
+     2..4    font-family(STIX Two Math)
+     4..6    bold
+     4..6    color(#808080)
+unicode-astral-in-list
+     0..12   indent(24,34)
+     0..1    color(#808080)
+     2..12   font-family(STIX Two Math)
+unicode-combining
+     7..13   italic
+     7..8    color(#808080)
+    12..13   color(#808080)
+unicode-nfd
+  (no spans)
+unicode-variation-selector
+     0..2    font-family(Apple Color Emoji)
+     3..10   bold
+     3..5    color(#808080)
+     8..10   color(#808080)
+unicode-keycap
+     0..3    font-family(Apple Color Emoji)
+unicode-tag-sequence
+     0..14   font-family(Apple Color Emoji)
+unicode-zwnj
+     4..10   italic
+     4..5    color(#808080)
+     9..10   color(#808080)
+unicode-nbsp
+     4..12   bold
+     4..6    color(#808080)
+    10..12   color(#808080)
+unicode-bom
+     1..10   bold
+     1..10   font-size(38)
+     1..2    color(#808080)
+unicode-line-separator
+  (no spans)
+unicode-soft-hyphen
+    12..20   bold
+    12..14   color(#808080)
+    18..20   color(#808080)
+unicode-cjk
+     0..12   bold
+     0..2    color(#808080)
+     2..5    font-family(PingFang SC)
+     5..10   font-family(Hiragino Sans)
+    10..12   color(#808080)
+cjk-chinese
+     0..8    bold
+     0..2    color(#808080)
+     2..6    font-family(PingFang SC)
+     6..8    color(#808080)
+     8..10   font-family(PingFang SC)
+cjk-punctuation-after
+     0..6    bold
+     0..2    color(#808080)
+     2..4    font-family(PingFang SC)
+     4..6    color(#808080)
+     6..9    font-family(PingFang SC)
+cjk-punctuation-before
+     0..1    font-family(PingFang SC)
+     1..7    bold
+     1..3    color(#808080)
+     3..5    font-family(PingFang SC)
+     5..7    color(#808080)
+cjk-korean
+     0..10   bold
+     0..2    color(#808080)
+     2..5    font-family(Apple SD Gothic Neo)
+     6..8    font-family(Apple SD Gothic Neo)
+     8..10   color(#808080)
+    11..14   font-family(Apple SD Gothic Neo)
+cjk-kana
+     0..1    color(#808080)
+     0..1    italic
+     1..5    font-family(Hiragino Sans)
+     5..6    color(#808080)
+     5..6    italic
+     7..8    font-family(Hiragino Sans)
+     9..17   bold
+     9..11   color(#808080)
+    11..15   font-family(Hiragino Sans)
+    15..17   color(#808080)
+cjk-fullwidth-asterisk
+     0..4    font-family(PingFang SC)
+cjk-ideographic-space
+     1..4    font-family(PingFang SC)
+     4..5    font-family(Hiragino Sans)
+cjk-heading
+     0..5    bold
+     0..5    font-size(38)
+     0..1    color(#808080)
+     2..4    font-family(PingFang SC)
+     4..5    font-family(Hiragino Sans)
+cjk-list
+     0..11   indent(24,34)
+     0..1    color(#808080)
+     2..5    font-family(PingFang SC)
+     6..7    color(#808080)
+     8..11   font-family(PingFang SC)
+cjk-blockquote
+     0..5    indent(18,32)
+     0..5    quote-depth(1)
+     0..5    quote-indent(0)
+     0..1    color(#808080)
+     2..5    font-family(PingFang SC)
+cjk-code
+     0..1    color(#808080)
+     1..5    background(#AAAAAA)
+     1..5    color(#000000)
+     1..5    font-family(PingFang SC)
+     5..6    color(#808080)
+cjk-link
+     0..1    color(#808080)
+     1..5    font-family(PingFang SC)
+     5..7    color(#808080)
+     7..29   color(#0000FF)
+     7..29   underline
+    27..29   font-family(PingFang SC)
+    29..30   color(#808080)
+cjk-mention
+     4..8    background-shape
+     4..8    color(#0000FF)
+     5..8    font-family(PingFang SC)
+cjk-combining-dakuten
+     0..2    font-family(Hiragino Sans)
+     6..7    font-family(Hiragino Sans)
+unicode-rtl
+     0..9    bold
+     0..2    color(#808080)
+     2..7    font-family(Geeza Pro)
+     7..9    color(#808080)
+rtl-arabic
+     0..17   bold
+     0..2    color(#808080)
+     2..7    font-family(Geeza Pro)
+     8..15   font-family(Geeza Pro)
+    15..17   color(#808080)
+rtl-hebrew
+     0..13   bold
+     0..2    color(#808080)
+     2..6    font-family(Arial Hebrew)
+     7..11   font-family(Arial Hebrew)
+    11..13   color(#808080)
+rtl-hebrew-niqqud
+     0..7    font-family(Arial Hebrew)
+     8..14   italic
+     8..9    color(#808080)
+    13..14   color(#808080)
+rtl-mixed
+     0..5    font-family(Geeza Pro)
+     6..15   bold
+     6..8    color(#808080)
+    13..15   color(#808080)
+    16..20   font-family(Geeza Pro)
+rtl-list
+     0..22   indent(24,34)
+     0..1    color(#808080)
+     2..6    font-family(Geeza Pro)
+     7..10   font-family(Geeza Pro)
+    11..12   color(#808080)
+    13..17   font-family(Geeza Pro)
+    18..22   font-family(Geeza Pro)
+rtl-blockquote
+     0..8    indent(18,32)
+     0..8    quote-depth(1)
+     0..8    quote-indent(0)
+     0..1    color(#808080)
+     2..8    font-family(Geeza Pro)
+rtl-heading
+     0..7    bold
+     0..7    font-size(38)
+     0..1    color(#808080)
+     2..7    font-family(Geeza Pro)
+rtl-link
+     0..1    color(#808080)
+     1..3    font-family(Geeza Pro)
+     4..8    font-family(Geeza Pro)
+     8..10   color(#808080)
+    10..29   color(#0000FF)
+    10..29   underline
+    29..30   color(#808080)
+rtl-code
+     0..1    color(#808080)
+     1..5    background(#AAAAAA)
+     1..5    color(#000000)
+     1..5    font-family(Courier New)
+     5..6    color(#808080)
+rtl-arabic-indic-digits
+     0..1    font-family(Geeza Pro)
+     3..7    font-family(Geeza Pro)
+rtl-marks
+     1..6    font-family(Geeza Pro)
+     8..16   bold
+     8..10   color(#808080)
+    14..16   color(#808080)
+rtl-isolates
+     6..10   font-family(Geeza Pro)
+    11..19   bold
+    11..13   color(#808080)
+    17..19   color(#808080)
+rtl-lam-alef
+     0..2    font-family(Geeza Pro)
+     3..11   bold
+     3..5    color(#808080)
+     9..11   color(#808080)
+    12..14   font-family(Geeza Pro)
+rtl-punctuation
+     0..8    bold
+     0..2    color(#808080)
+     2..6    font-family(Geeza Pro)
+     6..8    color(#808080)
+     8..9    font-family(Geeza Pro)
+    10..12   font-family(Geeza Pro)
+rtl-mention
+     0..7    background-shape
+     0..7    color(#0000FF)
+     1..7    font-family(Geeza Pro)
+     8..10   font-family(Geeza Pro)
+empty
+  (no spans)
+whitespace-only
+  (no spans)
+plain-text
+  (no spans)
+crlf
+     0..5    bold
+     0..5    font-size(38)
+     0..1    color(#808080)
+     9..16   indent(18,32)
+     9..14   quote-depth(1)
+     9..14   quote-indent(0)
+     9..10   color(#808080)
+tabs
+     0..11   indent(24,52)
+     0..1    color(#808080)
+     6..7    color(#808080)
+escaped-emphasis
+     0..1    color(#808080)
+    10..11   color(#808080)
+hard-break
+     3..5    color(#808080)
+thematic-break
+     5..8    color(#808080)
+character-reference
+     0..1    color(#808080)
+     4..5    color(#808080)
+    10..12   color(#808080)
+    14..15   color(#808080)
+kitchen-sink
+     0..9    bold
+     0..9    font-size(38)
+     0..1    color(#808080)
+    16..24   bold
+    16..18   color(#808080)
+    22..24   color(#808080)
+    26..34   italic
+    26..27   color(#808080)
+    33..34   color(#808080)
+    39..49   strikethrough
+    39..41   color(#808080)
+    47..49   color(#808080)
+    60..61   color(#808080)
+    61..65   background(#AAAAAA)
+    61..65   color(#000000)
+    61..65   font-family(Courier)
+    65..66   color(#808080)
+    69..114  indent(18,32)
+    69..113  quote-depth(1)
+    69..113  quote-indent(0)
+    69..70   color(#808080)
+    86..87   color(#808080)
+    91..93   color(#808080)
+    93..112  color(#0000FF)
+    93..112  underline
+   112..113  color(#808080)
+   115..137  indent(24,34)
+   115..116  color(#808080)
+   126..127  color(#808080)
+   137..149  indent(58,85)
+   139..141  color(#808080)
+   150..153  color(#808080)
+   156..168  background(#AAAAAA)
+   156..168  color(#000000)
+   156..168  font-family(Courier)
+   168..171  color(#808080)
+   177..185  background-shape
+   177..185  color(#0000FF)
+   186..188  font-family(Apple Color Emoji)

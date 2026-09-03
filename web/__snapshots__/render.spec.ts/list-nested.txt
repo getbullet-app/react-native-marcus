@@ -1,0 +1,37 @@
+p[line] margin-bottom:0px margin-left:0px margin-right:0px margin-top:0px padding-bottom:0px padding-left:<measured> padding-right:0px padding-top:0px text-indent:<measured>
+  span[list-unordered] overflow-wrap:anywhere
+    span[block-prefix]
+      span[syntax] color:gray
+        span[text]
+          #text "-"
+      span[text]
+        #text " "
+    span[text]
+      #text "one"
+p[line] margin-bottom:0px margin-left:0px margin-right:0px margin-top:0px padding-bottom:0px padding-left:<measured> padding-right:0px padding-top:0px text-indent:<measured>
+  span[list-unordered] overflow-wrap:anywhere
+    span[list-unordered] overflow-wrap:anywhere
+      span[block-prefix]
+        span[text]
+          #text "  "
+        span[syntax] color:gray
+          span[text]
+            #text "-"
+        span[text]
+          #text " "
+      span[text]
+        #text "two"
+p[line] margin-bottom:0px margin-left:0px margin-right:0px margin-top:0px padding-bottom:0px padding-left:<measured> padding-right:0px padding-top:0px text-indent:<measured>
+  span[list-unordered] overflow-wrap:anywhere
+    span[list-unordered] overflow-wrap:anywhere
+      span[list-unordered] overflow-wrap:anywhere
+        span[block-prefix]
+          span[text]
+            #text "    "
+          span[syntax] color:gray
+            span[text]
+              #text "-"
+          span[text]
+            #text " "
+        span[text]
+          #text "three"

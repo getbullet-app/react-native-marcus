@@ -1,0 +1,26 @@
+p[line] margin-bottom:0px margin-left:0px margin-right:0px margin-top:0px padding-bottom:0px padding-left:<measured> padding-right:0px padding-top:0px text-indent:<measured>
+  span[list-ordered] overflow-wrap:anywhere
+    span[block-prefix]
+      span[syntax] color:gray
+        span[text]
+          #text "1"
+      span[syntax] color:gray
+        span[text]
+          #text "."
+      span[text]
+        #text " "
+    span[text]
+      #text "one"
+p[line] margin-bottom:0px margin-left:0px margin-right:0px margin-top:0px padding-bottom:0px padding-left:<measured> padding-right:0px padding-top:0px text-indent:<measured>
+  span[list-ordered] overflow-wrap:anywhere
+    span[block-prefix]
+      span[syntax] color:gray
+        span[text]
+          #text "2"
+      span[syntax] color:gray
+        span[text]
+          #text "."
+      span[text]
+        #text " "
+    span[text]
+      #text "two"

@@ -171,6 +171,17 @@ declare global {
 }
 
 globalThis.__parse__micromark = function (markdown: string): MarkdownRange[] {
+  // micromark's preprocessor drops a leading BOM, so every offset it reports is
+  // one short of the caller's string -- a document that opens with one had every
+  // range shifted left by a character, leaving the last one uncovered. Parse the
+  // stripped text and shift the ranges back at the end rather than second-
+  // guessing offsets at each of the two dozen places they are read.
+  const bomLength = markdown.charCodeAt(0) === 0xfeff ? 1 : 0
+
+  if (bomLength > 0) {
+    markdown = markdown.slice(bomLength)
+  }
+
   const extensions = [gfmAutolinkLiteral(), gfmStrikethrough(), mentions()]
   const ranges: MarkdownRange[] = []
   // Counted block containers, innermost last. Never exceeds MAX_DEPTH per type.
@@ -179,10 +190,12 @@ globalThis.__parse__micromark = function (markdown: string): MarkdownRange[] {
   const countedBlocks: boolean[] = []
   // Heading awaiting the marker that states its level.
   let pendingHeading: Token | null = null
-  // Where each open container's own marker ends on the line being built, if it
-  // has one there. Cleared per line: a container whose marker was on an earlier
-  // line is being continued, not opened.
-  const markerEnds = new Map<MarkdownType, number>()
+  // The container markers on the line being built, in the order they appear.
+  // Positional rather than keyed by type: one type can open more than once on a
+  // line, and the occurrences need not be adjacent (`> - > `). Cleared per
+  // line -- a container whose marker was on an earlier line is being continued,
+  // not opened.
+  const markers: { type: MarkdownType; start: number; end: number }[] = []
   const events = postprocess(
     parse({ extensions }).document().write(preprocess()(markdown, "utf-8", true)),
   )
@@ -197,6 +210,12 @@ globalThis.__parse__micromark = function (markdown: string): MarkdownRange[] {
   }
 
   excludeEmoji()
+
+  if (bomLength > 0) {
+    for (const range of ranges) {
+      range.start += bomLength
+    }
+  }
 
   return ranges
 
@@ -222,11 +241,16 @@ globalThis.__parse__micromark = function (markdown: string): MarkdownRange[] {
       // Past the depth cap the item's own list was never opened, so its marker
       // would be recorded against whatever encloses it.
       if (list === "list-ordered" || list === "list-unordered") {
-        markerEnds.set(list, token.end.offset)
+        markers.push({ type: list, start: token.start.offset, end: token.end.offset })
       }
     } else if (token.type === "blockQuotePrefix") {
-      // One per level, so the last one on the line covers all of `>>> `.
-      markerEnds.set("blockquote", token.end.offset)
+      // One per level, so `>>> ` arrives as three markers; flushLine folds a
+      // contiguous run back into a single prefix.
+      markers.push({
+        type: "blockquote",
+        start: token.start.offset,
+        end: token.end.offset,
+      })
     }
 
     const block = TOKENS.block[token.type]
@@ -364,9 +388,28 @@ globalThis.__parse__micromark = function (markdown: string): MarkdownRange[] {
           continue
         }
 
-        const markerEnd = markerEnds.get(type)
+        // This type's next marker at or after the walk position. Taking the
+        // last one on the line instead -- which is what keying by type alone
+        // did -- stretches the prefix across any marker that sits between two
+        // occurrences, so `> - > ` gave the quote a `"> - > "` prefix and left
+        // the list with none at all.
+        const index = markers.findIndex((m) => m.type === type && m.start >= prefixStart)
 
-        if (markerEnd !== undefined && markerEnd > prefixStart) {
+        if (index !== -1) {
+          // A contiguous run of one type is a single prefix: `>>> ` is three
+          // markers but one step over on the way to the content.
+          let markerEnd = markers[index]!.end
+
+          for (let j = index + 1; j < markers.length; j++) {
+            const marker = markers[j]!
+
+            if (marker.type !== type || marker.start !== markerEnd) {
+              break
+            }
+
+            markerEnd = marker.end
+          }
+
           push(prefixStart, markerEnd, BLOCK_PREFIX)
           prefixStart = markerEnd
         }
@@ -379,7 +422,7 @@ globalThis.__parse__micromark = function (markdown: string): MarkdownRange[] {
       lineStart = end
     }
 
-    markerEnds.clear()
+    markers.length = 0
   }
 
   function emit(token: Token, type: MarkdownType) {

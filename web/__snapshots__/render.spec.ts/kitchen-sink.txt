@@ -1,0 +1,163 @@
+p[line] margin-bottom:0px margin-left:0px margin-right:0px margin-top:0px padding-bottom:0px padding-left:<measured> padding-right:0px padding-top:0px
+  span[heading] font-size:38px font-weight:bold
+    span[syntax] color:gray
+      span[text]
+        #text "#"
+    span[text]
+      #text " Heading"
+p[line] margin-bottom:0px margin-left:0px margin-right:0px margin-top:0px padding-bottom:0px padding-left:<measured> padding-right:0px padding-top:0px
+  span[br]
+    br
+p[line] margin-bottom:0px margin-left:0px margin-right:0px margin-top:0px padding-bottom:0px padding-left:<measured> padding-right:0px padding-top:0px
+  span[text]
+    #text "Some "
+  span[bold] font-weight:bold
+    span[syntax] color:gray
+      span[text]
+        #text "**"
+    span[text]
+      #text "bold"
+    span[syntax] color:gray
+      span[text]
+        #text "**"
+  span[text]
+    #text ", "
+  span[italic] font-style:italic
+    span[syntax] color:gray
+      span[text]
+        #text "*"
+    span[text]
+      #text "italic"
+    span[syntax] color:gray
+      span[text]
+        #text "*"
+  span[text]
+    #text " and "
+  span[strikethrough] text-decoration-color:initial text-decoration-line:line-through text-decoration-style:initial text-decoration-thickness:initial
+    span[syntax] color:gray
+      span[text]
+        #text "~~"
+    span[text]
+      #text "struck"
+    span[syntax] color:gray
+      span[text]
+        #text "~~"
+  span[text]
+    #text " text with "
+  span[syntax] color:gray
+    span[text]
+      #text "`"
+  span[code] background-color:lightgray color:black font-family:monospace font-size:16px
+    span[text]
+      #text "code"
+  span[syntax] color:gray
+    span[text]
+      #text "`"
+  span[text]
+    #text "."
+p[line] margin-bottom:0px margin-left:0px margin-right:0px margin-top:0px padding-bottom:0px padding-left:<measured> padding-right:0px padding-top:0px
+  span[br]
+    br
+p[line] background-image:linear-gradient(gray, gray) background-position-x:<measured> background-position-y:0px background-repeat:no-repeat background-size:6px 100% margin-bottom:0px margin-left:0px margin-right:0px margin-top:0px padding-bottom:0px padding-left:<measured> padding-right:0px padding-top:0px text-indent:<measured>
+  span[blockquote] overflow-wrap:anywhere
+    span[block-prefix]
+      span[syntax] color:gray
+        span[text]
+          #text ">"
+      span[text]
+        #text " "
+    span[text]
+      #text "A quote with a "
+    span[syntax] color:gray
+      span[text]
+        #text "["
+    span[text]
+      #text "link"
+    span[syntax] color:gray
+      span[text]
+        #text "]"
+    span[syntax] color:gray
+      span[text]
+        #text "("
+    span[link] color:blue text-decoration-color:initial text-decoration-line:underline text-decoration-style:initial text-decoration-thickness:initial
+      span[text]
+        #text "https://example.com"
+    span[syntax] color:gray
+      span[text]
+        #text ")"
+p[line] margin-bottom:0px margin-left:0px margin-right:0px margin-top:0px padding-bottom:0px padding-left:<measured> padding-right:0px padding-top:0px
+  span[br]
+    br
+p[line] margin-bottom:0px margin-left:0px margin-right:0px margin-top:0px padding-bottom:0px padding-left:<measured> padding-right:0px padding-top:0px text-indent:<measured>
+  span[list-unordered] overflow-wrap:anywhere
+    span[block-prefix]
+      span[syntax] color:gray
+        span[text]
+          #text "-"
+      span[text]
+        #text " "
+    span[text]
+      #text "item one"
+p[line] margin-bottom:0px margin-left:0px margin-right:0px margin-top:0px padding-bottom:0px padding-left:<measured> padding-right:0px padding-top:0px text-indent:<measured>
+  span[list-unordered] overflow-wrap:anywhere
+    span[block-prefix]
+      span[syntax] color:gray
+        span[text]
+          #text "-"
+      span[text]
+        #text " "
+    span[text]
+      #text "item two"
+p[line] margin-bottom:0px margin-left:0px margin-right:0px margin-top:0px padding-bottom:0px padding-left:<measured> padding-right:0px padding-top:0px text-indent:<measured>
+  span[list-unordered] overflow-wrap:anywhere
+    span[list-ordered] overflow-wrap:anywhere
+      span[block-prefix]
+        span[text]
+          #text "  "
+        span[syntax] color:gray
+          span[text]
+            #text "1"
+        span[syntax] color:gray
+          span[text]
+            #text "."
+        span[text]
+          #text " "
+      span[text]
+        #text "nested"
+p[line] margin-bottom:0px margin-left:0px margin-right:0px margin-top:0px padding-bottom:0px padding-left:<measured> padding-right:0px padding-top:0px
+  span[br]
+    br
+p[line] margin-bottom:0px margin-left:0px margin-right:0px margin-top:0px padding-bottom:0px padding-left:<measured> padding-right:0px padding-top:0px
+  span[codeblock]
+    span[syntax] color:gray
+      span[text]
+        #text "```"
+    span[text]
+      #text "ts"
+    span[br]
+      br
+    span[pre] background-color:lightgray color:black font-family:monospace font-size:16px
+      span[text]
+        #text "const a = 1"
+      span[br]
+        br
+    span[syntax] color:gray
+      span[text]
+        #text "```"
+p[line] margin-bottom:0px margin-left:0px margin-right:0px margin-top:0px padding-bottom:0px padding-left:<measured> padding-right:0px padding-top:0px
+  span[br]
+    br
+p[line] margin-bottom:0px margin-left:0px margin-right:0px margin-top:0px padding-bottom:0px padding-left:<measured> padding-right:0px padding-top:0px
+  span[text]
+    #text "Hey "
+  span[mention-user] background-color:cyan border-bottom-left-radius:5px border-bottom-right-radius:5px border-top-left-radius:5px border-top-right-radius:5px color:blue
+    span[text]
+      #text "@someone"
+  span[text]
+    #text " "
+  span[emoji] font-family:System, "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji" font-size:16px vertical-align:middle
+    span[text]
+      #text "😀"
+p[line] margin-bottom:0px margin-left:0px margin-right:0px margin-top:0px padding-bottom:0px padding-left:<measured> padding-right:0px padding-top:0px
+  span[br]
+    br

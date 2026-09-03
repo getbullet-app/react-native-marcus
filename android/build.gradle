@@ -127,12 +127,30 @@ android {
     disable "GradleCompatible"
   }
 
+  testOptions {
+    unitTests {
+      // Robolectric needs the merged resources and the real framework jar;
+      // without this it cannot inflate a Context.
+      includeAndroidResources = true
+      // Unstubbed framework calls return defaults rather than throwing. Only
+      // reached for the few statics Robolectric does not shadow.
+      returnDefaultValues = true
+    }
+  }
+
   compileOptions {
     sourceCompatibility JavaVersion.VERSION_17
     targetCompatibility JavaVersion.VERSION_17
   }
 
   sourceSets {
+    // The shared fixture corpus, on the test classpath. The formatters take
+    // ranges rather than markdown, so `ranges.json` is what lets the native
+    // suites run with no JS runtime at all.
+    test {
+      resources.srcDirs += "${projectDir}/../src/__fixtures__"
+    }
+
     main {
       java.srcDirs += [
         // This is needed to build Kotlin project with NewArch enabled
@@ -196,4 +214,7 @@ dependencies {
   implementation "com.facebook.react:react-android" // version substituted by RNGP
   implementation "com.facebook.react:hermes-android" // version substituted by RNGP
   implementation project(":react-native-worklets")
+
+  testImplementation "junit:junit:4.13.2"
+  testImplementation "org.robolectric:robolectric:4.16"
 }

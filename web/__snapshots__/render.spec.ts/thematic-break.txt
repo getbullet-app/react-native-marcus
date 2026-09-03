@@ -1,0 +1,16 @@
+p[line] margin-bottom:0px margin-left:0px margin-right:0px margin-top:0px padding-bottom:0px padding-left:<measured> padding-right:0px padding-top:0px
+  span[text]
+    #text "one"
+p[line] margin-bottom:0px margin-left:0px margin-right:0px margin-top:0px padding-bottom:0px padding-left:<measured> padding-right:0px padding-top:0px
+  span[br]
+    br
+p[line] margin-bottom:0px margin-left:0px margin-right:0px margin-top:0px padding-bottom:0px padding-left:<measured> padding-right:0px padding-top:0px
+  span[syntax] color:gray
+    span[text]
+      #text "---"
+p[line] margin-bottom:0px margin-left:0px margin-right:0px margin-top:0px padding-bottom:0px padding-left:<measured> padding-right:0px padding-top:0px
+  span[br]
+    br
+p[line] margin-bottom:0px margin-left:0px margin-right:0px margin-top:0px padding-bottom:0px padding-left:<measured> padding-right:0px padding-top:0px
+  span[text]
+    #text "two"

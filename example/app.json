@@ -28,6 +28,12 @@
     "plugins": [
       "expo-router",
       [
+        "expo-detox-config-plugin",
+        {
+          "skipProguard": true
+        }
+      ],
+      [
         "expo-splash-screen",
         {
           "backgroundColor": "#ffc107",

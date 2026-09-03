@@ -1,0 +1,7 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`sortRanges straddles exactly where the code-block ranges are known to 1`] = `
+"code-indented: pre 4..13 straddles codeblock 0..12
+code-in-blockquote: codeblock 2..20 straddles blockquote 0..5
+code-in-blockquote: pre 8..15 straddles blockquote 6..14"
+`;

@@ -1,24 +1,15 @@
-import { ThemeProvider } from "expo-router"
-import { NativeTabs } from "expo-router/unstable-native-tabs"
-import { useColorScheme } from "react-native"
+import { Stack } from "expo-router"
 
-import { DarkTheme, LightTheme } from "@/constants/theme"
-
-export default function TabLayout() {
-  const colorScheme = useColorScheme()
+/**
+ * The tabs are the demo; `harness` and `checks` sit outside them so the test
+ * routes render on their own, with no tab bar in the way of a screenshot.
+ */
+export default function RootLayout() {
   return (
-    <ThemeProvider value={colorScheme === "dark" ? DarkTheme : LightTheme}>
-      <NativeTabs>
-        <NativeTabs.Trigger name="index">
-          <NativeTabs.Trigger.Label>Marcus</NativeTabs.Trigger.Label>
-        </NativeTabs.Trigger>
-        <NativeTabs.Trigger name="lists">
-          <NativeTabs.Trigger.Label>Lists</NativeTabs.Trigger.Label>
-        </NativeTabs.Trigger>
-        <NativeTabs.Trigger name="expensify">
-          <NativeTabs.Trigger.Label>Expensify</NativeTabs.Trigger.Label>
-        </NativeTabs.Trigger>
-      </NativeTabs>
-    </ThemeProvider>
+    <Stack screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="(tabs)" />
+      <Stack.Screen name="harness" />
+      <Stack.Screen name="checks" />
+    </Stack>
   )
 }

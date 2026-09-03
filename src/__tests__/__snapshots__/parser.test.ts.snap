@@ -1,0 +1,752 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`parser autolink-angle 1`] = `
+"syntax    0..1  "<"
+link     1..20  "https://example.com"
+syntax  20..21  ">""
+`;
+
+exports[`parser autolink-email 1`] = `"link   0..16  "user@example.com""`;
+
+exports[`parser autolink-http 1`] = `"link   0..19  "https://example.com""`;
+
+exports[`parser autolink-www 1`] = `"link   0..15  "www.example.com""`;
+
+exports[`parser blockquote 1`] = `
+"syntax          0..1  ">"
+block-prefix    0..2  "> "
+blockquote      0..8  "> quoted" depth=1"
+`;
+
+exports[`parser blockquote-in-list 1`] = `
+"syntax            0..1  "-"
+syntax            2..3  ">"
+block-prefix      0..2  "- "
+list-unordered   0..20  "- > quoted in a list" depth=1
+block-prefix      2..4  "> "
+blockquote       0..20  "- > quoted in a list" depth=1"
+`;
+
+exports[`parser blockquote-lazy 1`] = `
+"syntax          0..1  ">"
+block-prefix    0..2  "> "
+blockquote      0..5  "> one" depth=1
+blockquote      6..9  "two" depth=1"
+`;
+
+exports[`parser blockquote-multiline 1`] = `
+"syntax          0..1  ">"
+block-prefix    0..2  "> "
+blockquote      0..5  "> one" depth=1
+syntax          6..7  ">"
+block-prefix    6..8  "> "
+blockquote     6..11  "> two" depth=1"
+`;
+
+exports[`parser blockquote-nested 1`] = `
+"syntax          0..1  ">"
+syntax          1..2  ">"
+block-prefix    0..3  ">> "
+blockquote      0..7  ">> deep" depth=2"
+`;
+
+exports[`parser blockquote-triple 1`] = `
+"syntax          0..1  ">"
+syntax          1..2  ">"
+syntax          2..3  ">"
+block-prefix    0..4  ">>> "
+blockquote     0..10  ">>> deeper" depth=3"
+`;
+
+exports[`parser bold 1`] = `
+"bold      0..8  "**bold**"
+syntax    0..2  "**"
+syntax    6..8  "**""
+`;
+
+exports[`parser bold-italic-underscore 1`] = `
+"italic   0..10  "___both___"
+syntax    0..1  "_"
+bold      1..9  "__both__"
+syntax    1..3  "__"
+syntax    7..9  "__"
+syntax   9..10  "_""
+`;
+
+exports[`parser bold-underscore 1`] = `
+"bold      0..8  "__bold__"
+syntax    0..2  "__"
+syntax    6..8  "__""
+`;
+
+exports[`parser bold-underscore-intraword 1`] = `"(no ranges)"`;
+
+exports[`parser bold-underscore-mixed 1`] = `
+"bold      0..8  "__bold__"
+syntax    0..2  "__"
+syntax    6..8  "__"
+bold    13..21  "**bold**"
+syntax  13..15  "**"
+syntax  19..21  "**""
+`;
+
+exports[`parser character-reference 1`] = `
+"syntax    0..1  "&"
+syntax    4..5  ";"
+syntax  10..11  "&"
+syntax  11..12  "#"
+syntax  14..15  ";""
+`;
+
+exports[`parser cjk-blockquote 1`] = `
+"syntax          0..1  ">"
+block-prefix    0..2  "> "
+blockquote      0..5  "> 引用文" depth=1"
+`;
+
+exports[`parser cjk-chinese 1`] = `
+"bold      0..8  "**中文粗体**"
+syntax    0..2  "**"
+syntax    6..8  "**""
+`;
+
+exports[`parser cjk-code 1`] = `
+"syntax    0..1  "\`"
+code      1..5  "中文代码"
+syntax    5..6  "\`""
+`;
+
+exports[`parser cjk-combining-dakuten 1`] = `"(no ranges)"`;
+
+exports[`parser cjk-fullwidth-asterisk 1`] = `"(no ranges)"`;
+
+exports[`parser cjk-heading 1`] = `
+"heading    0..5  "# 見出し" depth=1
+syntax     0..1  "#""
+`;
+
+exports[`parser cjk-ideographic-space 1`] = `"(no ranges)"`;
+
+exports[`parser cjk-kana 1`] = `
+"italic    0..6  "*ひらがな*"
+syntax    0..1  "*"
+syntax    5..6  "*"
+bold     9..17  "**カタカナ**"
+syntax   9..11  "**"
+syntax  15..17  "**""
+`;
+
+exports[`parser cjk-korean 1`] = `
+"bold     0..10  "**한국어 굵게**"
+syntax    0..2  "**"
+syntax   8..10  "**""
+`;
+
+exports[`parser cjk-link 1`] = `
+"syntax    0..1  "["
+syntax    5..6  "]"
+syntax    6..7  "("
+link     7..29  "https://example.com/中文"
+syntax  29..30  ")""
+`;
+
+exports[`parser cjk-list 1`] = `
+"syntax            0..1  "-"
+block-prefix      0..2  "- "
+list-unordered    0..5  "- 項目一" depth=1
+syntax            6..7  "-"
+block-prefix      6..8  "- "
+list-unordered   6..11  "- 項目二" depth=1"
+`;
+
+exports[`parser cjk-mention 1`] = `"mention-user    4..8  "@用户名""`;
+
+exports[`parser cjk-punctuation-after 1`] = `
+"bold      0..6  "**粗体**"
+syntax    0..2  "**"
+syntax    4..6  "**""
+`;
+
+exports[`parser cjk-punctuation-before 1`] = `
+"bold      1..7  "**粗体**"
+syntax    1..3  "**"
+syntax    5..7  "**""
+`;
+
+exports[`parser code-fenced 1`] = `
+"codeblock   0..14  "\`\`\`\\nfenced\\n\`\`\`"
+syntax       0..3  "\`\`\`"
+pre         4..11  "fenced\\n"
+syntax     11..14  "\`\`\`""
+`;
+
+exports[`parser code-fenced-lang 1`] = `
+"codeblock   0..21  "\`\`\`ts\\nconst a = 1\\n\`\`\`"
+syntax       0..3  "\`\`\`"
+pre         6..18  "const a = 1\\n"
+syntax     18..21  "\`\`\`""
+`;
+
+exports[`parser code-fenced-unterminated 1`] = `
+"codeblock   0..10  "\`\`\`\\nno end"
+syntax       0..3  "\`\`\`"
+pre         4..10  "no end""
+`;
+
+exports[`parser code-in-blockquote 1`] = `
+"syntax          0..1  ">"
+codeblock      2..20  "\`\`\`\\n> fenced\\n> \`\`\`"
+syntax          2..5  "\`\`\`"
+block-prefix    0..2  "> "
+blockquote      0..5  "> \`\`\`" depth=1
+syntax          6..7  ">"
+pre            8..15  "fenced\\n"
+block-prefix    6..8  "> "
+blockquote     6..14  "> fenced" depth=1
+syntax        15..16  ">"
+syntax        17..20  "\`\`\`"
+block-prefix  15..17  "> "
+blockquote    15..20  "> \`\`\`" depth=1"
+`;
+
+exports[`parser code-indented 1`] = `
+"codeblock   0..12  "    indented"
+pre         4..13  "indented\\n""
+`;
+
+exports[`parser code-inline 1`] = `
+"syntax    5..6  "\`"
+code     6..10  "code"
+syntax  10..11  "\`""
+`;
+
+exports[`parser code-inline-double 1`] = `
+"syntax    2..4  "\`\`"
+code      4..9  "co\`de"
+syntax   9..11  "\`\`""
+`;
+
+exports[`parser crlf 1`] = `
+"heading         0..5  "# One" depth=1
+syntax          0..1  "#"
+syntax         9..10  ">"
+block-prefix   9..11  "> "
+blockquote     9..14  "> two" depth=1"
+`;
+
+exports[`parser emoji 1`] = `"emoji    6..8  "😀""`;
+
+exports[`parser emoji-flag 1`] = `"emoji    5..9  "🇱🇹""`;
+
+exports[`parser emoji-in-bold 1`] = `
+"bold      0..7  "**bold "
+bold     9..16  " text**"
+syntax    0..2  "**"
+emoji     7..9  "😀"
+syntax  14..16  "**""
+`;
+
+exports[`parser emoji-only 1`] = `"emoji    0..2  "😀""`;
+
+exports[`parser emoji-skin-tone 1`] = `"emoji    5..9  "👋🏽""`;
+
+exports[`parser emoji-zwj-family 1`] = `"emoji   0..11  "👨‍👩‍👧‍👦""`;
+
+exports[`parser emphasis-adjacent-syntax 1`] = `
+"strikethrough    0..3  "~a~"
+syntax           0..1  "~"
+syntax           2..3  "~"
+syntax           3..4  "\`"
+code             4..8  "code"
+syntax           8..9  "\`""
+`;
+
+exports[`parser emphasis-intraword 1`] = `"(no ranges)"`;
+
+exports[`parser emphasis-nested 1`] = `
+"bold     0..26  "**bold *and italic* here**"
+syntax    0..2  "**"
+italic   7..19  "*and italic*"
+syntax    7..8  "*"
+syntax  18..19  "*"
+syntax  24..26  "**""
+`;
+
+exports[`parser emphasis-unterminated 1`] = `"(no ranges)"`;
+
+exports[`parser empty 1`] = `"(no ranges)"`;
+
+exports[`parser escaped-emphasis 1`] = `
+"syntax    0..1  "\\\\"
+syntax  10..11  "\\\\""
+`;
+
+exports[`parser hard-break 1`] = `"syntax    3..5  "  ""`;
+
+exports[`parser heading-closed 1`] = `
+"heading    0..9  "## Two ##" depth=2
+syntax     0..2  "##"
+syntax     7..9  "##""
+`;
+
+exports[`parser heading-h1 1`] = `
+"heading    0..5  "# One" depth=1
+syntax     0..1  "#""
+`;
+
+exports[`parser heading-h3 1`] = `
+"heading    0..9  "### Three" depth=3
+syntax     0..3  "###""
+`;
+
+exports[`parser heading-h6 1`] = `
+"heading   0..10  "###### Six" depth=6
+syntax     0..6  "######""
+`;
+
+exports[`parser heading-setext 1`] = `
+"heading   0..11  "Title\\n=====" depth=1
+syntax    6..11  "=====""
+`;
+
+exports[`parser heading-with-emphasis 1`] = `
+"heading   0..18  "# A **bold** title" depth=1
+syntax     0..1  "#"
+bold      4..12  "**bold**"
+syntax     4..6  "**"
+syntax   10..12  "**""
+`;
+
+exports[`parser image-inline 1`] = `
+"inline-image   0..33  "![alt](https://example.com/a.png)"
+syntax          0..1  "!"
+syntax          1..2  "["
+syntax          5..6  "]"
+syntax          6..7  "("
+link           7..32  "https://example.com/a.png"
+syntax        32..33  ")""
+`;
+
+exports[`parser italic-star 1`] = `
+"italic    0..8  "*italic*"
+syntax    0..1  "*"
+syntax    7..8  "*""
+`;
+
+exports[`parser italic-underscore 1`] = `
+"italic    0..8  "_italic_"
+syntax    0..1  "_"
+syntax    7..8  "_""
+`;
+
+exports[`parser kitchen-sink 1`] = `
+"heading           0..9  "# Heading" depth=1
+syntax            0..1  "#"
+bold            16..24  "**bold**"
+syntax          16..18  "**"
+syntax          22..24  "**"
+italic          26..34  "*italic*"
+syntax          26..27  "*"
+syntax          33..34  "*"
+strikethrough   39..49  "~~struck~~"
+syntax          39..41  "~~"
+syntax          47..49  "~~"
+syntax          60..61  "\`"
+code            61..65  "code"
+syntax          65..66  "\`"
+syntax          69..70  ">"
+syntax          86..87  "["
+syntax          91..92  "]"
+syntax          92..93  "("
+link           93..112  "https://example.com"
+syntax        112..113  ")"
+block-prefix    69..71  "> "
+blockquote     69..113  "> A quote with a [link](https://example.com)" depth=1
+syntax        115..116  "-"
+block-prefix  115..117  "- "
+list-unordered115..125  "- item one" depth=1
+syntax        126..127  "-"
+block-prefix  126..128  "- "
+list-unordered126..136  "- item two" depth=1
+syntax        139..140  "1"
+syntax        140..141  "."
+list-unordered137..148  "  1. nested" depth=1
+block-prefix  137..142  "  1. "
+list-ordered  137..148  "  1. nested" depth=1
+codeblock     150..171  "\`\`\`ts\\nconst a = 1\\n\`\`\`"
+syntax        150..153  "\`\`\`"
+pre           156..168  "const a = 1\\n"
+syntax        168..171  "\`\`\`"
+mention-user  177..185  "@someone"
+emoji         186..188  "😀""
+`;
+
+exports[`parser link-inline 1`] = `
+"syntax    0..1  "["
+syntax    5..6  "]"
+syntax    6..7  "("
+link     7..26  "https://example.com"
+syntax  26..27  ")""
+`;
+
+exports[`parser link-reference 1`] = `
+"syntax    0..1  "["
+syntax    5..6  "]"
+syntax    6..7  "["
+syntax  10..11  "]"
+syntax  13..14  "["
+syntax  17..18  "]"
+syntax  18..19  ":"
+link    20..39  "https://example.com""
+`;
+
+exports[`parser link-title 1`] = `
+"syntax    0..1  "["
+syntax    5..6  "]"
+syntax    6..7  "("
+link     7..26  "https://example.com"
+syntax  27..28  "\\""
+syntax  33..34  "\\""
+syntax  34..35  ")""
+`;
+
+exports[`parser list-dash 1`] = `
+"syntax            0..1  "-"
+block-prefix      0..2  "- "
+list-unordered    0..5  "- one" depth=1
+syntax            6..7  "-"
+block-prefix      6..8  "- "
+list-unordered   6..11  "- two" depth=1"
+`;
+
+exports[`parser list-in-blockquote 1`] = `
+"syntax            0..1  ">"
+syntax            2..3  "-"
+block-prefix      0..2  "> "
+blockquote       0..19  "> - item in a quote" depth=1
+block-prefix      2..4  "- "
+list-unordered   0..19  "> - item in a quote" depth=1"
+`;
+
+exports[`parser list-item-multiline 1`] = `
+"syntax            0..1  "-"
+block-prefix      0..2  "- "
+list-unordered   0..12  "- first line" depth=1
+list-unordered  13..26  "  second line" depth=1"
+`;
+
+exports[`parser list-nested 1`] = `
+"syntax            0..1  "-"
+block-prefix      0..2  "- "
+list-unordered    0..5  "- one" depth=1
+syntax            8..9  "-"
+block-prefix     6..10  "  - "
+list-unordered   6..13  "  - two" depth=2
+syntax          18..19  "-"
+block-prefix    14..20  "    - "
+list-unordered  14..25  "    - three" depth=3"
+`;
+
+exports[`parser list-nested-mixed 1`] = `
+"syntax            0..1  "1"
+syntax            1..2  "."
+block-prefix      0..3  "1. "
+list-ordered      0..6  "1. one" depth=1
+syntax          10..11  "-"
+list-ordered     7..15  "   - two" depth=1
+block-prefix     7..12  "   - "
+list-unordered   7..15  "   - two" depth=1
+syntax          19..20  "-"
+list-ordered    16..26  "   - three" depth=1
+block-prefix    16..21  "   - "
+list-unordered  16..26  "   - three" depth=1"
+`;
+
+exports[`parser list-ordered 1`] = `
+"syntax          0..1  "1"
+syntax          1..2  "."
+block-prefix    0..3  "1. "
+list-ordered    0..6  "1. one" depth=1
+syntax          7..8  "2"
+syntax          8..9  "."
+block-prefix   7..10  "2. "
+list-ordered   7..13  "2. two" depth=1"
+`;
+
+exports[`parser list-ordered-offset 1`] = `
+"syntax          0..1  "3"
+syntax          1..2  "."
+block-prefix    0..3  "3. "
+list-ordered    0..8  "3. three" depth=1
+syntax         9..10  "4"
+syntax        10..11  "."
+block-prefix   9..12  "4. "
+list-ordered   9..16  "4. four" depth=1"
+`;
+
+exports[`parser list-ordered-paren 1`] = `
+"syntax          0..1  "1"
+syntax          1..2  ")"
+block-prefix    0..3  "1) "
+list-ordered    0..6  "1) one" depth=1
+syntax          7..8  "2"
+syntax          8..9  ")"
+block-prefix   7..10  "2) "
+list-ordered   7..13  "2) two" depth=1"
+`;
+
+exports[`parser list-plus 1`] = `
+"syntax            0..1  "+"
+block-prefix      0..2  "+ "
+list-unordered    0..5  "+ one" depth=1
+syntax            6..7  "+"
+block-prefix      6..8  "+ "
+list-unordered   6..11  "+ two" depth=1"
+`;
+
+exports[`parser list-star 1`] = `
+"syntax            0..1  "*"
+block-prefix      0..2  "* "
+list-unordered    0..5  "* one" depth=1
+syntax            6..7  "*"
+block-prefix      6..8  "* "
+list-unordered   6..11  "* two" depth=1"
+`;
+
+exports[`parser mention 1`] = `"mention-user   4..12  "@someone""`;
+
+exports[`parser mention-hyphen 1`] = `"(no ranges)"`;
+
+exports[`parser mention-in-bold 1`] = `
+"bold           0..12  "**@someone**"
+syntax          0..2  "**"
+mention-user   2..10  "@someone"
+syntax        10..12  "**""
+`;
+
+exports[`parser mention-trailing-hyphen 1`] = `"(no ranges)"`;
+
+exports[`parser nesting-deep-mixed 1`] = `
+"syntax            0..1  ">"
+syntax            2..3  "-"
+syntax            4..5  ">"
+syntax            6..7  "1"
+syntax            7..8  "."
+block-prefix      0..2  "> "
+blockquote       0..13  "> - > 1. deep" depth=2
+block-prefix      2..4  "- "
+list-unordered   0..13  "> - > 1. deep" depth=1
+block-prefix      4..9  "> 1. "
+list-ordered     0..13  "> - > 1. deep" depth=1"
+`;
+
+exports[`parser nesting-repeat-adjacent 1`] = `
+"syntax            0..1  ">"
+syntax            1..2  ">"
+syntax            3..4  "-"
+block-prefix      0..3  ">> "
+blockquote        0..6  ">> - x" depth=2
+block-prefix      3..5  "- "
+list-unordered    0..6  ">> - x" depth=1"
+`;
+
+exports[`parser nesting-repeat-split 1`] = `
+"syntax            0..1  ">"
+syntax            2..3  "-"
+syntax            4..5  ">"
+block-prefix      0..2  "> "
+blockquote        0..7  "> - > x" depth=2
+block-prefix      2..4  "- "
+list-unordered    0..7  "> - > x" depth=1"
+`;
+
+exports[`parser nesting-repeat-split-mirrored 1`] = `
+"syntax            0..1  "-"
+syntax            2..3  ">"
+syntax            4..5  "-"
+block-prefix      0..2  "- "
+list-unordered    0..7  "- > - x" depth=2
+block-prefix      2..4  "> "
+blockquote        0..7  "- > - x" depth=1"
+`;
+
+exports[`parser plain-text 1`] = `"(no ranges)"`;
+
+exports[`parser rtl-arabic 1`] = `
+"bold     0..17  "**مرحبا بالعالم**"
+syntax    0..2  "**"
+syntax  15..17  "**""
+`;
+
+exports[`parser rtl-arabic-indic-digits 1`] = `"(no ranges)"`;
+
+exports[`parser rtl-blockquote 1`] = `
+"syntax          0..1  ">"
+block-prefix    0..2  "> "
+blockquote      0..8  "> اقتباس" depth=1"
+`;
+
+exports[`parser rtl-code 1`] = `
+"syntax    0..1  "\`"
+code      1..5  "عربي"
+syntax    5..6  "\`""
+`;
+
+exports[`parser rtl-heading 1`] = `
+"heading    0..7  "# عنوان" depth=1
+syntax     0..1  "#""
+`;
+
+exports[`parser rtl-hebrew 1`] = `
+"bold     0..13  "**שלום עולם**"
+syntax    0..2  "**"
+syntax  11..13  "**""
+`;
+
+exports[`parser rtl-hebrew-niqqud 1`] = `
+"italic   8..14  "*test*"
+syntax    8..9  "*"
+syntax  13..14  "*""
+`;
+
+exports[`parser rtl-isolates 1`] = `
+"bold    11..19  "**bold**"
+syntax  11..13  "**"
+syntax  17..19  "**""
+`;
+
+exports[`parser rtl-lam-alef 1`] = `
+"bold     3..11  "**bold**"
+syntax    3..5  "**"
+syntax   9..11  "**""
+`;
+
+exports[`parser rtl-link 1`] = `
+"syntax    0..1  "["
+syntax    8..9  "]"
+syntax   9..10  "("
+link    10..29  "https://example.com"
+syntax  29..30  ")""
+`;
+
+exports[`parser rtl-list 1`] = `
+"syntax            0..1  "-"
+block-prefix      0..2  "- "
+list-unordered   0..10  "- عنصر أول" depth=1
+syntax          11..12  "-"
+block-prefix    11..13  "- "
+list-unordered  11..22  "- عنصر ثاني" depth=1"
+`;
+
+exports[`parser rtl-marks 1`] = `
+"bold     8..16  "**bold**"
+syntax   8..10  "**"
+syntax  14..16  "**""
+`;
+
+exports[`parser rtl-mention 1`] = `"mention-user    0..7  "@مستخدم""`;
+
+exports[`parser rtl-mixed 1`] = `
+"bold     6..15  "**hello**"
+syntax    6..8  "**"
+syntax  13..15  "**""
+`;
+
+exports[`parser rtl-punctuation 1`] = `
+"bold      0..8  "**عربي**"
+syntax    0..2  "**"
+syntax    6..8  "**""
+`;
+
+exports[`parser strikethrough 1`] = `
+"strikethrough   0..10  "~~struck~~"
+syntax           0..2  "~~"
+syntax          8..10  "~~""
+`;
+
+exports[`parser tabs 1`] = `
+"syntax            0..1  "-"
+block-prefix      0..2  "-\\t"
+list-unordered    0..5  "-\\tone" depth=1
+syntax            6..7  "-"
+block-prefix      6..8  "-\\t"
+list-unordered   6..11  "-\\ttwo" depth=1"
+`;
+
+exports[`parser thematic-break 1`] = `"syntax    5..8  "---""`;
+
+exports[`parser unicode-astral 1`] = `
+"bold     0..14  "**𝕳𝖊𝖑𝖑𝖔**"
+syntax    0..2  "**"
+syntax  12..14  "**""
+`;
+
+exports[`parser unicode-astral-in-list 1`] = `
+"syntax            0..1  "-"
+block-prefix      0..2  "- "
+list-unordered   0..12  "- 𝕳𝖊𝖑𝖑𝖔" depth=1"
+`;
+
+exports[`parser unicode-astral-minimal 1`] = `
+"bold      0..6  "**𝕳**"
+syntax    0..2  "**"
+syntax    4..6  "**""
+`;
+
+exports[`parser unicode-bom 1`] = `
+"heading   1..10  "# heading" depth=1
+syntax     1..2  "#""
+`;
+
+exports[`parser unicode-cjk 1`] = `
+"bold     0..12  "**日本語のテキスト**"
+syntax    0..2  "**"
+syntax  10..12  "**""
+`;
+
+exports[`parser unicode-combining 1`] = `
+"italic   7..13  "*test*"
+syntax    7..8  "*"
+syntax  12..13  "*""
+`;
+
+exports[`parser unicode-keycap 1`] = `"emoji    0..3  "1️⃣""`;
+
+exports[`parser unicode-line-separator 1`] = `"(no ranges)"`;
+
+exports[`parser unicode-nbsp 1`] = `
+"bold     4..12  "**bold**"
+syntax    4..6  "**"
+syntax  10..12  "**""
+`;
+
+exports[`parser unicode-nfd 1`] = `"(no ranges)"`;
+
+exports[`parser unicode-rtl 1`] = `
+"bold      0..9  "**مرحبا**"
+syntax    0..2  "**"
+syntax    7..9  "**""
+`;
+
+exports[`parser unicode-soft-hyphen 1`] = `
+"bold    12..20  "**bold**"
+syntax  12..14  "**"
+syntax  18..20  "**""
+`;
+
+exports[`parser unicode-tag-sequence 1`] = `"emoji   0..14  "🏴󠁧󠁢󠁳󠁣󠁴󠁿""`;
+
+exports[`parser unicode-variation-selector 1`] = `
+"emoji     0..2  "❤️"
+bold     3..10  "**red**"
+syntax    3..5  "**"
+syntax   8..10  "**""
+`;
+
+exports[`parser unicode-zwnj 1`] = `
+"italic   4..10  "*test*"
+syntax    4..5  "*"
+syntax   9..10  "*""
+`;
+
+exports[`parser whitespace-only 1`] = `"(no ranges)"`;

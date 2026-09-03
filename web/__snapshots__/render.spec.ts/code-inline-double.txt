@@ -1,0 +1,14 @@
+p[line] margin-bottom:0px margin-left:0px margin-right:0px margin-top:0px padding-bottom:0px padding-left:<measured> padding-right:0px padding-top:0px
+  span[text]
+    #text "a "
+  span[syntax] color:gray
+    span[text]
+      #text "``"
+  span[code] background-color:lightgray color:black font-family:monospace font-size:16px
+    span[text]
+      #text "co`de"
+  span[syntax] color:gray
+    span[text]
+      #text "``"
+  span[text]
+    #text " b"

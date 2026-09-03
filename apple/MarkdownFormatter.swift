@@ -1,4 +1,3 @@
-import React
 import UIKit
 
 /// Applies markdown ranges to an attributed string as text attributes.
@@ -9,12 +8,15 @@ import UIKit
 /// shared object, so a setter on one thread could race a read on another.
 @objc public final class MarkdownFormatter: NSObject {
 
-  @objc(formatAttributedString:defaultTextAttributes:ranges:style:)
+  /// Font resolution is injected rather than reached for, so this file carries
+  /// no React dependency and can be compiled on its own. The Objective-C entry
+  /// point in `MarkdownFormatter+React.swift` supplies the production one.
   public static func format(
     _ attributedString: NSMutableAttributedString,
     defaultTextAttributes: [NSAttributedString.Key: Any],
     ranges: [MarcusRange],
-    style: RCTMarcusStyle
+    style: RCTMarcusStyle,
+    fonts: MarkdownFontProviding
   ) {
     let fullRange = NSRange(location: 0, length: attributedString.length)
 
@@ -60,7 +62,8 @@ import UIKit
         to: attributedString,
         range: markdownRange.range,
         depth: Int(markdownRange.depth),
-        style: style
+        style: style,
+        fonts: fonts
       )
     }
 
@@ -83,7 +86,8 @@ import UIKit
     to attributedString: NSMutableAttributedString,
     range: NSRange,
     depth: Int,
-    style: RCTMarcusStyle
+    style: RCTMarcusStyle,
+    fonts: MarkdownFontProviding
   ) {
     switch type {
     case "bold", "italic", "code", "pre", "heading", "emoji":
@@ -95,28 +99,22 @@ import UIKit
         ) as? UIFont
       switch type {
       case "bold":
-        font = RCTFont.update(font, withWeight: "bold")
+        font = fonts.update(font, weight: "bold")
       case "italic":
-        font = RCTFont.update(font, withStyle: "italic")
+        font = fonts.update(font, style: "italic")
       case "code":
-        font = RCTFont.update(
+        font = fonts.update(
           font,
-          withFamily: style.codeFontFamily,
-          size: NSNumber(value: Float(style.codeFontSize)),
-          weight: nil,
-          style: nil,
-          variant: nil,
-          scaleMultiplier: 0
+          family: style.codeFontFamily,
+          size: style.codeFontSize,
+          weight: nil
         )
       case "pre":
-        font = RCTFont.update(
+        font = fonts.update(
           font,
-          withFamily: style.preFontFamily,
-          size: NSNumber(value: Float(style.preFontSize)),
-          weight: nil,
-          style: nil,
-          variant: nil,
-          scaleMultiplier: 0
+          family: style.preFontFamily,
+          size: style.preFontSize,
+          weight: nil
         )
       case "heading":
         // Level N is the base size scaled N-1 times, so a single pair of style
@@ -125,24 +123,13 @@ import UIKit
         for _ in 1..<max(depth, 1) {
           size *= style.headingScale
         }
-        font = RCTFont.update(
-          font,
-          withFamily: nil,
-          size: NSNumber(value: Float(size)),
-          weight: "bold",
-          style: nil,
-          variant: nil,
-          scaleMultiplier: 0
-        )
+        font = fonts.update(font, family: nil, size: size, weight: "bold")
       case "emoji":
-        font = RCTFont.update(
+        font = fonts.update(
           font,
-          withFamily: style.emojiFontFamily,
-          size: NSNumber(value: Float(style.emojiFontSize)),
-          weight: nil,
-          style: nil,
-          variant: nil,
-          scaleMultiplier: 0
+          family: style.emojiFontFamily,
+          size: style.emojiFontSize,
+          weight: nil
         )
       default:
         break
