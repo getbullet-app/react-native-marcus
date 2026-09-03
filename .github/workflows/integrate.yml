@@ -155,6 +155,12 @@ jobs:
   e2e-android:
     name: e2e android
     runs-on: ubuntu-latest
+    # A runner has no AVD, and no emulator package to list one with until the
+    # step below installs it -- yet `detox build` resolves the device config
+    # too. Naming the AVD the emulator action is about to create means neither
+    # the build nor the test has to go looking for it.
+    env:
+      MARCUS_ANDROID_AVD: test
     steps:
       - uses: actions/checkout@v7
 
@@ -187,6 +193,7 @@ jobs:
         with:
           api-level: 36
           arch: x86_64
+          avd-name: ${{ env.MARCUS_ANDROID_AVD }}
           script: npx detox test -c android --headless
 
       - if: failure()
