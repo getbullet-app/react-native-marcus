@@ -352,6 +352,16 @@
     ]
   },
   {
+    "id": "code-fenced-blank-line",
+    "markdown": "```\nfirst\n\nlast\n```",
+    "tags": [
+      "code",
+      "edge"
+    ],
+    "visual": true,
+    "note": "A blank line inside a block. The background is one box over the whole of it, so the empty line has to be filled like any other rather than left as a gap."
+  },
+  {
     "id": "code-indented",
     "markdown": "    indented\n",
     "tags": [
@@ -380,6 +390,14 @@
     "markdown": "[text](https://example.com \"Title\")",
     "tags": [
       "link"
+    ]
+  },
+  {
+    "id": "link-markup",
+    "markdown": "[**bold** link](https://example.com)",
+    "tags": [
+      "link",
+      "nesting"
     ]
   },
   {
@@ -427,6 +445,75 @@
     ]
   },
   {
+    "id": "image-title",
+    "markdown": "![alt](https://example.com/a.png \"Title\")",
+    "tags": [
+      "link"
+    ]
+  },
+  {
+    "id": "image-in-text",
+    "markdown": "an ![icon](https://example.com/i.png) inline",
+    "tags": [
+      "link"
+    ]
+  },
+  {
+    "id": "image-alt-markup",
+    "markdown": "![**bold** alt](https://example.com/a.png)",
+    "tags": [
+      "link",
+      "nesting"
+    ]
+  },
+  {
+    "id": "image-alt-emoji",
+    "markdown": "![party 🎉 time](https://example.com/a.png)",
+    "tags": [
+      "link",
+      "emoji"
+    ]
+  },
+  {
+    "id": "image-in-blockquote",
+    "markdown": "> ![alt](https://example.com/a.png)",
+    "tags": [
+      "link",
+      "nesting"
+    ]
+  },
+  {
+    "id": "link-label-url",
+    "markdown": "[http://google.com](http://example.com)",
+    "tags": [
+      "link"
+    ]
+  },
+  {
+    "id": "link-label-autolink",
+    "markdown": "[<https://x.com>](https://example.com)",
+    "tags": [
+      "link",
+      "nesting"
+    ]
+  },
+  {
+    "id": "link-label-image",
+    "markdown": "[a ![alt](https://example.com/i.png) b](https://example.com)",
+    "tags": [
+      "link",
+      "nesting"
+    ]
+  },
+  {
+    "id": "link-image",
+    "markdown": "[![alt](https://example.com/i.png)](https://example.com)",
+    "tags": [
+      "link",
+      "nesting"
+    ]
+  },
+  {
     "id": "mention",
     "markdown": "hey @someone",
     "tags": [
@@ -442,18 +529,106 @@
     ]
   },
   {
+    "id": "mention-underscore",
+    "markdown": "@some_one here",
+    "tags": [
+      "mention"
+    ]
+  },
+  {
     "id": "mention-trailing-hyphen",
     "markdown": "@someone- here",
     "tags": [
       "mention",
       "edge"
-    ]
+    ],
+    "note": "The `-` has no part after it, so the name ends in front of it."
+  },
+  {
+    "id": "mention-dot",
+    "markdown": "@bullet. and @user.name",
+    "tags": [
+      "mention"
+    ],
+    "note": "A dot is part of a name wherever it falls, the last character included."
+  },
+  {
+    "id": "mention-double-dot",
+    "markdown": "@bullet.. done",
+    "tags": [
+      "mention",
+      "edge"
+    ],
+    "note": "Only the first of a run of dots belongs to the name; the rest still read as text."
+  },
+  {
+    "id": "mention-at",
+    "markdown": "hey @user@example.com",
+    "tags": [
+      "mention"
+    ],
+    "note": "One mention, not two side by side: an `@` joins two parts of a name."
+  },
+  {
+    "id": "mention-trailing-at",
+    "markdown": "@user@ here",
+    "tags": [
+      "mention",
+      "edge"
+    ],
+    "note": "An `@` needs a name after it, so this one is left out of the mention."
+  },
+  {
+    "id": "mention-leading-at",
+    "markdown": "@@user here",
+    "tags": [
+      "mention",
+      "edge"
+    ],
+    "note": "A name cannot begin after an `@` either, so neither `@` opens one."
+  },
+  {
+    "id": "mention-mid-word",
+    "markdown": "a@b and user@name",
+    "tags": [
+      "mention",
+      "edge"
+    ],
+    "note": "A mention starts where a word starts, so neither of these is one."
+  },
+  {
+    "id": "mention-punctuation",
+    "markdown": "hi @user, ok",
+    "tags": [
+      "mention",
+      "edge"
+    ],
+    "note": "Punctuation may sit against a mention; it was never part of a name."
   },
   {
     "id": "mention-in-bold",
     "markdown": "**@someone**",
     "tags": [
       "mention",
+      "nesting"
+    ]
+  },
+  {
+    "id": "mention-in-italic-underscore",
+    "markdown": "_@someone_",
+    "tags": [
+      "mention",
+      "nesting",
+      "edge"
+    ],
+    "note": "The closing `_` has no name part after it, so it stays markup rather than joining the name."
+  },
+  {
+    "id": "mention-in-link",
+    "markdown": "[@user](https://example.com)",
+    "tags": [
+      "mention",
+      "link",
       "nesting"
     ]
   },

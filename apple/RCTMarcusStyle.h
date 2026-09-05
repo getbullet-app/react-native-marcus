@@ -16,25 +16,31 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic) CGFloat blockquotePaddingLeft;
 @property(nonatomic) CGFloat orderedListMarginLeft;
 @property(nonatomic) CGFloat orderedListPaddingLeft;
+@property(nonatomic) CGFloat orderedListMarkerScale;
+@property(nonatomic) CGFloat orderedListMarkerPadding;
 @property(nonatomic) CGFloat unorderedListMarginLeft;
 @property(nonatomic) CGFloat unorderedListPaddingLeft;
+@property(nonatomic) CGFloat unorderedListMarkerScale;
+@property(nonatomic) CGFloat unorderedListMarkerPadding;
 @property(nonatomic) NSString *codeFontFamily;
 @property(nonatomic) CGFloat codeFontSize;
 @property(nonatomic) UIColor *codeColor;
 @property(nonatomic) UIColor *codeBackgroundColor;
+@property(nonatomic) CGFloat codeBorderRadius;
+@property(nonatomic) CGFloat codePadding;
+@property(nonatomic) CGFloat codeMargin;
 @property(nonatomic) NSString *preFontFamily;
 @property(nonatomic) CGFloat preFontSize;
 @property(nonatomic) UIColor *preColor;
 @property(nonatomic) UIColor *preBackgroundColor;
-@property(nonatomic) UIColor *mentionHereColor;
-@property(nonatomic) UIColor *mentionHereBackgroundColor;
-@property(nonatomic) CGFloat mentionHereBorderRadius;
-@property(nonatomic) UIColor *mentionUserColor;
-@property(nonatomic) UIColor *mentionUserBackgroundColor;
-@property(nonatomic) CGFloat mentionUserBorderRadius;
-@property(nonatomic) UIColor *mentionReportColor;
-@property(nonatomic) UIColor *mentionReportBackgroundColor;
-@property(nonatomic) CGFloat mentionReportBorderRadius;
+@property(nonatomic) CGFloat preBorderRadius;
+@property(nonatomic) CGFloat prePadding;
+@property(nonatomic) CGFloat preMargin;
+@property(nonatomic) UIColor *mentionColor;
+@property(nonatomic) UIColor *mentionBackgroundColor;
+@property(nonatomic) CGFloat mentionBorderRadius;
+@property(nonatomic) CGFloat mentionPadding;
+@property(nonatomic) CGFloat mentionMargin;
 
 @end
 

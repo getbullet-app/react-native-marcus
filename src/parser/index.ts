@@ -9,6 +9,8 @@ import { mentions } from "./micromark-extension-mentions"
 
 const EMOJI_TYPE = "emoji"
 const SYNTAX_TYPE = "syntax"
+const LABEL_TYPE = "label"
+const ALT_TEXT_TYPE = "alt-text"
 
 const MAX_DEPTH = 6
 
@@ -72,6 +74,11 @@ const TOKENS: {
     "codeTextSequence",
     "codeFencedFenceSequence",
 
+    // Whatever follows a fenced block's language. The language itself is
+    // `codeblock-language` -- something will want to read it -- but the rest of
+    // that line is markup like any other fence.
+    "codeFencedFenceMeta",
+
     // Character references.
     "characterReferenceMarker",
     "characterReferenceMarkerNumeric",
@@ -100,10 +107,23 @@ const TOKENS: {
     // arrives, so they are emitted from emitHeading() instead.
   },
   content: {
-    mention: "mention-user",
+    mention: "mention",
 
     codeTextData: "code",
     codeFlowValue: "pre",
+
+    // The language a fenced block declares. Its own type rather than `syntax`
+    // because it is metadata something will want to read -- highlighting, at
+    // least -- and no formatter styles it, so it stays plain text in an input
+    // the way the rest of the fence line does not.
+    codeFencedFenceInfo: "codeblock-language",
+
+    // The title after a destination -- `[a](b "title")`, on a link as much as on
+    // an image. Metadata for the same reasons the language above is: a display
+    // renderer removes it with the rest of the resource, and something that
+    // renders an image wants to read it. Left unstyled in an input, where it is
+    // text between two quotes.
+    resourceTitleString: "title",
 
     // TODO:
     // htmlFlow: 'html',
@@ -190,6 +210,16 @@ globalThis.__parse__micromark = function (markdown: string): MarkdownRange[] {
   const countedBlocks: boolean[] = []
   // Heading awaiting the marker that states its level.
   let pendingHeading: Token | null = null
+  // Open images. A link's label is a link; an image's label is alt text, and
+  // the two are the same token type distinguished only by what encloses them.
+  let openImages = 0
+  // Open labels inside an image's, so that the outermost one is the alt text
+  // and everything under it is suppressed.
+  let altDepth = 0
+  // Open link labels. A label carries everything else it is written with --
+  // emphasis, code, mentions, an image -- but not a link: a link inside a link
+  // is text, and the one wrapped around it is the one that is pressed.
+  let labelDepth = 0
   // The container markers on the line being built, in the order they appear.
   // Positional rather than keyed by type: one type can open more than once on a
   // line, and the occurrences need not be adjacent (`> - > `). Cleared per
@@ -220,6 +250,9 @@ globalThis.__parse__micromark = function (markdown: string): MarkdownRange[] {
   return ranges
 
   function enter(token: Token) {
+    // Ahead of the alt-text gate below, and deliberately: an emoji is not
+    // markup but a property of a character that survives, and alt text shown as
+    // prose has to draw it in the emoji font like any other.
     if (EMOJI.scan.has(token.type)) {
       emitEmoji(token)
     }
@@ -289,12 +322,63 @@ globalThis.__parse__micromark = function (markdown: string): MarkdownRange[] {
     }
 
     if (TOKENS.special[token.type]) {
+      if (token.type === "image") {
+        openImages++
+
+        // An image written inside another one's label is not an image. It is
+        // some of the characters that label is spelled with.
+        if (altDepth > 0) {
+          return
+        }
+      }
+
       emit(token, TOKENS.special[token.type]!)
       return
     }
 
     if (TOKENS.syntax.has(token.type)) {
       emit(token, SYNTAX_TYPE)
+      return
+    }
+
+    // The visible half of a link, emitted so that a renderer which removes the
+    // markup around it has something left to style. Deliberately not `link`:
+    // while it is being edited the label is text you are typing, and only a
+    // renderer that has taken the brackets away has any business making it look
+    // like one.
+    if (token.type === "labelText") {
+      // A label nested inside an image's is part of that alt text, not a second
+      // one: `![a [b](c) d](e)` has exactly one.
+      if (altDepth > 0) {
+        altDepth++
+        return
+      }
+
+      // An image's label is alt text, not a link label. The two are the same
+      // token, distinguished only by what encloses them -- and they part ways
+      // downstream: a label is the link once the brackets are gone, while alt
+      // text is what stands in for an image nobody rendered.
+      if (openImages > 0) {
+        emit(token, ALT_TEXT_TYPE)
+        altDepth = 1
+        return
+      }
+
+      emit(token, LABEL_TYPE)
+      labelDepth++
+      return
+    }
+
+    // Alt text is a string. CommonMark says as much -- it flattens a label to
+    // plain text to render the `alt` attribute -- but micromark reports the
+    // structure it found, so `![**a** [b](c)](d)` arrives carrying emphasis, a
+    // whole link and that link's own destination. None of it means anything:
+    // nothing can draw a link inside an image. Only the syntax handled above
+    // survives, so that whatever removes markup can still remove these
+    // characters, and everything downstream sees one `alt-text` range over one
+    // flat string. Emoji are the exception, emitted above: they are not markup
+    // and the characters they cover are still there to be drawn.
+    if (altDepth > 0) {
       return
     }
 
@@ -314,12 +398,40 @@ globalThis.__parse__micromark = function (markdown: string): MarkdownRange[] {
     }
 
     if (TOKENS.link[token.type]) {
+      // A link written inside a label is not one: `[<https://x.com>](y)` reads
+      // as its own URL and points somewhere else. Its markers are still markup
+      // and still go, but what they leave behind is prose, so no range is
+      // emitted over it -- a second `link` here would draw it as a link of its
+      // own in an input and, once the display has taken the brackets away,
+      // would cover the same characters twice.
+      //
+      // An image's destination is not that: it is inside the label but it is
+      // the image's, and something has to render the image.
+      if (labelDepth > 0 && openImages === 0) {
+        return
+      }
+
       emit(token, TOKENS.link[token.type]!)
       return
     }
   }
 
   function exit(token: Token) {
+    if (token.type === "labelText") {
+      if (altDepth > 0) {
+        altDepth--
+      } else if (labelDepth > 0) {
+        labelDepth--
+      }
+
+      return
+    }
+
+    if (token.type === "image") {
+      openImages--
+      return
+    }
+
     if (!TOKENS.block[token.type]) {
       return
     }
@@ -554,3 +666,4 @@ globalThis.__parse__micromark = function (markdown: string): MarkdownRange[] {
     ranges.push(...result)
   }
 }
+

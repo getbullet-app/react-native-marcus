@@ -3,6 +3,9 @@ import type { Page } from "@playwright/test"
 /** The contenteditable the component renders into. It carries no testID. */
 const INPUT = ".react-native-marcus-input-multiline"
 
+/** The element `MarkdownText` renders into, in the harness's display mode. */
+const DISPLAY = '[data-testid="harness-display"]' 
+
 /**
  * Serializes the input's DOM into the same kind of render model the Android and
  * iOS suites will dump: one indented line per node, carrying the markdown type,
@@ -11,7 +14,7 @@ const INPUT = ".react-native-marcus-input-multiline"
  * A failure then reads as `span[bold] font-weight:bold` moving, rather than as
  * a wall of minified HTML or a pixel count.
  */
-async function renderModel(page: Page): Promise<string> {
+async function renderModel(page: Page, root: string = INPUT): Promise<string> {
   return page.evaluate((selector) => {
     const root = document.querySelector(selector)
 
@@ -67,7 +70,7 @@ async function renderModel(page: Page): Promise<string> {
     }
 
     return lines.join("\n")
-  }, INPUT)
+  }, root)
 }
 
 /** Opens a fixture by id and waits for the component to have rendered it. */
@@ -75,6 +78,36 @@ async function openCase(page: Page, id: string) {
   await page.goto(`/harness?case=${encodeURIComponent(id)}`)
   await page.waitForSelector('[data-testid="harness-ready"]', { state: "attached" })
   await page.waitForSelector(INPUT)
+}
+
+/** Opens a fixture by id in display mode, where `MarkdownText` renders it. */
+async function openDisplayCase(
+  page: Page,
+  id: string,
+  { embeds = false, links = false }: { embeds?: boolean; links?: boolean } = {},
+) {
+  await page.goto(
+    `/harness?case=${encodeURIComponent(id)}&display=1${embeds ? "&embeds=1" : ""}${
+      links ? "&links=1" : ""
+    }`,
+  )
+  await page.waitForSelector('[data-testid="harness-ready"]', { state: "attached" })
+  await page.waitForSelector(DISPLAY)
+}
+
+/** Opens arbitrary text in display mode, where `MarkdownText` renders it. */
+async function openDisplayText(
+  page: Page,
+  markdown: string,
+  { embeds = false, links = false }: { embeds?: boolean; links?: boolean } = {},
+) {
+  await page.goto(
+    `/harness?display=1&text=${encodeURIComponent(markdown)}${embeds ? "&embeds=1" : ""}${
+      links ? "&links=1" : ""
+    }`,
+  )
+  await page.waitForSelector('[data-testid="harness-ready"]', { state: "attached" })
+  await page.waitForSelector(DISPLAY)
 }
 
 /** Opens the harness on arbitrary text rather than a fixture. */
@@ -99,4 +132,14 @@ function failOnPageErrors(page: Page, sink: string[]) {
   })
 }
 
-export { INPUT, currentValue, failOnPageErrors, openCase, openText, renderModel }
+export {
+  DISPLAY,
+  INPUT,
+  currentValue,
+  failOnPageErrors,
+  openCase,
+  openDisplayCase,
+  openDisplayText,
+  openText,
+  renderModel,
+}

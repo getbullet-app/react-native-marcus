@@ -1,7 +1,7 @@
 import { useLocalSearchParams } from "expo-router"
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { StyleSheet, Text, View } from "react-native"
-import { MarkdownTextInput, parser } from "react-native-marcus"
+import { MarkdownText, MarkdownTextInput, parser } from "react-native-marcus"
 
 import CASES from "../../../src/__fixtures__/cases.json"
 
@@ -22,6 +22,18 @@ import CASES from "../../../src/__fixtures__/cases.json"
 
 const CASE_BY_ID = new Map(CASES.map((entry) => [entry.id, entry]))
 
+function renderEmbed(uri: string, alt: string, title: string, inline: boolean) {
+  return (
+    <View
+      testID="harness-embed"
+      // Where a spec reads back what the callback was handed: the label is not
+      // in the markup the component builds, so nothing else would show it.
+      accessibilityLabel={`${alt} ${inline ? "inline" : "block"}`}
+      style={styles.embed}
+    />
+  )
+}
+
 const MARKDOWN_STYLE = {
   syntax: { color: "gray" },
   link: { color: "blue" },
@@ -34,8 +46,30 @@ const MARKDOWN_STYLE = {
 } as const
 
 export default function Harness() {
-  const { case: caseId, text } = useLocalSearchParams<{ case?: string; text?: string }>()
+  const {
+    case: caseId,
+    text,
+    display,
+    embeds,
+    links,
+  } = useLocalSearchParams<{
+    case?: string
+    text?: string
+    display?: string
+    embeds?: string
+    links?: string
+  }>()
   const [value, setValue] = useState<string | null>(null)
+  const [pressed, setPressed] = useState("none")
+
+  // Everything the callback was handed, on one line, so a spec can assert the
+  // whole signature rather than just that something fired.
+  const onLinkPress = useCallback((uri: string, label: string, title: string) => {
+    setPressed((previous) => {
+      const count = Number(previous.split("#")[1]?.split(" ")[0] ?? 0) + 1
+      return `#${count} ${uri} | ${label}${title === "" ? "" : ` | ${title}`}`
+    })
+  }, [])
 
   // Resolved in an effect rather than during render: `expo export` prerenders
   // this route in Node, where there is no query string, so reading the params
@@ -51,6 +85,31 @@ export default function Harness() {
     return (
       <View testID="harness-root" style={styles.container}>
         <Text testID="harness-empty">no case</Text>
+      </View>
+    )
+  }
+
+  if (display) {
+    return (
+      <View testID="harness-root" style={styles.container}>
+        <MarkdownText
+          testID="harness-display"
+          parser={parser}
+          markdownStyle={MARKDOWN_STYLE}
+          style={styles.input}
+          // A fixed box rather than an image: an embed only has to be something
+          // of a known size, and a fixture that fetches nothing cannot flake.
+          renderEmbed={embeds ? renderEmbed : undefined}
+          onLinkPress={links ? onLinkPress : undefined}
+        >
+          {value}
+        </MarkdownText>
+        <Text testID="harness-link" style={styles.hidden}>
+          {pressed}
+        </Text>
+        <Text testID="harness-ready" style={styles.hidden}>
+          ready
+        </Text>
       </View>
     )
   }
@@ -96,6 +155,11 @@ const styles = StyleSheet.create({
   hidden: {
     position: "absolute",
     top: -1000,
+  },
+  embed: {
+    backgroundColor: "rebeccapurple",
+    height: 20,
+    width: 40,
   },
   input: {
     backgroundColor: "white",

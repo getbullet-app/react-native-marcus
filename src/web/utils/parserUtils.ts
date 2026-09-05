@@ -9,8 +9,8 @@ import {
   addStyleToBlock,
   isMultilineMarkdownType,
 } from "./blockUtils"
-import { layoutBlocks } from "./blockLayout"
-import type { LineLayout } from "./blockLayout"
+import { layoutBlocks, SHOWN_MARKERS } from "./blockLayout"
+import type { LineLayout, MarkerRendering } from "./blockLayout"
 import { createTextMeasurer } from "./measureUtils"
 import type { TextMeasurer } from "./measureUtils"
 import type { MarkdownRange, MarkdownType } from "../../commonTypes"
@@ -186,7 +186,7 @@ function addTextToElement(node: TreeNode, text: string, isMultiline = true) {
       if (
         !isMultiline &&
         parentType &&
-        ["pre", "code", "mention-here", "mention-user", "mention-report"].includes(parentType)
+        ["pre", "code", "mention"].includes(parentType)
       ) {
         // this is a fix to background colors being shifted downwards in a singleline input
         addStyleToBlock(span, "text", {}, false)
@@ -279,6 +279,7 @@ function addLine(
   isMultiline: boolean,
   markdownStyle: PartialMarkdownStyle,
   disableInlineStyles: boolean,
+  rendering: MarkerRendering,
 ) {
   if (!hasRanges) {
     return addParagraph(
@@ -339,7 +340,7 @@ function addLine(
     // Styled once it is in the tree, not before: a heading's size depends on how many heading
     // levels enclose it, and an element with no parent looks like the outermost one.
     if (!disableInlineStyles) {
-      addStyleToBlock(span, range.type, markdownStyle, isMultiline)
+      addStyleToBlock(span, range.type, markdownStyle, isMultiline, rendering)
       if (range.type === "block-prefix") {
         addBlockPrefixGap(span, line.layout?.gaps.get(range.start))
       }
@@ -401,6 +402,7 @@ function prepareLines(
   ranges: MarkdownRange[],
   markdownStyle: PartialMarkdownStyle,
   measure: TextMeasurer,
+  rendering: MarkerRendering = SHOWN_MARKERS,
 ) {
   const lines = splitTextIntoLines(text)
 
@@ -411,7 +413,7 @@ function prepareLines(
   // Before anything reorders them: the block walk reads the ranges in the order the parser emits
   // them -- each marker immediately before the container it belongs to -- and `sortRanges` sorts
   // that order away in place.
-  const layouts = layoutBlocks(text, ranges, markdownStyle, measure)
+  const layouts = layoutBlocks(text, ranges, markdownStyle, measure, rendering)
 
   // Sort all ranges by start position, length, and by tag hierarchy so the styles and text are applied in correct order
   const sortedRanges = sortRanges(ranges)
@@ -444,6 +446,7 @@ function parseRangesToHTMLNodes(
   markdownStyle: PartialMarkdownStyle = {},
   disableInlineStyles = false,
   measure: TextMeasurer = createTextMeasurer(null),
+  rendering: MarkerRendering = SHOWN_MARKERS,
 ) {
   const rootElement: HTMLMarkdownElement = document.createElement("span") as HTMLMarkdownElement
   const textLength = text.length
@@ -452,7 +455,7 @@ function parseRangesToHTMLNodes(
   // Built line by line, exactly as an update builds the lines it has to replace, so the two agree
   // by construction and each line sits at the offset the text gives it rather than at wherever the
   // line before it happened to end.
-  prepareLines(text, ranges, markdownStyle, measure).forEach((line, index) => {
+  prepareLines(text, ranges, markdownStyle, measure, rendering).forEach((line, index) => {
     const node = buildLine(
       line,
       index,
@@ -461,6 +464,7 @@ function parseRangesToHTMLNodes(
       isMultiline,
       markdownStyle,
       disableInlineStyles,
+      rendering,
     )
     node.parentNode = rootNode
     rootNode.childNodes.push(node)
@@ -565,6 +569,7 @@ function buildLine(
   isMultiline: boolean,
   markdownStyle: PartialMarkdownStyle,
   disableInlineStyles = false,
+  rendering: MarkerRendering = SHOWN_MARKERS,
 ) {
   // The scratch root carries the line's offset, so the subtree comes out with the absolute `start`
   // values the builder compares against range offsets -- the same ones it would get if the whole
@@ -582,6 +587,7 @@ function buildLine(
     isMultiline,
     markdownStyle,
     disableInlineStyles,
+    rendering,
   )
 
   coverChildren(node)

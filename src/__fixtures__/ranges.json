@@ -1128,6 +1128,11 @@
       "type": "syntax"
     },
     {
+      "start": 3,
+      "length": 2,
+      "type": "codeblock-language"
+    },
+    {
       "start": 6,
       "length": 12,
       "type": "pre"
@@ -1153,6 +1158,33 @@
       "start": 4,
       "length": 6,
       "type": "pre"
+    }
+  ],
+  "code-fenced-blank-line": [
+    {
+      "start": 0,
+      "length": 19,
+      "type": "codeblock"
+    },
+    {
+      "start": 0,
+      "length": 3,
+      "type": "syntax"
+    },
+    {
+      "start": 4,
+      "length": 6,
+      "type": "pre"
+    },
+    {
+      "start": 11,
+      "length": 5,
+      "type": "pre"
+    },
+    {
+      "start": 16,
+      "length": 3,
+      "type": "syntax"
     }
   ],
   "code-indented": [
@@ -1244,6 +1276,11 @@
       "type": "syntax"
     },
     {
+      "start": 1,
+      "length": 4,
+      "type": "label"
+    },
+    {
       "start": 5,
       "length": 1,
       "type": "syntax"
@@ -1271,6 +1308,11 @@
       "type": "syntax"
     },
     {
+      "start": 1,
+      "length": 4,
+      "type": "label"
+    },
+    {
       "start": 5,
       "length": 1,
       "type": "syntax"
@@ -1291,6 +1333,11 @@
       "type": "syntax"
     },
     {
+      "start": 28,
+      "length": 5,
+      "type": "title"
+    },
+    {
       "start": 33,
       "length": 1,
       "type": "syntax"
@@ -1301,11 +1348,63 @@
       "type": "syntax"
     }
   ],
+  "link-markup": [
+    {
+      "start": 0,
+      "length": 1,
+      "type": "syntax"
+    },
+    {
+      "start": 1,
+      "length": 13,
+      "type": "label"
+    },
+    {
+      "start": 1,
+      "length": 8,
+      "type": "bold"
+    },
+    {
+      "start": 1,
+      "length": 2,
+      "type": "syntax"
+    },
+    {
+      "start": 7,
+      "length": 2,
+      "type": "syntax"
+    },
+    {
+      "start": 14,
+      "length": 1,
+      "type": "syntax"
+    },
+    {
+      "start": 15,
+      "length": 1,
+      "type": "syntax"
+    },
+    {
+      "start": 16,
+      "length": 19,
+      "type": "link"
+    },
+    {
+      "start": 35,
+      "length": 1,
+      "type": "syntax"
+    }
+  ],
   "link-reference": [
     {
       "start": 0,
       "length": 1,
       "type": "syntax"
+    },
+    {
+      "start": 1,
+      "length": 4,
+      "type": "label"
     },
     {
       "start": 5,
@@ -1398,6 +1497,11 @@
       "type": "syntax"
     },
     {
+      "start": 2,
+      "length": 3,
+      "type": "alt-text"
+    },
+    {
       "start": 5,
       "length": 1,
       "type": "syntax"
@@ -1418,15 +1522,550 @@
       "type": "syntax"
     }
   ],
+  "image-title": [
+    {
+      "start": 0,
+      "length": 41,
+      "type": "inline-image"
+    },
+    {
+      "start": 0,
+      "length": 1,
+      "type": "syntax"
+    },
+    {
+      "start": 1,
+      "length": 1,
+      "type": "syntax"
+    },
+    {
+      "start": 2,
+      "length": 3,
+      "type": "alt-text"
+    },
+    {
+      "start": 5,
+      "length": 1,
+      "type": "syntax"
+    },
+    {
+      "start": 6,
+      "length": 1,
+      "type": "syntax"
+    },
+    {
+      "start": 7,
+      "length": 25,
+      "type": "link"
+    },
+    {
+      "start": 33,
+      "length": 1,
+      "type": "syntax"
+    },
+    {
+      "start": 34,
+      "length": 5,
+      "type": "title"
+    },
+    {
+      "start": 39,
+      "length": 1,
+      "type": "syntax"
+    },
+    {
+      "start": 40,
+      "length": 1,
+      "type": "syntax"
+    }
+  ],
+  "image-in-text": [
+    {
+      "start": 3,
+      "length": 34,
+      "type": "inline-image"
+    },
+    {
+      "start": 3,
+      "length": 1,
+      "type": "syntax"
+    },
+    {
+      "start": 4,
+      "length": 1,
+      "type": "syntax"
+    },
+    {
+      "start": 5,
+      "length": 4,
+      "type": "alt-text"
+    },
+    {
+      "start": 9,
+      "length": 1,
+      "type": "syntax"
+    },
+    {
+      "start": 10,
+      "length": 1,
+      "type": "syntax"
+    },
+    {
+      "start": 11,
+      "length": 25,
+      "type": "link"
+    },
+    {
+      "start": 36,
+      "length": 1,
+      "type": "syntax"
+    }
+  ],
+  "image-alt-markup": [
+    {
+      "start": 0,
+      "length": 42,
+      "type": "inline-image"
+    },
+    {
+      "start": 0,
+      "length": 1,
+      "type": "syntax"
+    },
+    {
+      "start": 1,
+      "length": 1,
+      "type": "syntax"
+    },
+    {
+      "start": 2,
+      "length": 12,
+      "type": "alt-text"
+    },
+    {
+      "start": 2,
+      "length": 2,
+      "type": "syntax"
+    },
+    {
+      "start": 8,
+      "length": 2,
+      "type": "syntax"
+    },
+    {
+      "start": 14,
+      "length": 1,
+      "type": "syntax"
+    },
+    {
+      "start": 15,
+      "length": 1,
+      "type": "syntax"
+    },
+    {
+      "start": 16,
+      "length": 25,
+      "type": "link"
+    },
+    {
+      "start": 41,
+      "length": 1,
+      "type": "syntax"
+    }
+  ],
+  "image-alt-emoji": [
+    {
+      "start": 0,
+      "length": 43,
+      "type": "inline-image"
+    },
+    {
+      "start": 0,
+      "length": 1,
+      "type": "syntax"
+    },
+    {
+      "start": 1,
+      "length": 1,
+      "type": "syntax"
+    },
+    {
+      "start": 2,
+      "length": 13,
+      "type": "alt-text"
+    },
+    {
+      "start": 8,
+      "length": 2,
+      "type": "emoji"
+    },
+    {
+      "start": 15,
+      "length": 1,
+      "type": "syntax"
+    },
+    {
+      "start": 16,
+      "length": 1,
+      "type": "syntax"
+    },
+    {
+      "start": 17,
+      "length": 25,
+      "type": "link"
+    },
+    {
+      "start": 42,
+      "length": 1,
+      "type": "syntax"
+    }
+  ],
+  "image-in-blockquote": [
+    {
+      "start": 0,
+      "length": 1,
+      "type": "syntax"
+    },
+    {
+      "start": 2,
+      "length": 33,
+      "type": "inline-image"
+    },
+    {
+      "start": 2,
+      "length": 1,
+      "type": "syntax"
+    },
+    {
+      "start": 3,
+      "length": 1,
+      "type": "syntax"
+    },
+    {
+      "start": 4,
+      "length": 3,
+      "type": "alt-text"
+    },
+    {
+      "start": 7,
+      "length": 1,
+      "type": "syntax"
+    },
+    {
+      "start": 8,
+      "length": 1,
+      "type": "syntax"
+    },
+    {
+      "start": 9,
+      "length": 25,
+      "type": "link"
+    },
+    {
+      "start": 34,
+      "length": 1,
+      "type": "syntax"
+    },
+    {
+      "start": 0,
+      "length": 2,
+      "type": "block-prefix"
+    },
+    {
+      "start": 0,
+      "length": 35,
+      "type": "blockquote",
+      "depth": 1
+    }
+  ],
+  "link-label-url": [
+    {
+      "start": 0,
+      "length": 1,
+      "type": "syntax"
+    },
+    {
+      "start": 1,
+      "length": 17,
+      "type": "label"
+    },
+    {
+      "start": 18,
+      "length": 1,
+      "type": "syntax"
+    },
+    {
+      "start": 19,
+      "length": 1,
+      "type": "syntax"
+    },
+    {
+      "start": 20,
+      "length": 18,
+      "type": "link"
+    },
+    {
+      "start": 38,
+      "length": 1,
+      "type": "syntax"
+    }
+  ],
+  "link-label-autolink": [
+    {
+      "start": 0,
+      "length": 1,
+      "type": "syntax"
+    },
+    {
+      "start": 1,
+      "length": 15,
+      "type": "label"
+    },
+    {
+      "start": 1,
+      "length": 1,
+      "type": "syntax"
+    },
+    {
+      "start": 15,
+      "length": 1,
+      "type": "syntax"
+    },
+    {
+      "start": 16,
+      "length": 1,
+      "type": "syntax"
+    },
+    {
+      "start": 17,
+      "length": 1,
+      "type": "syntax"
+    },
+    {
+      "start": 18,
+      "length": 19,
+      "type": "link"
+    },
+    {
+      "start": 37,
+      "length": 1,
+      "type": "syntax"
+    }
+  ],
+  "link-label-image": [
+    {
+      "start": 0,
+      "length": 1,
+      "type": "syntax"
+    },
+    {
+      "start": 1,
+      "length": 37,
+      "type": "label"
+    },
+    {
+      "start": 3,
+      "length": 33,
+      "type": "inline-image"
+    },
+    {
+      "start": 3,
+      "length": 1,
+      "type": "syntax"
+    },
+    {
+      "start": 4,
+      "length": 1,
+      "type": "syntax"
+    },
+    {
+      "start": 5,
+      "length": 3,
+      "type": "alt-text"
+    },
+    {
+      "start": 8,
+      "length": 1,
+      "type": "syntax"
+    },
+    {
+      "start": 9,
+      "length": 1,
+      "type": "syntax"
+    },
+    {
+      "start": 10,
+      "length": 25,
+      "type": "link"
+    },
+    {
+      "start": 35,
+      "length": 1,
+      "type": "syntax"
+    },
+    {
+      "start": 38,
+      "length": 1,
+      "type": "syntax"
+    },
+    {
+      "start": 39,
+      "length": 1,
+      "type": "syntax"
+    },
+    {
+      "start": 40,
+      "length": 19,
+      "type": "link"
+    },
+    {
+      "start": 59,
+      "length": 1,
+      "type": "syntax"
+    }
+  ],
+  "link-image": [
+    {
+      "start": 0,
+      "length": 1,
+      "type": "syntax"
+    },
+    {
+      "start": 1,
+      "length": 33,
+      "type": "label"
+    },
+    {
+      "start": 1,
+      "length": 33,
+      "type": "inline-image"
+    },
+    {
+      "start": 1,
+      "length": 1,
+      "type": "syntax"
+    },
+    {
+      "start": 2,
+      "length": 1,
+      "type": "syntax"
+    },
+    {
+      "start": 3,
+      "length": 3,
+      "type": "alt-text"
+    },
+    {
+      "start": 6,
+      "length": 1,
+      "type": "syntax"
+    },
+    {
+      "start": 7,
+      "length": 1,
+      "type": "syntax"
+    },
+    {
+      "start": 8,
+      "length": 25,
+      "type": "link"
+    },
+    {
+      "start": 33,
+      "length": 1,
+      "type": "syntax"
+    },
+    {
+      "start": 34,
+      "length": 1,
+      "type": "syntax"
+    },
+    {
+      "start": 35,
+      "length": 1,
+      "type": "syntax"
+    },
+    {
+      "start": 36,
+      "length": 19,
+      "type": "link"
+    },
+    {
+      "start": 55,
+      "length": 1,
+      "type": "syntax"
+    }
+  ],
   "mention": [
     {
       "start": 4,
       "length": 8,
-      "type": "mention-user"
+      "type": "mention"
     }
   ],
-  "mention-hyphen": [],
-  "mention-trailing-hyphen": [],
+  "mention-hyphen": [
+    {
+      "start": 0,
+      "length": 9,
+      "type": "mention"
+    }
+  ],
+  "mention-underscore": [
+    {
+      "start": 0,
+      "length": 9,
+      "type": "mention"
+    }
+  ],
+  "mention-trailing-hyphen": [
+    {
+      "start": 0,
+      "length": 8,
+      "type": "mention"
+    }
+  ],
+  "mention-dot": [
+    {
+      "start": 0,
+      "length": 8,
+      "type": "mention"
+    },
+    {
+      "start": 13,
+      "length": 10,
+      "type": "mention"
+    }
+  ],
+  "mention-double-dot": [
+    {
+      "start": 0,
+      "length": 8,
+      "type": "mention"
+    }
+  ],
+  "mention-at": [
+    {
+      "start": 4,
+      "length": 17,
+      "type": "mention"
+    }
+  ],
+  "mention-trailing-at": [
+    {
+      "start": 0,
+      "length": 5,
+      "type": "mention"
+    }
+  ],
+  "mention-leading-at": [],
+  "mention-mid-word": [],
+  "mention-punctuation": [
+    {
+      "start": 3,
+      "length": 5,
+      "type": "mention"
+    }
+  ],
   "mention-in-bold": [
     {
       "start": 0,
@@ -1441,11 +2080,70 @@
     {
       "start": 2,
       "length": 8,
-      "type": "mention-user"
+      "type": "mention"
     },
     {
       "start": 10,
       "length": 2,
+      "type": "syntax"
+    }
+  ],
+  "mention-in-italic-underscore": [
+    {
+      "start": 0,
+      "length": 10,
+      "type": "italic"
+    },
+    {
+      "start": 0,
+      "length": 1,
+      "type": "syntax"
+    },
+    {
+      "start": 1,
+      "length": 8,
+      "type": "mention"
+    },
+    {
+      "start": 9,
+      "length": 1,
+      "type": "syntax"
+    }
+  ],
+  "mention-in-link": [
+    {
+      "start": 0,
+      "length": 1,
+      "type": "syntax"
+    },
+    {
+      "start": 1,
+      "length": 5,
+      "type": "label"
+    },
+    {
+      "start": 1,
+      "length": 5,
+      "type": "mention"
+    },
+    {
+      "start": 6,
+      "length": 1,
+      "type": "syntax"
+    },
+    {
+      "start": 7,
+      "length": 1,
+      "type": "syntax"
+    },
+    {
+      "start": 8,
+      "length": 19,
+      "type": "link"
+    },
+    {
+      "start": 27,
+      "length": 1,
       "type": "syntax"
     }
   ],
@@ -1890,6 +2588,11 @@
       "type": "syntax"
     },
     {
+      "start": 1,
+      "length": 4,
+      "type": "label"
+    },
+    {
       "start": 5,
       "length": 1,
       "type": "syntax"
@@ -1914,7 +2617,7 @@
     {
       "start": 4,
       "length": 4,
-      "type": "mention-user"
+      "type": "mention"
     }
   ],
   "cjk-combining-dakuten": [],
@@ -2075,6 +2778,11 @@
       "type": "syntax"
     },
     {
+      "start": 1,
+      "length": 7,
+      "type": "label"
+    },
+    {
       "start": 8,
       "length": 1,
       "type": "syntax"
@@ -2185,7 +2893,7 @@
     {
       "start": 0,
       "length": 7,
-      "type": "mention-user"
+      "type": "mention"
     }
   ],
   "empty": [],
@@ -2390,6 +3098,11 @@
       "type": "syntax"
     },
     {
+      "start": 87,
+      "length": 4,
+      "type": "label"
+    },
+    {
       "start": 91,
       "length": 1,
       "type": "syntax"
@@ -2490,6 +3203,11 @@
       "type": "syntax"
     },
     {
+      "start": 153,
+      "length": 2,
+      "type": "codeblock-language"
+    },
+    {
       "start": 156,
       "length": 12,
       "type": "pre"
@@ -2502,7 +3220,7 @@
     {
       "start": 177,
       "length": 8,
-      "type": "mention-user"
+      "type": "mention"
     },
     {
       "start": 186,

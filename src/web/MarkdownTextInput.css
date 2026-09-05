@@ -45,10 +45,11 @@
   box-sizing: border-box;
 }
 
+/* A block is drawn as a box across the line, the way both native formatters
+   draw it, rather than as a background hugging the code. Its own padding and
+   margin are set on the element by `addCodeBlockStyle`. */
 .react-native-marcus-input-multiline *[data-type='codeblock'] {
   position: relative;
-  width: fit-content;
-  max-width: 100%;
   box-sizing: border-box;
   z-index: 2;
   display: block;

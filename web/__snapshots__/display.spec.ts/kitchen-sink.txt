@@ -1,0 +1,104 @@
+p[line] margin-bottom:0px margin-left:0px margin-right:0px margin-top:0px padding-bottom:0px padding-left:<measured> padding-right:0px padding-top:0px
+  span[heading] font-size:38px font-weight:bold
+    span[text]
+      #text "Heading"
+p[line] margin-bottom:0px margin-left:0px margin-right:0px margin-top:0px padding-bottom:0px padding-left:<measured> padding-right:0px padding-top:0px
+  span[br]
+    br
+p[line] margin-bottom:0px margin-left:0px margin-right:0px margin-top:0px padding-bottom:0px padding-left:<measured> padding-right:0px padding-top:0px
+  span[text]
+    #text "Some "
+  span[bold] font-weight:bold
+    span[text]
+      #text "bold"
+  span[text]
+    #text ", "
+  span[italic] font-style:italic
+    span[text]
+      #text "italic"
+  span[text]
+    #text " and "
+  span[strikethrough] text-decoration-color:initial text-decoration-line:line-through text-decoration-style:initial text-decoration-thickness:initial
+    span[text]
+      #text "struck"
+  span[text]
+    #text " text with "
+  span[code] background-color:lightgray border-bottom-left-radius:4px border-bottom-right-radius:4px border-top-left-radius:4px border-top-right-radius:4px color:black font-family:monospace font-size:16px margin-bottom:2px margin-left:2px margin-right:2px margin-top:2px padding-bottom:2px padding-left:<measured> padding-right:2px padding-top:2px
+    span[text]
+      #text "code"
+  span[text]
+    #text "."
+p[line] margin-bottom:0px margin-left:0px margin-right:0px margin-top:0px padding-bottom:0px padding-left:<measured> padding-right:0px padding-top:0px
+  span[br]
+    br
+p[line] background-image:linear-gradient(gray, gray) background-position-x:<measured> background-position-y:0px background-repeat:no-repeat background-size:6px 100% margin-bottom:0px margin-left:0px margin-right:0px margin-top:0px padding-bottom:0px padding-left:<measured> padding-right:0px padding-top:0px text-indent:<measured>
+  span[blockquote] overflow-wrap:anywhere
+    span[text]
+      #text "A quote with a "
+    span[link] color:blue text-decoration-color:initial text-decoration-line:underline text-decoration-style:initial text-decoration-thickness:initial
+      span[text]
+        #text "link"
+p[line] margin-bottom:0px margin-left:0px margin-right:0px margin-top:0px padding-bottom:0px padding-left:<measured> padding-right:0px padding-top:0px
+  span[br]
+    br
+p[line] margin-bottom:0px margin-left:0px margin-right:0px margin-top:0px padding-bottom:0px padding-left:<measured> padding-right:0px padding-top:0px text-indent:<measured>
+  span[list-unordered] overflow-wrap:anywhere
+    span[block-prefix] margin-right:2px
+      span[syntax] background-image:radial-gradient(circle closest-side, gray 100%, transparent 100%) background-position-x:<measured> background-position-y:center background-repeat:no-repeat background-size:4.8px 4.8px color:transparent display:inline-block overflow-x:hidden overflow-y:hidden vertical-align:top width:4.8px
+        span[text]
+          #text "-"
+      span[text]
+        #text " "
+    span[text]
+      #text "item one"
+p[line] margin-bottom:0px margin-left:0px margin-right:0px margin-top:0px padding-bottom:0px padding-left:<measured> padding-right:0px padding-top:0px text-indent:<measured>
+  span[list-unordered] overflow-wrap:anywhere
+    span[block-prefix] margin-right:2px
+      span[syntax] background-image:radial-gradient(circle closest-side, gray 100%, transparent 100%) background-position-x:<measured> background-position-y:center background-repeat:no-repeat background-size:4.8px 4.8px color:transparent display:inline-block overflow-x:hidden overflow-y:hidden vertical-align:top width:4.8px
+        span[text]
+          #text "-"
+      span[text]
+        #text " "
+    span[text]
+      #text "item two"
+p[line] margin-bottom:0px margin-left:0px margin-right:0px margin-top:0px padding-bottom:0px padding-left:<measured> padding-right:0px padding-top:0px text-indent:<measured>
+  span[list-unordered] overflow-wrap:anywhere
+    span[list-ordered] overflow-wrap:anywhere
+      span[block-prefix] margin-right:2px
+        span[text]
+          #text "  "
+        span[syntax] color:gray font-size:12.8px
+          span[text]
+            #text "1"
+        span[syntax] color:gray font-size:12.8px
+          span[text]
+            #text "."
+        span[text]
+          #text " "
+      span[text]
+        #text "nested"
+p[line] margin-bottom:0px margin-left:0px margin-right:0px margin-top:0px padding-bottom:0px padding-left:<measured> padding-right:0px padding-top:0px
+  span[br]
+    br
+p[line] margin-bottom:0px margin-left:0px margin-right:0px margin-top:0px padding-bottom:0px padding-left:<measured> padding-right:0px padding-top:0px
+  span[codeblock] background-color:lightgray border-bottom-left-radius:4px border-bottom-right-radius:4px border-top-left-radius:4px border-top-right-radius:4px box-sizing:border-box display:block margin-bottom:4px margin-left:4px margin-right:4px margin-top:4px padding-bottom:8px padding-left:<measured> padding-right:8px padding-top:8px
+    span[pre] color:black font-family:monospace font-size:16px
+      span[text]
+        #text "const a = 1"
+p[line] margin-bottom:0px margin-left:0px margin-right:0px margin-top:0px padding-bottom:0px padding-left:<measured> padding-right:0px padding-top:0px
+  span[br]
+    br
+p[line] margin-bottom:0px margin-left:0px margin-right:0px margin-top:0px padding-bottom:0px padding-left:<measured> padding-right:0px padding-top:0px
+  span[text]
+    #text "Hey "
+  span[mention] background-color:cyan border-bottom-left-radius:5px border-bottom-right-radius:5px border-top-left-radius:5px border-top-right-radius:5px color:blue margin-bottom:0px margin-left:0px margin-right:0px margin-top:0px padding-bottom:2px padding-left:<measured> padding-right:2px padding-top:2px
+    span[text]
+      #text "@someone"
+  span[text]
+    #text " "
+  span[emoji] font-family:System, "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji" font-size:16px vertical-align:middle
+    span[text]
+      #text "😀"
+p[line] margin-bottom:0px margin-left:0px margin-right:0px margin-top:0px padding-bottom:0px padding-left:<measured> padding-right:0px padding-top:0px
+  span[br]
+    br

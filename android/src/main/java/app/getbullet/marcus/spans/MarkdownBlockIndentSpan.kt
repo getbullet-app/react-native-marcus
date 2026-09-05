@@ -13,11 +13,14 @@ import androidx.annotation.ColorInt
  * One span per line rather than one per container: where a container's gutter
  * goes depends on the markers of the containers around it, so the offsets are
  * worked out together by the formatter and handed over already in pixels.
+ *
+ * The ribbon's own three values default to nothing, for a line that is only
+ * indented -- a code block's padding, where no quote is involved.
  */
 class MarkdownBlockIndentSpan(
-  @ColorInt private val borderColor: Int,
-  private val borderWidth: Float,
-  private val borderSpacing: Float
+  @ColorInt private val borderColor: Int = 0,
+  private val borderWidth: Float = 0f,
+  private val borderSpacing: Float = 0f
 ) : MarkdownSpan, LeadingMarginSpan {
 
   /** Where the line's text starts, and where it resumes when it wraps. */

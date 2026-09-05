@@ -46,10 +46,12 @@ emphasis-adjacent-syntax
      0..1    color(#808080)
      2..3    color(#808080)
      3..4    color(#808080)
-     4..8    background(#D3D3D3)
+     4..8    background-shape
      4..8    color(#000000)
      4..8    font-family
      4..8    font-size(16)
+     4..5    gap
+     7..8    gap
      8..9    color(#808080)
 emphasis-unterminated
   (no spans)
@@ -198,54 +200,74 @@ nesting-repeat-adjacent
      3..4    color(#808080)
 code-inline
      5..6    color(#808080)
-     6..10   background(#D3D3D3)
+     6..10   background-shape
      6..10   color(#000000)
      6..10   font-family
      6..10   font-size(16)
+     6..7    gap
+     9..10   gap
     10..11   color(#808080)
 code-inline-double
      2..4    color(#808080)
-     4..9    background(#D3D3D3)
+     4..9    background-shape
      4..9    color(#000000)
      4..9    font-family
      4..9    font-size(16)
+     4..5    gap
+     8..9    gap
      9..11   color(#808080)
 code-fenced
+     0..14   code-block
+     0..14   indent(12,12)
      0..3    color(#808080)
-     4..11   background(#D3D3D3)
      4..11   color(#000000)
      4..11   font-family
      4..11   font-size(16)
     11..14   color(#808080)
 code-fenced-lang
+     0..21   code-block
+     0..21   indent(12,12)
      0..3    color(#808080)
-     6..18   background(#D3D3D3)
+     3..5    color(#808080)
      6..18   color(#000000)
      6..18   font-family
      6..18   font-size(16)
     18..21   color(#808080)
 code-fenced-unterminated
+     0..10   code-block
+     0..10   indent(12,12)
      0..3    color(#808080)
-     4..10   background(#D3D3D3)
      4..10   color(#000000)
      4..10   font-family
      4..10   font-size(16)
+code-fenced-blank-line
+     0..19   code-block
+     0..19   indent(12,12)
+     0..3    color(#808080)
+     4..10   color(#000000)
+     4..10   font-family
+     4..10   font-size(16)
+    11..16   color(#000000)
+    11..16   font-family
+    11..16   font-size(16)
+    16..19   color(#808080)
 code-indented
-     4..13   background(#D3D3D3)
+     0..12   code-block
+     0..12   indent(12,12)
      4..13   color(#000000)
      4..13   font-family
      4..13   font-size(16)
 code-in-blockquote
-     0..5    indent(18,20)
+     0..5    indent(30,32)
      0..1    color(#808080)
+     2..20   code-block
      2..5    color(#808080)
-     6..14   indent(18,20)
+     6..14   indent(30,32)
      6..7    color(#808080)
-     8..15   background(#D3D3D3)
      8..15   color(#000000)
      8..15   font-family
      8..15   font-size(16)
-    15..20   indent(18,20)
+    15..20   indent(30,32)
     15..16   color(#808080)
     17..20   color(#808080)
 link-inline
@@ -264,6 +286,16 @@ link-title
     27..28   color(#808080)
     33..34   color(#808080)
     34..35   color(#808080)
+link-markup
+     0..1    color(#808080)
+     1..9    bold
+     1..3    color(#808080)
+     7..9    color(#808080)
+    14..15   color(#808080)
+    15..16   color(#808080)
+    16..35   color(#0000FF)
+    16..35   underline
+    35..36   color(#808080)
 link-reference
      0..1    color(#808080)
      5..6    color(#808080)
@@ -296,19 +328,178 @@ image-inline
      7..32   color(#0000FF)
      7..32   underline
     32..33   color(#808080)
+image-title
+     0..1    color(#808080)
+     1..2    color(#808080)
+     5..6    color(#808080)
+     6..7    color(#808080)
+     7..32   color(#0000FF)
+     7..32   underline
+    33..34   color(#808080)
+    39..40   color(#808080)
+    40..41   color(#808080)
+image-in-text
+     3..4    color(#808080)
+     4..5    color(#808080)
+     9..10   color(#808080)
+    10..11   color(#808080)
+    11..36   color(#0000FF)
+    11..36   underline
+    36..37   color(#808080)
+image-alt-markup
+     0..1    color(#808080)
+     1..2    color(#808080)
+     2..4    color(#808080)
+     8..10   color(#808080)
+    14..15   color(#808080)
+    15..16   color(#808080)
+    16..41   color(#0000FF)
+    16..41   underline
+    41..42   color(#808080)
+image-alt-emoji
+     0..1    color(#808080)
+     1..2    color(#808080)
+     8..10   font-family
+     8..10   font-size(16)
+    15..16   color(#808080)
+    16..17   color(#808080)
+    17..42   color(#0000FF)
+    17..42   underline
+    42..43   color(#808080)
+image-in-blockquote
+     0..35   indent(18,20)
+     0..1    color(#808080)
+     2..3    color(#808080)
+     3..4    color(#808080)
+     7..8    color(#808080)
+     8..9    color(#808080)
+     9..34   color(#0000FF)
+     9..34   underline
+    34..35   color(#808080)
+link-label-url
+     0..1    color(#808080)
+    18..19   color(#808080)
+    19..20   color(#808080)
+    20..38   color(#0000FF)
+    20..38   underline
+    38..39   color(#808080)
+link-label-autolink
+     0..1    color(#808080)
+     1..2    color(#808080)
+    15..16   color(#808080)
+    16..17   color(#808080)
+    17..18   color(#808080)
+    18..37   color(#0000FF)
+    18..37   underline
+    37..38   color(#808080)
+link-label-image
+     0..1    color(#808080)
+     3..4    color(#808080)
+     4..5    color(#808080)
+     8..9    color(#808080)
+     9..10   color(#808080)
+    10..35   color(#0000FF)
+    10..35   underline
+    35..36   color(#808080)
+    38..39   color(#808080)
+    39..40   color(#808080)
+    40..59   color(#0000FF)
+    40..59   underline
+    59..60   color(#808080)
+link-image
+     0..1    color(#808080)
+     1..2    color(#808080)
+     2..3    color(#808080)
+     6..7    color(#808080)
+     7..8    color(#808080)
+     8..33   color(#0000FF)
+     8..33   underline
+    33..34   color(#808080)
+    34..35   color(#808080)
+    35..36   color(#808080)
+    36..55   color(#0000FF)
+    36..55   underline
+    55..56   color(#808080)
 mention
      4..12   background-shape
      4..12   color(#0000FF)
+     4..5    gap
+    11..12   gap
 mention-hyphen
-  (no spans)
+     0..9    background-shape
+     0..9    color(#0000FF)
+     0..1    gap
+     8..9    gap
+mention-underscore
+     0..9    background-shape
+     0..9    color(#0000FF)
+     0..1    gap
+     8..9    gap
 mention-trailing-hyphen
+     0..8    background-shape
+     0..8    color(#0000FF)
+     0..1    gap
+     7..8    gap
+mention-dot
+     0..8    background-shape
+     0..8    color(#0000FF)
+     0..1    gap
+     7..8    gap
+    13..23   background-shape
+    13..23   color(#0000FF)
+    13..14   gap
+    22..23   gap
+mention-double-dot
+     0..8    background-shape
+     0..8    color(#0000FF)
+     0..1    gap
+     7..8    gap
+mention-at
+     4..21   background-shape
+     4..21   color(#0000FF)
+     4..5    gap
+    20..21   gap
+mention-trailing-at
+     0..5    background-shape
+     0..5    color(#0000FF)
+     0..1    gap
+     4..5    gap
+mention-leading-at
   (no spans)
+mention-mid-word
+  (no spans)
+mention-punctuation
+     3..8    background-shape
+     3..8    color(#0000FF)
+     3..4    gap
+     7..8    gap
 mention-in-bold
      0..12   bold
      0..2    color(#808080)
      2..10   background-shape
      2..10   color(#0000FF)
+     2..3    gap
+     9..10   gap
     10..12   color(#808080)
+mention-in-italic-underscore
+     0..10   italic
+     0..1    color(#808080)
+     1..9    background-shape
+     1..9    color(#0000FF)
+     1..2    gap
+     8..9    gap
+     9..10   color(#808080)
+mention-in-link
+     0..1    color(#808080)
+     1..6    background-shape
+     1..6    color(#0000FF)
+     1..2    gap
+     5..6    gap
+     6..7    color(#808080)
+     7..8    color(#808080)
+     8..27   color(#0000FF)
+     8..27   underline
+    27..28   color(#808080)
 emoji
      6..8    font-family
      6..8    font-size(16)
@@ -423,10 +614,12 @@ cjk-blockquote
      0..1    color(#808080)
 cjk-code
      0..1    color(#808080)
-     1..5    background(#D3D3D3)
+     1..5    background-shape
      1..5    color(#000000)
      1..5    font-family
      1..5    font-size(16)
+     1..2    gap
+     4..5    gap
      5..6    color(#808080)
 cjk-link
      0..1    color(#808080)
@@ -438,6 +631,8 @@ cjk-link
 cjk-mention
      4..8    background-shape
      4..8    color(#0000FF)
+     4..5    gap
+     7..8    gap
 cjk-combining-dakuten
   (no spans)
 unicode-rtl
@@ -481,10 +676,12 @@ rtl-link
     29..30   color(#808080)
 rtl-code
      0..1    color(#808080)
-     1..5    background(#D3D3D3)
+     1..5    background-shape
      1..5    color(#000000)
      1..5    font-family
      1..5    font-size(16)
+     1..2    gap
+     4..5    gap
      5..6    color(#808080)
 rtl-arabic-indic-digits
   (no spans)
@@ -507,6 +704,8 @@ rtl-punctuation
 rtl-mention
      0..7    background-shape
      0..7    color(#0000FF)
+     0..1    gap
+     6..7    gap
 empty
   (no spans)
 whitespace-only
@@ -551,10 +750,12 @@ kitchen-sink
     39..41   color(#808080)
     47..49   color(#808080)
     60..61   color(#808080)
-    61..65   background(#D3D3D3)
+    61..65   background-shape
     61..65   color(#000000)
     61..65   font-family
     61..65   font-size(16)
+    61..62   gap
+    64..65   gap
     65..66   color(#808080)
     69..113  indent(18,20)
     69..70   color(#808080)
@@ -571,13 +772,17 @@ kitchen-sink
    137..148  indent(50,55)
    139..140  color(#808080)
    140..141  color(#808080)
+   150..171  code-block
+   150..171  indent(12,12)
    150..153  color(#808080)
-   156..168  background(#D3D3D3)
+   153..155  color(#808080)
    156..168  color(#000000)
    156..168  font-family
    156..168  font-size(16)
    168..171  color(#808080)
    177..185  background-shape
    177..185  color(#0000FF)
+   177..178  gap
+   184..185  gap
    186..188  font-family
    186..188  font-size(16)

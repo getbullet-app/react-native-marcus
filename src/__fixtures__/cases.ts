@@ -167,24 +167,154 @@ const CASES: Case[] = [
   { id: "code-fenced", markdown: "```\nfenced\n```", tags: ["code"], visual: true },
   { id: "code-fenced-lang", markdown: "```ts\nconst a = 1\n```", tags: ["code"] },
   { id: "code-fenced-unterminated", markdown: "```\nno end", tags: ["code", "edge"] },
+  {
+    id: "code-fenced-blank-line",
+    markdown: "```\nfirst\n\nlast\n```",
+    tags: ["code", "edge"],
+    visual: true,
+    note:
+      "A blank line inside a block. The background is one box over the whole of it, " +
+      "so the empty line has to be filled like any other rather than left as a gap.",
+  },
   { id: "code-indented", markdown: "    indented\n", tags: ["code", "edge"] },
   { id: "code-in-blockquote", markdown: "> ```\n> fenced\n> ```", tags: ["code", "nesting"] },
 
   // --- links and images -------------------------------------------------
   { id: "link-inline", markdown: "[text](https://example.com)", tags: ["link"], visual: true },
   { id: "link-title", markdown: '[text](https://example.com "Title")', tags: ["link"] },
+  {
+    id: "link-markup",
+    // A label keeps the structure it is written with, unlike an image's alt
+    // text: the emphasis in here is a range of its own inside the label.
+    markdown: "[**bold** link](https://example.com)",
+    tags: ["link", "nesting"],
+  },
   { id: "link-reference", markdown: "[text][ref]\n\n[ref]: https://example.com", tags: ["link"] },
   { id: "autolink-http", markdown: "https://example.com", tags: ["link"] },
   { id: "autolink-www", markdown: "www.example.com", tags: ["link"] },
   { id: "autolink-email", markdown: "user@example.com", tags: ["link", "mention", "edge"] },
   { id: "autolink-angle", markdown: "<https://example.com>", tags: ["link"] },
   { id: "image-inline", markdown: "![alt](https://example.com/a.png)", tags: ["link"] },
+  { id: "image-title", markdown: '![alt](https://example.com/a.png "Title")', tags: ["link"] },
+  {
+    id: "image-in-text",
+    markdown: "an ![icon](https://example.com/i.png) inline",
+    tags: ["link"],
+  },
+  {
+    id: "image-alt-markup",
+    // micromark keeps the structure of a label, so the emphasis inside this one
+    // is a range of its own nested in the alt content.
+    markdown: "![**bold** alt](https://example.com/a.png)",
+    tags: ["link", "nesting"],
+  },
+  {
+    id: "image-alt-emoji",
+    // An emoji is not markup, so it survives the flattening as a range of its
+    // own -- alt text shown as prose still draws it in the emoji font.
+    markdown: "![party 🎉 time](https://example.com/a.png)",
+    tags: ["link", "emoji"],
+  },
+  {
+    id: "image-in-blockquote",
+    markdown: "> ![alt](https://example.com/a.png)",
+    tags: ["link", "nesting"],
+  },
+  {
+    id: "link-label-url",
+    // A URL as the label of a link that points somewhere else. The label is
+    // prose -- an autolink does not fire inside one -- so what is drawn is the
+    // text between the brackets and what is pressed is the destination.
+    markdown: "[http://google.com](http://example.com)",
+    tags: ["link"],
+  },
+  {
+    id: "link-label-autolink",
+    // Written as an autolink this time, which micromark does report inside a
+    // label. It is still not a link of its own: the markers go and the URL is
+    // part of the label around it.
+    markdown: "[<https://x.com>](https://example.com)",
+    tags: ["link", "nesting"],
+  },
+  {
+    id: "link-label-image",
+    // A label holds everything else it is written with, an image included.
+    markdown: "[a ![alt](https://example.com/i.png) b](https://example.com)",
+    tags: ["link", "nesting"],
+  },
+  {
+    id: "link-image",
+    // A link whose label is an image, which is how a pressable picture is
+    // written. Both resources are the same shape, and only the outer one has a
+    // label in front of it.
+    markdown: "[![alt](https://example.com/i.png)](https://example.com)",
+    tags: ["link", "nesting"],
+  },
 
   // --- mentions ---------------------------------------------------------
   { id: "mention", markdown: "hey @someone", tags: ["mention"], visual: true },
   { id: "mention-hyphen", markdown: "@some-one here", tags: ["mention"] },
-  { id: "mention-trailing-hyphen", markdown: "@someone- here", tags: ["mention", "edge"] },
+  { id: "mention-underscore", markdown: "@some_one here", tags: ["mention"] },
+  {
+    id: "mention-trailing-hyphen",
+    markdown: "@someone- here",
+    tags: ["mention", "edge"],
+    note: "The `-` has no part after it, so the name ends in front of it.",
+  },
+  {
+    id: "mention-dot",
+    markdown: "@bullet. and @user.name",
+    tags: ["mention"],
+    note: "A dot is part of a name wherever it falls, the last character included.",
+  },
+  {
+    id: "mention-double-dot",
+    markdown: "@bullet.. done",
+    tags: ["mention", "edge"],
+    note: "Only the first of a run of dots belongs to the name; the rest still read as text.",
+  },
+  {
+    id: "mention-at",
+    markdown: "hey @user@example.com",
+    tags: ["mention"],
+    note: "One mention, not two side by side: an `@` joins two parts of a name.",
+  },
+  {
+    id: "mention-trailing-at",
+    markdown: "@user@ here",
+    tags: ["mention", "edge"],
+    note: "An `@` needs a name after it, so this one is left out of the mention.",
+  },
+  {
+    id: "mention-leading-at",
+    markdown: "@@user here",
+    tags: ["mention", "edge"],
+    note: "A name cannot begin after an `@` either, so neither `@` opens one.",
+  },
+  {
+    id: "mention-mid-word",
+    markdown: "a@b and user@name",
+    tags: ["mention", "edge"],
+    note: "A mention starts where a word starts, so neither of these is one.",
+  },
+  {
+    id: "mention-punctuation",
+    markdown: "hi @user, ok",
+    tags: ["mention", "edge"],
+    note: "Punctuation may sit against a mention; it was never part of a name.",
+  },
   { id: "mention-in-bold", markdown: "**@someone**", tags: ["mention", "nesting"] },
+  {
+    id: "mention-in-italic-underscore",
+    markdown: "_@someone_",
+    tags: ["mention", "nesting", "edge"],
+    note: "The closing `_` has no name part after it, so it stays markup rather than joining the name.",
+  },
+  {
+    id: "mention-in-link",
+    markdown: "[@user](https://example.com)",
+    tags: ["mention", "link", "nesting"],
+  },
 
   // --- emoji ------------------------------------------------------------
   { id: "emoji", markdown: "hello 😀 world", tags: ["emoji"], visual: true },

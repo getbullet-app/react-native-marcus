@@ -48,4 +48,27 @@ extension MarkdownFormatter {
       fonts: MarkdownReactFonts()
     )
   }
+
+  /// The paragraph entry point. Same formatting, except that whatever the
+  /// shadow tree already put on the string -- nested `Text` attributes, inline
+  /// view attachments -- is left where it is, and that the list markers are
+  /// rendered rather than shown: this is the finished text rather than the text
+  /// being written.
+  @objc(formatParagraph:defaultTextAttributes:ranges:style:)
+  public static func formatParagraph(
+    _ attributedString: NSMutableAttributedString,
+    defaultTextAttributes: [NSAttributedString.Key: Any],
+    ranges: [MarcusRange],
+    style: RCTMarcusStyle
+  ) {
+    format(
+      attributedString,
+      defaultTextAttributes: defaultTextAttributes,
+      ranges: ranges,
+      style: style,
+      fonts: MarkdownReactFonts(),
+      resetAttributes: false,
+      display: true
+    )
+  }
 }

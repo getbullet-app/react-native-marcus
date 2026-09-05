@@ -28,6 +28,8 @@ public final class MarcusRange: NSObject {
 extension NSAttributedString.Key {
   public static let marcusText = NSAttributedString.Key("RCTMarcusText")
   public static let marcusTextBackground = NSAttributedString.Key("RCTMarcusTextBackground")
+  public static let marcusCodeBlock = NSAttributedString.Key("RCTMarcusCodeBlock")
+  public static let marcusListBullet = NSAttributedString.Key("RCTMarcusListBullet")
   public static let marcusBlockquoteDepth = NSAttributedString.Key("RCTMarcusBlockquoteDepth")
   public static let marcusBlockquoteIndent = NSAttributedString.Key("RCTMarcusBlockquoteIndent")
 }
@@ -49,23 +51,29 @@ public final class RCTMarcusStyle: NSObject {
   public var blockquotePaddingLeft: CGFloat = 6
   public var orderedListMarginLeft: CGFloat = 6
   public var orderedListPaddingLeft: CGFloat = 18
+  public var orderedListMarkerScale: CGFloat = 0.8
+  public var orderedListMarkerPadding: CGFloat = 2
   public var unorderedListMarginLeft: CGFloat = 6
   public var unorderedListPaddingLeft: CGFloat = 18
+  public var unorderedListMarkerScale: CGFloat = 0.3
+  public var unorderedListMarkerPadding: CGFloat = 2
   public var codeFontFamily: String = "Courier"
   public var codeFontSize: CGFloat = 16
   public var codeColor: UIColor = .black
   public var codeBackgroundColor: UIColor = .lightGray
+  public var codeBorderRadius: CGFloat = 4
+  public var codePadding: CGFloat = 2
+  public var codeMargin: CGFloat = 2
   public var preFontFamily: String = "Courier"
   public var preFontSize: CGFloat = 16
   public var preColor: UIColor = .black
   public var preBackgroundColor: UIColor = .lightGray
-  public var mentionHereColor: UIColor = .green
-  public var mentionHereBackgroundColor: UIColor = .systemGreen
-  public var mentionHereBorderRadius: CGFloat = 5
-  public var mentionUserColor: UIColor = .blue
-  public var mentionUserBackgroundColor: UIColor = .cyan
-  public var mentionUserBorderRadius: CGFloat = 5
-  public var mentionReportColor: UIColor = .red
-  public var mentionReportBackgroundColor: UIColor = .systemPink
-  public var mentionReportBorderRadius: CGFloat = 5
+  public var preBorderRadius: CGFloat = 4
+  public var prePadding: CGFloat = 8
+  public var preMargin: CGFloat = 4
+  public var mentionColor: UIColor = .blue
+  public var mentionBackgroundColor: UIColor = .cyan
+  public var mentionBorderRadius: CGFloat = 5
+  public var mentionPadding: CGFloat = 2
+  public var mentionMargin: CGFloat = 0
 }

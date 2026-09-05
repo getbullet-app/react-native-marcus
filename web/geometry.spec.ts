@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test"
 
-import { INPUT, openCase } from "./helpers"
+import { DISPLAY, INPUT, openCase, openDisplayText, openText } from "./helpers"
 
 /**
  * The measured half of the layout, asserted by how the numbers relate rather
@@ -103,4 +103,152 @@ test("the marker hangs into the gutter", async ({ page }) => {
 
   expect(line!.textIndent).toBeLessThan(0)
   expect(Math.abs(line!.textIndent)).toBeLessThan(line!.paddingLeft)
+})
+
+test("a code block is a box across the line, with the code inside its padding", async ({
+  page,
+}) => {
+  // The shape both native formatters draw: one fill from the first line to the
+  // last, the width of the text rather than of the longest line, and the code
+  // held off its edges. Here it is one element, so the box is the element.
+  await openText(page, "```\ncode\n```")
+
+  const box = await page.evaluate((selector) => {
+    const root = document.querySelector(selector) as HTMLElement
+    const block = root.querySelector('[data-type="codeblock"]') as HTMLElement
+    const code = root.querySelector('[data-type="pre"]') as HTMLElement
+    const line = block.closest("p") as HTMLElement
+
+    return {
+      block: block.getBoundingClientRect(),
+      code: code.getBoundingClientRect(),
+      line: line.getBoundingClientRect(),
+      padding: parseFloat(getComputedStyle(block).paddingTop),
+      margin: parseFloat(getComputedStyle(block).marginTop),
+    }
+  }, INPUT)
+
+  expect(box.padding).toBeGreaterThan(0)
+  expect(box.margin).toBeGreaterThan(0)
+
+  // Across the line, less the margin on either side.
+  expect(box.block.width).toBeCloseTo(box.line.width - 2 * box.margin, 0)
+  // And the code sits inside it, not against it.
+  expect(box.code.left - box.block.left).toBeGreaterThanOrEqual(box.padding)
+  expect(box.code.top - box.block.top).toBeGreaterThanOrEqual(box.padding)
+})
+
+test("a code block opens on its first line of code", async ({ page }) => {
+  // Stripping the fence leaves the break that ended it, and a box drawn around
+  // that starts one blank line above the code.
+  await openDisplayText(page, "before\n\n```\ncode\n```")
+
+  const height = await page.evaluate((selector) => {
+    const root = document.querySelector(selector) as HTMLElement
+    const block = root.querySelector('[data-type="codeblock"]') as HTMLElement
+    const code = root.querySelector('[data-type="pre"]') as HTMLElement
+
+    return {
+      block: block.getBoundingClientRect().height,
+      code: code.getBoundingClientRect().height,
+      padding: parseFloat(getComputedStyle(block).paddingTop),
+      font: parseFloat(getComputedStyle(code).fontSize),
+    }
+  }, DISPLAY)
+
+  // Room for the code and the padding, and not for a line more.
+  expect(height.block - height.code - 2 * height.padding).toBeLessThan(height.font)
+})
+
+test("an inline run of code is a box with room around it", async ({ page }) => {
+  // The chip both platforms draw by hand: the padding sits between the glyphs
+  // and the box, the margin between the box and the words either side of it,
+  // and the corners are rounded.
+  await openText(page, "before `code` after")
+
+  const chip = await page.evaluate((selector) => {
+    const root = document.querySelector(selector) as HTMLElement
+    const code = root.querySelector('[data-type="code"]') as HTMLElement
+    const text = code.querySelector('[data-type="text"]') as HTMLElement
+    const style = getComputedStyle(code)
+
+    return {
+      box: code.getBoundingClientRect(),
+      text: text.getBoundingClientRect(),
+      padding: parseFloat(style.paddingLeft),
+      margin: parseFloat(style.marginLeft),
+      radius: parseFloat(style.borderTopLeftRadius),
+    }
+  }, INPUT)
+
+  expect(chip.padding).toBeGreaterThan(0)
+  expect(chip.margin).toBeGreaterThan(0)
+  expect(chip.radius).toBeGreaterThan(0)
+
+  // The box is the text plus its padding, on both sides.
+  expect(chip.box.width).toBeCloseTo(chip.text.width + 2 * chip.padding, 0)
+  expect(chip.text.left - chip.box.left).toBeCloseTo(chip.padding, 0)
+})
+
+/** The marker of the first list item, as it was drawn. */
+async function marker(page: import("@playwright/test").Page, root: string) {
+  return page.evaluate((selector) => {
+    const host = document.querySelector(selector) as HTMLElement
+    const line = host.querySelector('[data-type="line"]') as HTMLElement
+    const element = host.querySelector(
+      '[data-type="block-prefix"] [data-type="syntax"]',
+    ) as HTMLElement
+
+    if (!element) {
+      return null
+    }
+
+    const style = getComputedStyle(element)
+
+    return {
+      box: element.getBoundingClientRect(),
+      line: line.getBoundingClientRect(),
+      background: style.backgroundImage,
+      backgroundSize: style.backgroundSize,
+      fontSize: parseFloat(style.fontSize),
+      baseFontSize: parseFloat(getComputedStyle(host).fontSize),
+    }
+  }, root)
+}
+
+test("a display draws a bullet where an unordered marker was written", async ({ page }) => {
+  await openDisplayText(page, "- one")
+
+  const bullet = (await marker(page, DISPLAY))!
+  // Sized from the base font rather than from the glyph it replaced.
+  const diameter = bullet.baseFontSize * 0.3
+
+  expect(bullet.background).toContain("radial-gradient")
+  expect(bullet.backgroundSize).toBe(`${diameter}px ${diameter}px`)
+  expect(bullet.box.width).toBeCloseTo(diameter, 1)
+
+  // Centred on the line rather than sat on its baseline, which is where both native platforms
+  // draw it: the box is the line's own height, so the circle painted in the middle of it is in
+  // the middle of the line.
+  expect(bullet.box.top).toBeCloseTo(bullet.line.top, 0)
+  expect(bullet.box.height).toBeCloseTo(bullet.line.height, 0)
+})
+
+test("a display draws an ordered marker smaller than the text it numbers", async ({ page }) => {
+  await openDisplayText(page, "1. one")
+
+  const number = (await marker(page, DISPLAY))!
+
+  expect(number.fontSize).toBeCloseTo(number.baseFontSize * 0.8, 1)
+  // Still a number rather than a shape.
+  expect(number.background).toBe("none")
+})
+
+test("an input shows the marker it was typed with", async ({ page }) => {
+  await openText(page, "- one")
+
+  const dash = (await marker(page, INPUT))!
+
+  expect(dash.background).toBe("none")
+  expect(dash.fontSize).toBeCloseTo(dash.baseFontSize, 1)
 })

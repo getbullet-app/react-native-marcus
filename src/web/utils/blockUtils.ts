@@ -1,6 +1,6 @@
 import type { PartialMarkdownStyle } from "../../styleUtils"
-import { toNumber } from "./blockLayout"
-import type { LineLayout } from "./blockLayout"
+import { SHOWN_MARKERS, toNumber } from "./blockLayout"
+import type { LineLayout, MarkerRendering } from "./blockLayout"
 import type { NodeType } from "./treeUtils"
 
 /**
@@ -92,13 +92,29 @@ function addStyleToBlock(
   type: NodeType,
   markdownStyle: PartialMarkdownStyle,
   isMultiline = true,
+  rendering: MarkerRendering = SHOWN_MARKERS,
 ) {
   const node = targetElement
 
   switch (type) {
+    // A fenced block's language is its own type so that something can read it,
+    // but in an input it is part of the fence you are typing and reads as
+    // markup, so it is coloured like the rest of it.
     case "syntax":
-      applyStyle(node, { color: markdownStyle.syntax?.color as string })
+    case "codeblock-language": {
+      // A list's marker is the one syntax a display keeps, and it is drawn there
+      // rather than shown -- everything else the colour is for has been stripped
+      // out by the time a display is built, so this is the only case where the
+      // two components part company.
+      const list = rendering.display && type === "syntax" ? markerList(node) : null
+
+      if (list) {
+        addMarkerStyle(node, list, markdownStyle, rendering)
+      } else {
+        applyStyle(node, { color: markdownStyle.syntax?.color as string })
+      }
       break
+    }
     case "bold":
       node.style.fontWeight = "bold"
       break
@@ -117,14 +133,18 @@ function addStyleToBlock(
         verticalAlign: "middle",
       })
       break
-    case "mention-here":
-      addMentionStyle(node, markdownStyle.mentionHere)
-      break
-    case "mention-user":
-      addMentionStyle(node, markdownStyle.mentionUser)
-      break
-    case "mention-report":
-      addMentionStyle(node, markdownStyle.mentionReport)
+    // A pill: the same inline box an inline run of code sits in, and drawn the same way. The
+    // padding and margin push the words either side of it apart, the padding grows into the
+    // line's own spacing above and below rather than pushing the lines apart, and a mention that
+    // wraps is rounded only where it begins and ends.
+    case "mention":
+      applyStyle(node, {
+        color: markdownStyle.mention?.color as string,
+        backgroundColor: markdownStyle.mention?.backgroundColor as string,
+        borderRadius: markdownStyle.mention?.borderRadius,
+        padding: markdownStyle.mention?.padding,
+        margin: markdownStyle.mention?.margin,
+      })
       break
     case "link":
       applyStyle(node, {
@@ -132,23 +152,32 @@ function addStyleToBlock(
         textDecoration: "underline",
       })
       break
-    // Both carry a font, a colour and a background, and nothing else: native draws no border, no
-    // corner radius and no padding around either, so neither does this.
+    // An inline box, which is what the platforms draw by hand: the padding and margin push the
+    // words either side of it apart, the padding grows into the line's own spacing above and
+    // below rather than pushing the lines apart, and a run that wraps is rounded only where it
+    // begins and ends. All three are what CSS does with an inline element by default.
     case "code":
       applyStyle(node, {
         fontFamily: markdownStyle.code?.fontFamily,
         fontSize: markdownStyle.code?.fontSize,
         color: markdownStyle.code?.color as string,
         backgroundColor: markdownStyle.code?.backgroundColor as string,
+        borderRadius: markdownStyle.code?.borderRadius,
+        padding: markdownStyle.code?.padding,
+        margin: markdownStyle.code?.margin,
       })
       break
+    // The font and the colour of a block; the box it sits in is `codeblock`, which is the range
+    // that covers the whole thing rather than only the code inside it.
     case "pre":
       applyStyle(node, {
         fontFamily: markdownStyle.pre?.fontFamily,
         fontSize: markdownStyle.pre?.fontSize,
         color: markdownStyle.pre?.color as string,
-        backgroundColor: markdownStyle.pre?.backgroundColor as string,
       })
+      break
+    case "codeblock":
+      addCodeBlockStyle(node, markdownStyle, isMultiline)
       break
     // Block containers hold no box of their own: their gutters and ribbons belong to the
     // paragraph, in `addLineLayout`. All that is left is letting a long unbroken word inside one
@@ -174,16 +203,122 @@ function addStyleToBlock(
   }
 }
 
-function addMentionStyle(
+/**
+ * The box behind a fenced or indented block: one fill for the whole thing, from the first line to
+ * the last, which is what the native formatters draw.
+ *
+ * `codeblock` covers the block including its fences, and the builder merges all of its lines into
+ * one element, so here the box is a real box rather than the several line rects each platform has
+ * to fill by hand. What that costs is the one thing an element cannot do: a block opened after a
+ * bullet or a quote's `>` shares that line in the buffer but not on screen, because a block-level
+ * box drops below the marker in front of it.
+ *
+ * A singleline input has no room for a block at all -- every line of it is drawn on one -- so there
+ * the background stays an inline one, painted behind the text.
+ */
+function addCodeBlockStyle(
   node: HTMLElement,
-  style:
-    | { color?: unknown; backgroundColor?: unknown; borderRadius?: string | number }
-    | undefined,
+  markdownStyle: PartialMarkdownStyle,
+  isMultiline: boolean,
 ) {
+  const style = markdownStyle.pre
+
   applyStyle(node, {
-    color: style?.color as string,
     backgroundColor: style?.backgroundColor as string,
     borderRadius: style?.borderRadius,
+  })
+
+  if (!isMultiline) {
+    return
+  }
+
+  applyStyle(node, {
+    display: "block",
+    // The padding is inside the box, so the box still spans the line rather than overflowing it.
+    boxSizing: "border-box",
+    padding: style?.padding,
+    margin: style?.margin,
+  })
+}
+
+/**
+ * The list whose marker `node` is, or null if this syntax is something else.
+ *
+ * A marker is a `syntax` inside the `block-prefix` of a list container, which is a shape only a
+ * list has: a quote's `>` is removed with the rest of the markup before a display is built.
+ */
+function markerList(node: HTMLElement): "list-ordered" | "list-unordered" | null {
+  let current = node.parentNode as HTMLElement | null
+  let inPrefix = false
+
+  while (current && current.contentEditable !== "true") {
+    const type = current.getAttribute?.("data-type")
+
+    if (type === "block-prefix") {
+      inPrefix = true
+    } else if (type === "list-ordered" || type === "list-unordered") {
+      return inPrefix ? type : null
+    }
+
+    current = current.parentNode as HTMLElement | null
+  }
+
+  return null
+}
+
+/**
+ * Draws a list's marker: a bullet for an unordered item, the number at its own scale for an
+ * ordered one.
+ *
+ * Both are sized from the base font rather than from a length of their own, so a list marks itself
+ * in proportion to the prose it marks, and both are drawn in `syntax.color` -- which in a display,
+ * where every other piece of syntax has been removed, is the list marker's colour and nothing
+ * else's. `MarkdownFormatter` draws the same two shapes from the same numbers on iOS and Android.
+ *
+ * The bullet keeps the marker character inside it, boxed and invisible: it is what a reader copies
+ * and what a screen reader announces, and the box is exactly the width `layoutBlocks` indented the
+ * text past.
+ */
+function addMarkerStyle(
+  node: HTMLElement,
+  type: "list-ordered" | "list-unordered",
+  markdownStyle: PartialMarkdownStyle,
+  rendering: MarkerRendering,
+) {
+  const color = markdownStyle.syntax?.color as string
+  const { fontSize } = rendering
+  const scale = toNumber(
+    (type === "list-ordered" ? markdownStyle.orderedList : markdownStyle.unorderedList)?.markerScale,
+  )
+
+  if (scale <= 0 || fontSize <= 0) {
+    applyStyle(node, { color })
+    return
+  }
+
+  if (type === "list-ordered") {
+    applyStyle(node, { color, fontSize: fontSize * scale })
+    return
+  }
+
+  const diameter = fontSize * scale
+
+  // A box one line high, aligned to the top of the line, with the circle painted in the middle of
+  // it: that is what centres the bullet on the line rather than on the text, which is where both
+  // native platforms draw it. The height is the marker character's own line box -- an inline block
+  // holding one line of text is exactly one line high -- so it follows the line height without
+  // having to be told it.
+  applyStyle(node, {
+    display: "inline-block",
+    width: diameter,
+    verticalAlign: "top",
+    backgroundImage: `radial-gradient(circle closest-side, ${color} 100%, transparent 100%)`,
+    backgroundSize: `${diameter}px ${diameter}px`,
+    backgroundPosition: "center",
+    backgroundRepeat: "no-repeat",
+    // The character is still in the box, and stays out of sight of everything but a selection.
+    color: "transparent",
+    overflow: "hidden",
   })
 }
 

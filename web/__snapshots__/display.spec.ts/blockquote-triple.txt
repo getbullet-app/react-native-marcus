@@ -1,0 +1,6 @@
+p[line] background-image:linear-gradient(gray, gray), linear-gradient(gray, gray), linear-gradient(gray, gray) background-position-x:<measured> background-position-y:0px, 0px, 0px background-repeat:no-repeat background-size:6px 100%, 6px 100%, 6px 100% margin-bottom:0px margin-left:0px margin-right:0px margin-top:0px padding-bottom:0px padding-left:<measured> padding-right:0px padding-top:0px text-indent:<measured>
+  span[blockquote] overflow-wrap:anywhere
+    span[blockquote] overflow-wrap:anywhere
+      span[blockquote] overflow-wrap:anywhere
+        span[text]
+          #text "deeper"

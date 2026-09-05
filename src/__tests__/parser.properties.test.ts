@@ -17,6 +17,11 @@ import { parse } from "./helpers/parse"
 const MAX_DEPTH = 6
 const BLOCK_PREFIX = "block-prefix"
 const SYNTAX = "syntax"
+const ALT_TEXT = "alt-text"
+const LABEL = "label"
+const LINK = "link"
+const IMAGE = "inline-image"
+const EMOJI = "emoji"
 
 /** Text that leans on the parser's own vocabulary, so runs reach real states. */
 const PREFIX = fc.constantFrom("", "# ", "## ", "> ", ">> ", "- ", "1. ", "> - ", "- > ", "    ")
@@ -27,6 +32,11 @@ const INLINE = fc.constantFrom(
   "~~s~~",
   "`code`",
   "[a](https://e.com)",
+  "[<https://e.com>](u)",
+  "[text ![i](j) more](u)",
+  "![alt](https://e.com/a.png)",
+  "![**b** [l](u) ![i](j)](https://e.com/a.png)",
+  "![party \u{1F600}](https://e.com/a.png)",
   "https://e.com",
   "@user",
   "\u{1F600}",
@@ -136,6 +146,82 @@ describe("parser properties", () => {
             )
           }
         })
+      }),
+    )
+  })
+
+  it("emits nothing but syntax and emoji inside alt text", () => {
+    // What makes alt text a string rather than a tree. CommonMark flattens a
+    // label to render the `alt` attribute; the parser flattens it here instead,
+    // so nothing downstream has to know that an image can contain a link.
+    // Emoji stay because they are not markup: the characters are still there,
+    // and alt text shown as prose has to draw them in the emoji font.
+    fc.assert(
+      fc.property(ANY, (markdown) => {
+        const ranges = parse(markdown)
+        const alts = ranges.filter((range) => range.type === ALT_TEXT)
+
+        alts.forEach((alt) => {
+          const end = alt.start + alt.length
+
+          ranges.forEach((range) => {
+            if (range === alt || range.start < alt.start || range.start >= end) {
+              return
+            }
+
+            if (range.type !== SYNTAX && range.type !== EMOJI) {
+              throw new Error(`${describeRange(range)} inside ${describeRange(alt)}`)
+            }
+          })
+        })
+      }),
+    )
+  })
+
+  it("emits no link inside a label but an image's own destination", () => {
+    // A link inside a link is text: `[<https://x.com>](y)` draws its own URL
+    // and points somewhere else. An image's destination is the exception --
+    // it is inside the label but it belongs to the image, and something has to
+    // render that.
+    fc.assert(
+      fc.property(ANY, (markdown) => {
+        const ranges = parse(markdown)
+        const labels = ranges.filter((range) => range.type === LABEL)
+        const images = ranges.filter((range) => range.type === IMAGE)
+
+        labels.forEach((label) => {
+          const end = label.start + label.length
+
+          ranges.forEach((range) => {
+            if (range.type !== LINK || range.start < label.start || range.start >= end) {
+              return
+            }
+
+            const inImage = images.some(
+              (image) =>
+                range.start >= image.start && range.start < image.start + image.length,
+            )
+
+            if (!inImage) {
+              throw new Error(`${describeRange(range)} inside ${describeRange(label)}`)
+            }
+          })
+        })
+      }),
+    )
+  })
+
+  it("emits one alt-text range per image", () => {
+    fc.assert(
+      fc.property(ANY, (markdown) => {
+        const ranges = parse(markdown)
+        const images = ranges.filter((range) => range.type === "inline-image").length
+        const alts = ranges.filter((range) => range.type === ALT_TEXT).length
+
+        // At most, because `![](x)` has an empty label and so no range at all.
+        if (alts > images) {
+          throw new Error(`${alts} alt-text ranges for ${images} images`)
+        }
       }),
     )
   })

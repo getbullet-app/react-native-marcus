@@ -1,5 +1,6 @@
 import type { PartialMarkdownStyle } from "../styleUtils"
 import { layoutBlocks, toNumber } from "../web/utils/blockLayout"
+import type { MarkerRendering } from "../web/utils/blockLayout"
 import { CASES } from "../__fixtures__/cases"
 import { parse } from "./helpers/parse"
 
@@ -14,8 +15,8 @@ import { parse } from "./helpers/parse"
 // hand: a quote steps 6 + 6 + 6 = 18, a list steps 6 + 18 = 24.
 const STYLE: PartialMarkdownStyle = {
   blockquote: { marginLeft: 6, borderWidth: 6, paddingLeft: 6 },
-  orderedList: { marginLeft: 6, paddingLeft: 18 },
-  unorderedList: { marginLeft: 6, paddingLeft: 18 },
+  orderedList: { marginLeft: 6, paddingLeft: 18, markerScale: 0.8, markerPadding: 2 },
+  unorderedList: { marginLeft: 6, paddingLeft: 18, markerScale: 0.3, markerPadding: 2 },
 }
 
 const QUOTE_STEP = 18
@@ -24,8 +25,20 @@ const LIST_STEP = 24
 /** Ten units per character, so a marker's width is legible in the expectations. */
 const measure = (text: string) => text.length * 10
 
+/** A display's markers, sized from a base font round enough to check by hand. */
+const DISPLAY: MarkerRendering = { display: true, fontSize: 20 }
+
+const MARKER_PADDING = 2
+/** `unorderedList.markerScale` of the base font size above. */
+const BULLET = 6
+
 function layout(markdown: string) {
   return layoutBlocks(markdown, parse(markdown), STYLE, measure)
+}
+
+/** The same document as a `MarkdownText` lays it out, markers rendered rather than shown. */
+function display(markdown: string) {
+  return layoutBlocks(markdown, parse(markdown), STYLE, measure, DISPLAY)
 }
 
 describe("toNumber", () => {
@@ -104,6 +117,45 @@ describe("layoutBlocks", () => {
 
   it("produces no layout for a line with no containers", () => {
     expect(layout("plain **bold** text").size).toBe(0)
+  })
+
+  it("leaves a display's ordered marker the width its own scale makes it", () => {
+    // `1. x`: reserve 24, hold 2 either side of the marker, and step over `1.`
+    // drawn at 0.8. Only the marker scales -- the space behind it separates the
+    // marker from the text and belongs to the text's own size.
+    const line = display("1. x").get(0)!
+
+    expect(line.firstLineIndent).toBe(LIST_STEP + MARKER_PADDING)
+    expect(line.indent).toBe(
+      LIST_STEP + MARKER_PADDING + measure("1.") * 0.8 + measure(" ") + MARKER_PADDING,
+    )
+  })
+
+  it("gives a display's bullet the width of the circle rather than of the marker", () => {
+    // The `-` is not drawn, so the circle stands in for it; the space behind it
+    // measures as it always did.
+    const line = display("- x").get(0)!
+
+    expect(line.indent).toBe(LIST_STEP + MARKER_PADDING + BULLET + measure(" ") + MARKER_PADDING)
+  })
+
+  it("holds the padding after a marker open with a gap", () => {
+    // The same character a nested container's gutter is held open on, so the two
+    // add up rather than replacing each other -- exactly as the kerning does on
+    // iOS and the replacement span on Android.
+    const line = display("- > x").get(0)!
+
+    expect(line.gaps.get(0)).toBe(MARKER_PADDING + QUOTE_STEP)
+  })
+
+  it("shows an input's markers as they were typed", () => {
+    // No padding and no bullet: what is on the screen is what is in the buffer,
+    // and the text starts wherever the marker's own glyphs end.
+    const line = layout("- x").get(0)!
+
+    expect(line.firstLineIndent).toBe(LIST_STEP)
+    expect(line.indent).toBe(LIST_STEP + measure("- "))
+    expect(line.gaps.size).toBe(0)
   })
 
   it("is stable across every block fixture", () => {

@@ -31,6 +31,7 @@ export default function Tab() {
 const useStyles = createThemedStylesheet((theme) =>
   StyleSheet.create({
     container: {
+      backgroundColor: theme.colors.background,
       alignItems: "center",
       marginTop: Platform.select({
         android: 64,
@@ -38,6 +39,7 @@ const useStyles = createThemedStylesheet((theme) =>
       }),
     },
     input: {
+      color: theme.colors.text,
       fontSize: 16,
       padding: 8,
       width: "100%",

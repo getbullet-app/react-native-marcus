@@ -128,7 +128,7 @@ MarcusTextInputDecoratorShadowNode::
   }
 
   RCTMarcusStyle *markdownStyle =
-    [[RCTMarcusStyle alloc] initWithStruct:decoratorProps.markdownStyle];
+    RCTMarcusStyleFromStruct(decoratorProps.markdownStyle);
   NSNumber *parserId = [NSNumber numberWithInt:decoratorProps.parserId];
 
   // convert the attibuted string stored in state to

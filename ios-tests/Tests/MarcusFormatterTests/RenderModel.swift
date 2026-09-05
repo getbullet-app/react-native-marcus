@@ -100,6 +100,16 @@ enum RenderModel {
       case .marcusTextBackground:
         described.append("background-shape")
 
+      // The box behind a whole code block, which Android models as the
+      // `MarkdownCodeBlockSpan` it sets over the same range.
+      case .marcusCodeBlock:
+        described.append("code-block")
+
+      // The circle drawn in place of an unordered item's marker, which Android
+      // models as the `MarkdownBulletSpan` it sets over the same character.
+      case .marcusListBullet:
+        described.append("bullet")
+
       // Kerning is how the space after a marker is held open here; Android does
       // the same job with a MarkdownGapSpan. One name for one thing.
       case .kern:

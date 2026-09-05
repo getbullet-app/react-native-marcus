@@ -14,7 +14,6 @@
 
 #import <RNMarcus/MarcusRange.h>
 #import <RNMarcus/RCTMarcusStyle.h>
-#import <RNMarcus/RCTMarcusUtils.h>
 
 #if __has_include(<RNMarcus/RNMarcus-Swift.h>)
 #import <RNMarcus/RNMarcus-Swift.h>

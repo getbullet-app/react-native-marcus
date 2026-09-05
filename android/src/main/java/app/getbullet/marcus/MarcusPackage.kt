@@ -11,7 +11,8 @@ class MarcusPackage : BaseReactPackage() {
 
   override fun createViewManagers(
     reactContext: ReactApplicationContext
-  ): List<ViewManager<in Nothing, in Nothing>> = listOf(MarcusTextInputDecoratorViewManager())
+  ): List<ViewManager<in Nothing, in Nothing>> =
+    listOf(MarcusTextInputDecoratorViewManager(), MarcusTextDecoratorViewManager())
 
   override fun getReactModuleInfoProvider(): ReactModuleInfoProvider = ReactModuleInfoProvider {
     mapOf(

@@ -8,8 +8,6 @@ import com.facebook.react.bridge.ReadableMap
 import com.facebook.react.bridge.ReadableType
 
 class MarkdownStyle(map: ReadableMap, context: Context) {
-  private val screenDensity = context.resources.displayMetrics.density
-
   @ColorInt val syntaxColor = parseColor(map, "syntax", "color", context)
   @ColorInt val linkColor = parseColor(map, "link", "color", context)
 
@@ -27,31 +25,37 @@ class MarkdownStyle(map: ReadableMap, context: Context) {
 
   val orderedListMarginLeft = parseFloat(map, "orderedList", "marginLeft")
   val orderedListPaddingLeft = parseFloat(map, "orderedList", "paddingLeft")
+  val orderedListMarkerScale = parseFloat(map, "orderedList", "markerScale")
+  val orderedListMarkerPadding = parseFloat(map, "orderedList", "markerPadding")
 
   val unorderedListMarginLeft = parseFloat(map, "unorderedList", "marginLeft")
   val unorderedListPaddingLeft = parseFloat(map, "unorderedList", "paddingLeft")
+  val unorderedListMarkerScale = parseFloat(map, "unorderedList", "markerScale")
+  val unorderedListMarkerPadding = parseFloat(map, "unorderedList", "markerPadding")
 
   val codeFontFamily = parseString(map, "code", "fontFamily")
   val codeFontSize = parseFloat(map, "code", "fontSize")
   @ColorInt val codeColor = parseColor(map, "code", "color", context)
   @ColorInt val codeBackgroundColor = parseColor(map, "code", "backgroundColor", context)
+  val codeBorderRadius = parseFloat(map, "code", "borderRadius")
+  val codePadding = parseFloat(map, "code", "padding")
+  val codeMargin = parseFloat(map, "code", "margin")
 
   val preFontFamily = parseString(map, "pre", "fontFamily")
   val preFontSize = parseFloat(map, "pre", "fontSize")
   @ColorInt val preColor = parseColor(map, "pre", "color", context)
   @ColorInt val preBackgroundColor = parseColor(map, "pre", "backgroundColor", context)
+  val preBorderRadius = parseFloat(map, "pre", "borderRadius")
+  val prePadding = parseFloat(map, "pre", "padding")
+  val preMargin = parseFloat(map, "pre", "margin")
 
-  @ColorInt val mentionHereColor = parseColor(map, "mentionHere", "color", context)
-  @ColorInt val mentionHereBackgroundColor = parseColor(map, "mentionHere", "backgroundColor", context)
-  val mentionHereBorderRadius = parseFloat(map, "mentionHere", "borderRadius") * screenDensity
-
-  @ColorInt val mentionUserColor = parseColor(map, "mentionUser", "color", context)
-  @ColorInt val mentionUserBackgroundColor = parseColor(map, "mentionUser", "backgroundColor", context)
-  val mentionUserBorderRadius = parseFloat(map, "mentionUser", "borderRadius") * screenDensity
-
-  @ColorInt val mentionReportColor = parseColor(map, "mentionReport", "color", context)
-  @ColorInt val mentionReportBackgroundColor = parseColor(map, "mentionReport", "backgroundColor", context)
-  val mentionReportBorderRadius = parseFloat(map, "mentionReport", "borderRadius") * screenDensity
+  // Lengths in dp, as `code`'s are: what draws them converts, so a value means
+  // the same thing wherever it is read.
+  @ColorInt val mentionColor = parseColor(map, "mention", "color", context)
+  @ColorInt val mentionBackgroundColor = parseColor(map, "mention", "backgroundColor", context)
+  val mentionBorderRadius = parseFloat(map, "mention", "borderRadius")
+  val mentionPadding = parseFloat(map, "mention", "padding")
+  val mentionMargin = parseFloat(map, "mention", "margin")
 
   private companion object {
     fun style(map: ReadableMap, key: String): ReadableMap =

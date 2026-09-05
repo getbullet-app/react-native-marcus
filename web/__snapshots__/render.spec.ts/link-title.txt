@@ -2,8 +2,9 @@ p[line] margin-bottom:0px margin-left:0px margin-right:0px margin-top:0px paddin
   span[syntax] color:gray
     span[text]
       #text "["
-  span[text]
-    #text "text"
+  span[label]
+    span[text]
+      #text "text"
   span[syntax] color:gray
     span[text]
       #text "]"
@@ -18,8 +19,9 @@ p[line] margin-bottom:0px margin-left:0px margin-right:0px margin-top:0px paddin
   span[syntax] color:gray
     span[text]
       #text "\""
-  span[text]
-    #text "Title"
+  span[title]
+    span[text]
+      #text "Title"
   span[syntax] color:gray
     span[text]
       #text "\""

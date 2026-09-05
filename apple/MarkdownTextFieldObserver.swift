@@ -8,12 +8,12 @@ import UIKit
 
   // Strong on purpose -- see MarkdownTextStorageDelegate.
   private let textField: RCTUITextField
-  private let markdownUtils: RCTMarcusUtils
+  private let markdownUtils: MarkdownUtils
 
   /// Guards against the KVO observer re-entering while we assign `attributedText`.
   private var active = true
 
-  @objc public init(textField: RCTUITextField, markdownUtils: RCTMarcusUtils)
+  @objc public init(textField: RCTUITextField, markdownUtils: MarkdownUtils)
   {
     self.textField = textField
     self.markdownUtils = markdownUtils

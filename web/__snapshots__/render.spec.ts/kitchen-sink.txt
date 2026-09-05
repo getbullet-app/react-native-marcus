@@ -47,7 +47,7 @@ p[line] margin-bottom:0px margin-left:0px margin-right:0px margin-top:0px paddin
   span[syntax] color:gray
     span[text]
       #text "`"
-  span[code] background-color:lightgray color:black font-family:monospace font-size:16px
+  span[code] background-color:lightgray border-bottom-left-radius:4px border-bottom-right-radius:4px border-top-left-radius:4px border-top-right-radius:4px color:black font-family:monospace font-size:16px margin-bottom:2px margin-left:2px margin-right:2px margin-top:2px padding-bottom:2px padding-left:<measured> padding-right:2px padding-top:2px
     span[text]
       #text "code"
   span[syntax] color:gray
@@ -71,8 +71,9 @@ p[line] background-image:linear-gradient(gray, gray) background-position-x:<meas
     span[syntax] color:gray
       span[text]
         #text "["
-    span[text]
-      #text "link"
+    span[label]
+      span[text]
+        #text "link"
     span[syntax] color:gray
       span[text]
         #text "]"
@@ -128,15 +129,16 @@ p[line] margin-bottom:0px margin-left:0px margin-right:0px margin-top:0px paddin
   span[br]
     br
 p[line] margin-bottom:0px margin-left:0px margin-right:0px margin-top:0px padding-bottom:0px padding-left:<measured> padding-right:0px padding-top:0px
-  span[codeblock]
+  span[codeblock] background-color:lightgray border-bottom-left-radius:4px border-bottom-right-radius:4px border-top-left-radius:4px border-top-right-radius:4px box-sizing:border-box display:block margin-bottom:4px margin-left:4px margin-right:4px margin-top:4px padding-bottom:8px padding-left:<measured> padding-right:8px padding-top:8px
     span[syntax] color:gray
       span[text]
         #text "```"
-    span[text]
-      #text "ts"
+    span[codeblock-language] color:gray
+      span[text]
+        #text "ts"
     span[br]
       br
-    span[pre] background-color:lightgray color:black font-family:monospace font-size:16px
+    span[pre] color:black font-family:monospace font-size:16px
       span[text]
         #text "const a = 1"
       span[br]
@@ -150,7 +152,7 @@ p[line] margin-bottom:0px margin-left:0px margin-right:0px margin-top:0px paddin
 p[line] margin-bottom:0px margin-left:0px margin-right:0px margin-top:0px padding-bottom:0px padding-left:<measured> padding-right:0px padding-top:0px
   span[text]
     #text "Hey "
-  span[mention-user] background-color:cyan border-bottom-left-radius:5px border-bottom-right-radius:5px border-top-left-radius:5px border-top-right-radius:5px color:blue
+  span[mention] background-color:cyan border-bottom-left-radius:5px border-bottom-right-radius:5px border-top-left-radius:5px border-top-right-radius:5px color:blue margin-bottom:0px margin-left:0px margin-right:0px margin-top:0px padding-bottom:2px padding-left:<measured> padding-right:2px padding-top:2px
     span[text]
       #text "@someone"
   span[text]

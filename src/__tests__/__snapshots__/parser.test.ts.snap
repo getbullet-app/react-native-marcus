@@ -144,6 +144,7 @@ syntax   8..10  "**""
 
 exports[`parser cjk-link 1`] = `
 "syntax    0..1  "["
+label     1..5  "中文链接"
 syntax    5..6  "]"
 syntax    6..7  "("
 link     7..29  "https://example.com/中文"
@@ -159,7 +160,7 @@ block-prefix      6..8  "- "
 list-unordered   6..11  "- 項目二" depth=1"
 `;
 
-exports[`parser cjk-mention 1`] = `"mention-user    4..8  "@用户名""`;
+exports[`parser cjk-mention 1`] = `"mention    4..8  "@用户名""`;
 
 exports[`parser cjk-punctuation-after 1`] = `
 "bold      0..6  "**粗体**"
@@ -180,11 +181,20 @@ pre         4..11  "fenced\\n"
 syntax     11..14  "\`\`\`""
 `;
 
-exports[`parser code-fenced-lang 1`] = `
-"codeblock   0..21  "\`\`\`ts\\nconst a = 1\\n\`\`\`"
+exports[`parser code-fenced-blank-line 1`] = `
+"codeblock   0..19  "\`\`\`\\nfirst\\n\\nlast\\n\`\`\`"
 syntax       0..3  "\`\`\`"
-pre         6..18  "const a = 1\\n"
-syntax     18..21  "\`\`\`""
+pre         4..10  "first\\n"
+pre        11..16  "last\\n"
+syntax     16..19  "\`\`\`""
+`;
+
+exports[`parser code-fenced-lang 1`] = `
+"codeblock            0..21  "\`\`\`ts\\nconst a = 1\\n\`\`\`"
+syntax                0..3  "\`\`\`"
+codeblock-language    3..5  "ts"
+pre                  6..18  "const a = 1\\n"
+syntax              18..21  "\`\`\`""
 `;
 
 exports[`parser code-fenced-unterminated 1`] = `
@@ -317,14 +327,79 @@ syntax     4..6  "**"
 syntax   10..12  "**""
 `;
 
+exports[`parser image-alt-emoji 1`] = `
+"inline-image   0..43  "![party 🎉 time](https://example.com/a.png)"
+syntax          0..1  "!"
+syntax          1..2  "["
+alt-text       2..15  "party 🎉 time"
+emoji          8..10  "🎉"
+syntax        15..16  "]"
+syntax        16..17  "("
+link          17..42  "https://example.com/a.png"
+syntax        42..43  ")""
+`;
+
+exports[`parser image-alt-markup 1`] = `
+"inline-image   0..42  "![**bold** alt](https://example.com/a.png)"
+syntax          0..1  "!"
+syntax          1..2  "["
+alt-text       2..14  "**bold** alt"
+syntax          2..4  "**"
+syntax         8..10  "**"
+syntax        14..15  "]"
+syntax        15..16  "("
+link          16..41  "https://example.com/a.png"
+syntax        41..42  ")""
+`;
+
+exports[`parser image-in-blockquote 1`] = `
+"syntax          0..1  ">"
+inline-image   2..35  "![alt](https://example.com/a.png)"
+syntax          2..3  "!"
+syntax          3..4  "["
+alt-text        4..7  "alt"
+syntax          7..8  "]"
+syntax          8..9  "("
+link           9..34  "https://example.com/a.png"
+syntax        34..35  ")"
+block-prefix    0..2  "> "
+blockquote     0..35  "> ![alt](https://example.com/a.png)" depth=1"
+`;
+
+exports[`parser image-in-text 1`] = `
+"inline-image   3..37  "![icon](https://example.com/i.png)"
+syntax          3..4  "!"
+syntax          4..5  "["
+alt-text        5..9  "icon"
+syntax         9..10  "]"
+syntax        10..11  "("
+link          11..36  "https://example.com/i.png"
+syntax        36..37  ")""
+`;
+
 exports[`parser image-inline 1`] = `
 "inline-image   0..33  "![alt](https://example.com/a.png)"
 syntax          0..1  "!"
 syntax          1..2  "["
+alt-text        2..5  "alt"
 syntax          5..6  "]"
 syntax          6..7  "("
 link           7..32  "https://example.com/a.png"
 syntax        32..33  ")""
+`;
+
+exports[`parser image-title 1`] = `
+"inline-image   0..41  "![alt](https://example.com/a.png \\"Title\\")"
+syntax          0..1  "!"
+syntax          1..2  "["
+alt-text        2..5  "alt"
+syntax          5..6  "]"
+syntax          6..7  "("
+link           7..32  "https://example.com/a.png"
+syntax        33..34  "\\""
+title         34..39  "Title"
+syntax        39..40  "\\""
+syntax        40..41  ")""
 `;
 
 exports[`parser italic-star 1`] = `
@@ -340,57 +415,127 @@ syntax    7..8  "_""
 `;
 
 exports[`parser kitchen-sink 1`] = `
-"heading           0..9  "# Heading" depth=1
-syntax            0..1  "#"
-bold            16..24  "**bold**"
-syntax          16..18  "**"
-syntax          22..24  "**"
-italic          26..34  "*italic*"
-syntax          26..27  "*"
-syntax          33..34  "*"
-strikethrough   39..49  "~~struck~~"
-syntax          39..41  "~~"
-syntax          47..49  "~~"
-syntax          60..61  "\`"
-code            61..65  "code"
-syntax          65..66  "\`"
-syntax          69..70  ">"
-syntax          86..87  "["
-syntax          91..92  "]"
-syntax          92..93  "("
-link           93..112  "https://example.com"
-syntax        112..113  ")"
-block-prefix    69..71  "> "
-blockquote     69..113  "> A quote with a [link](https://example.com)" depth=1
-syntax        115..116  "-"
-block-prefix  115..117  "- "
-list-unordered115..125  "- item one" depth=1
-syntax        126..127  "-"
-block-prefix  126..128  "- "
-list-unordered126..136  "- item two" depth=1
-syntax        139..140  "1"
-syntax        140..141  "."
-list-unordered137..148  "  1. nested" depth=1
-block-prefix  137..142  "  1. "
-list-ordered  137..148  "  1. nested" depth=1
-codeblock     150..171  "\`\`\`ts\\nconst a = 1\\n\`\`\`"
-syntax        150..153  "\`\`\`"
-pre           156..168  "const a = 1\\n"
-syntax        168..171  "\`\`\`"
-mention-user  177..185  "@someone"
-emoji         186..188  "😀""
+"heading               0..9  "# Heading" depth=1
+syntax                0..1  "#"
+bold                16..24  "**bold**"
+syntax              16..18  "**"
+syntax              22..24  "**"
+italic              26..34  "*italic*"
+syntax              26..27  "*"
+syntax              33..34  "*"
+strikethrough       39..49  "~~struck~~"
+syntax              39..41  "~~"
+syntax              47..49  "~~"
+syntax              60..61  "\`"
+code                61..65  "code"
+syntax              65..66  "\`"
+syntax              69..70  ">"
+syntax              86..87  "["
+label               87..91  "link"
+syntax              91..92  "]"
+syntax              92..93  "("
+link               93..112  "https://example.com"
+syntax            112..113  ")"
+block-prefix        69..71  "> "
+blockquote         69..113  "> A quote with a [link](https://example.com)" depth=1
+syntax            115..116  "-"
+block-prefix      115..117  "- "
+list-unordered    115..125  "- item one" depth=1
+syntax            126..127  "-"
+block-prefix      126..128  "- "
+list-unordered    126..136  "- item two" depth=1
+syntax            139..140  "1"
+syntax            140..141  "."
+list-unordered    137..148  "  1. nested" depth=1
+block-prefix      137..142  "  1. "
+list-ordered      137..148  "  1. nested" depth=1
+codeblock         150..171  "\`\`\`ts\\nconst a = 1\\n\`\`\`"
+syntax            150..153  "\`\`\`"
+codeblock-language153..155  "ts"
+pre               156..168  "const a = 1\\n"
+syntax            168..171  "\`\`\`"
+mention           177..185  "@someone"
+emoji             186..188  "😀""
+`;
+
+exports[`parser link-image 1`] = `
+"syntax          0..1  "["
+label          1..34  "![alt](https://example.com/i.png)"
+inline-image   1..34  "![alt](https://example.com/i.png)"
+syntax          1..2  "!"
+syntax          2..3  "["
+alt-text        3..6  "alt"
+syntax          6..7  "]"
+syntax          7..8  "("
+link           8..33  "https://example.com/i.png"
+syntax        33..34  ")"
+syntax        34..35  "]"
+syntax        35..36  "("
+link          36..55  "https://example.com"
+syntax        55..56  ")""
 `;
 
 exports[`parser link-inline 1`] = `
 "syntax    0..1  "["
+label     1..5  "text"
 syntax    5..6  "]"
 syntax    6..7  "("
 link     7..26  "https://example.com"
 syntax  26..27  ")""
 `;
 
+exports[`parser link-label-autolink 1`] = `
+"syntax    0..1  "["
+label    1..16  "<https://x.com>"
+syntax    1..2  "<"
+syntax  15..16  ">"
+syntax  16..17  "]"
+syntax  17..18  "("
+link    18..37  "https://example.com"
+syntax  37..38  ")""
+`;
+
+exports[`parser link-label-image 1`] = `
+"syntax          0..1  "["
+label          1..38  "a ![alt](https://example.com/i.png) b"
+inline-image   3..36  "![alt](https://example.com/i.png)"
+syntax          3..4  "!"
+syntax          4..5  "["
+alt-text        5..8  "alt"
+syntax          8..9  "]"
+syntax         9..10  "("
+link          10..35  "https://example.com/i.png"
+syntax        35..36  ")"
+syntax        38..39  "]"
+syntax        39..40  "("
+link          40..59  "https://example.com"
+syntax        59..60  ")""
+`;
+
+exports[`parser link-label-url 1`] = `
+"syntax    0..1  "["
+label    1..18  "http://google.com"
+syntax  18..19  "]"
+syntax  19..20  "("
+link    20..38  "http://example.com"
+syntax  38..39  ")""
+`;
+
+exports[`parser link-markup 1`] = `
+"syntax    0..1  "["
+label    1..14  "**bold** link"
+bold      1..9  "**bold**"
+syntax    1..3  "**"
+syntax    7..9  "**"
+syntax  14..15  "]"
+syntax  15..16  "("
+link    16..35  "https://example.com"
+syntax  35..36  ")""
+`;
+
 exports[`parser link-reference 1`] = `
 "syntax    0..1  "["
+label     1..5  "text"
 syntax    5..6  "]"
 syntax    6..7  "["
 syntax  10..11  "]"
@@ -402,10 +547,12 @@ link    20..39  "https://example.com""
 
 exports[`parser link-title 1`] = `
 "syntax    0..1  "["
+label     1..5  "text"
 syntax    5..6  "]"
 syntax    6..7  "("
 link     7..26  "https://example.com"
 syntax  27..28  "\\""
+title   28..33  "Title"
 syntax  33..34  "\\""
 syntax  34..35  ")""
 `;
@@ -513,18 +660,54 @@ block-prefix      6..8  "* "
 list-unordered   6..11  "* two" depth=1"
 `;
 
-exports[`parser mention 1`] = `"mention-user   4..12  "@someone""`;
+exports[`parser mention 1`] = `"mention   4..12  "@someone""`;
 
-exports[`parser mention-hyphen 1`] = `"(no ranges)"`;
+exports[`parser mention-at 1`] = `"mention   4..21  "@user@example.com""`;
 
-exports[`parser mention-in-bold 1`] = `
-"bold           0..12  "**@someone**"
-syntax          0..2  "**"
-mention-user   2..10  "@someone"
-syntax        10..12  "**""
+exports[`parser mention-dot 1`] = `
+"mention    0..8  "@bullet."
+mention  13..23  "@user.name""
 `;
 
-exports[`parser mention-trailing-hyphen 1`] = `"(no ranges)"`;
+exports[`parser mention-double-dot 1`] = `"mention    0..8  "@bullet.""`;
+
+exports[`parser mention-hyphen 1`] = `"mention    0..9  "@some-one""`;
+
+exports[`parser mention-in-bold 1`] = `
+"bold      0..12  "**@someone**"
+syntax     0..2  "**"
+mention   2..10  "@someone"
+syntax   10..12  "**""
+`;
+
+exports[`parser mention-in-italic-underscore 1`] = `
+"italic    0..10  "_@someone_"
+syntax     0..1  "_"
+mention    1..9  "@someone"
+syntax    9..10  "_""
+`;
+
+exports[`parser mention-in-link 1`] = `
+"syntax     0..1  "["
+label      1..6  "@user"
+mention    1..6  "@user"
+syntax     6..7  "]"
+syntax     7..8  "("
+link      8..27  "https://example.com"
+syntax   27..28  ")""
+`;
+
+exports[`parser mention-leading-at 1`] = `"(no ranges)"`;
+
+exports[`parser mention-mid-word 1`] = `"(no ranges)"`;
+
+exports[`parser mention-punctuation 1`] = `"mention    3..8  "@user""`;
+
+exports[`parser mention-trailing-at 1`] = `"mention    0..5  "@user""`;
+
+exports[`parser mention-trailing-hyphen 1`] = `"mention    0..8  "@someone""`;
+
+exports[`parser mention-underscore 1`] = `"mention    0..9  "@some_one""`;
 
 exports[`parser nesting-deep-mixed 1`] = `
 "syntax            0..1  ">"
@@ -623,6 +806,7 @@ syntax   9..11  "**""
 
 exports[`parser rtl-link 1`] = `
 "syntax    0..1  "["
+label     1..8  "نص عربي"
 syntax    8..9  "]"
 syntax   9..10  "("
 link    10..29  "https://example.com"
@@ -644,7 +828,7 @@ syntax   8..10  "**"
 syntax  14..16  "**""
 `;
 
-exports[`parser rtl-mention 1`] = `"mention-user    0..7  "@مستخدم""`;
+exports[`parser rtl-mention 1`] = `"mention    0..7  "@مستخدم""`;
 
 exports[`parser rtl-mixed 1`] = `
 "bold     6..15  "**hello**"

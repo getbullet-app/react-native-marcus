@@ -1,0 +1,985 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`stripped corpus autolink-angle 1`] = `
+""https://example.com"
+
+link   0..19  "https://example.com""
+`;
+
+exports[`stripped corpus autolink-email 1`] = `
+""user@example.com"
+
+link   0..16  "user@example.com""
+`;
+
+exports[`stripped corpus autolink-http 1`] = `
+""https://example.com"
+
+link   0..19  "https://example.com""
+`;
+
+exports[`stripped corpus autolink-www 1`] = `
+""www.example.com"
+
+link   0..15  "www.example.com""
+`;
+
+exports[`stripped corpus blockquote 1`] = `
+""quoted"
+
+blockquote    0..6  "quoted" depth=1"
+`;
+
+exports[`stripped corpus blockquote-in-list 1`] = `
+""- quoted in a list"
+
+syntax            0..1  "-"
+block-prefix      0..2  "- "
+list-unordered   0..18  "- quoted in a list" depth=1
+blockquote       0..18  "- quoted in a list" depth=1"
+`;
+
+exports[`stripped corpus blockquote-lazy 1`] = `
+""one\\ntwo"
+
+blockquote    0..3  "one" depth=1
+blockquote    4..7  "two" depth=1"
+`;
+
+exports[`stripped corpus blockquote-multiline 1`] = `
+""one\\ntwo"
+
+blockquote    0..3  "one" depth=1
+blockquote    4..7  "two" depth=1"
+`;
+
+exports[`stripped corpus blockquote-nested 1`] = `
+""deep"
+
+blockquote    0..4  "deep" depth=2"
+`;
+
+exports[`stripped corpus blockquote-triple 1`] = `
+""deeper"
+
+blockquote    0..6  "deeper" depth=3"
+`;
+
+exports[`stripped corpus bold 1`] = `
+""bold"
+
+bold    0..4  "bold""
+`;
+
+exports[`stripped corpus bold-italic-underscore 1`] = `
+""both"
+
+italic    0..4  "both"
+bold      0..4  "both""
+`;
+
+exports[`stripped corpus bold-underscore 1`] = `
+""bold"
+
+bold    0..4  "bold""
+`;
+
+exports[`stripped corpus bold-underscore-intraword 1`] = `
+""snake__case__word"
+
+(no ranges)"
+`;
+
+exports[`stripped corpus bold-underscore-mixed 1`] = `
+""bold and bold"
+
+bold    0..4  "bold"
+bold   9..13  "bold""
+`;
+
+exports[`stripped corpus character-reference 1`] = `
+""amp and 38"
+
+(no ranges)"
+`;
+
+exports[`stripped corpus cjk-blockquote 1`] = `
+""引用文"
+
+blockquote    0..3  "引用文" depth=1"
+`;
+
+exports[`stripped corpus cjk-chinese 1`] = `
+""中文粗体测试"
+
+bold    0..4  "中文粗体""
+`;
+
+exports[`stripped corpus cjk-code 1`] = `
+""中文代码 here"
+
+code    0..4  "中文代码""
+`;
+
+exports[`stripped corpus cjk-combining-dakuten 1`] = `
+""が vs が"
+
+(no ranges)"
+`;
+
+exports[`stripped corpus cjk-fullwidth-asterisk 1`] = `
+""＊全角＊"
+
+(no ranges)"
+`;
+
+exports[`stripped corpus cjk-heading 1`] = `
+""見出し"
+
+heading    0..3  "見出し" depth=1"
+`;
+
+exports[`stripped corpus cjk-ideographic-space 1`] = `
+""#　見出し"
+
+(no ranges)"
+`;
+
+exports[`stripped corpus cjk-kana 1`] = `
+""ひらがな と カタカナ"
+
+italic    0..4  "ひらがな"
+bold     7..11  "カタカナ""
+`;
+
+exports[`stripped corpus cjk-korean 1`] = `
+""한국어 굵게 텍스트"
+
+bold    0..6  "한국어 굵게""
+`;
+
+exports[`stripped corpus cjk-link 1`] = `
+""中文链接"
+
+link    0..4  "中文链接""
+`;
+
+exports[`stripped corpus cjk-list 1`] = `
+""- 項目一\\n- 項目二"
+
+syntax            0..1  "-"
+block-prefix      0..2  "- "
+list-unordered    0..5  "- 項目一" depth=1
+syntax            6..7  "-"
+block-prefix      6..8  "- "
+list-unordered   6..11  "- 項目二" depth=1"
+`;
+
+exports[`stripped corpus cjk-mention 1`] = `
+""hey @用户名 there"
+
+mention    4..8  "@用户名""
+`;
+
+exports[`stripped corpus cjk-punctuation-after 1`] = `
+""粗体。后面"
+
+bold    0..2  "粗体""
+`;
+
+exports[`stripped corpus cjk-punctuation-before 1`] = `
+""。粗体"
+
+bold    1..3  "粗体""
+`;
+
+exports[`stripped corpus code-fenced 1`] = `
+""fenced"
+
+codeblock    0..6  "fenced"
+pre          0..6  "fenced""
+`;
+
+exports[`stripped corpus code-fenced-blank-line 1`] = `
+""first\\n\\nlast"
+
+codeblock   0..11  "first\\n\\nlast"
+pre          0..6  "first\\n"
+pre         7..11  "last""
+`;
+
+exports[`stripped corpus code-fenced-lang 1`] = `
+""const a = 1"
+
+codeblock   0..11  "const a = 1"
+pre         0..11  "const a = 1""
+`;
+
+exports[`stripped corpus code-fenced-unterminated 1`] = `
+""no end"
+
+codeblock    0..6  "no end"
+pre          0..6  "no end""
+`;
+
+exports[`stripped corpus code-in-blockquote 1`] = `
+""fenced"
+
+codeblock     0..6  "fenced"
+pre           0..6  "fenced"
+blockquote    0..6  "fenced" depth=1"
+`;
+
+exports[`stripped corpus code-indented 1`] = `
+""    indented\\n"
+
+codeblock   0..12  "    indented"
+pre         4..13  "indented\\n""
+`;
+
+exports[`stripped corpus code-inline 1`] = `
+""some code here"
+
+code    5..9  "code""
+`;
+
+exports[`stripped corpus code-inline-double 1`] = `
+""a co\`de b"
+
+code    2..7  "co\`de""
+`;
+
+exports[`stripped corpus crlf 1`] = `
+""One\\r\\n\\r\\ntwo\\r\\n"
+
+heading       0..3  "One" depth=1
+blockquote   7..10  "two" depth=1"
+`;
+
+exports[`stripped corpus emoji 1`] = `
+""hello 😀 world"
+
+emoji    6..8  "😀""
+`;
+
+exports[`stripped corpus emoji-flag 1`] = `
+""flag 🇱🇹 here"
+
+emoji    5..9  "🇱🇹""
+`;
+
+exports[`stripped corpus emoji-in-bold 1`] = `
+""bold 😀 text"
+
+bold     0..5  "bold "
+bold    7..12  " text"
+emoji    5..7  "😀""
+`;
+
+exports[`stripped corpus emoji-only 1`] = `
+""😀"
+
+emoji    0..2  "😀""
+`;
+
+exports[`stripped corpus emoji-skin-tone 1`] = `
+""wave 👋🏽 there"
+
+emoji    5..9  "👋🏽""
+`;
+
+exports[`stripped corpus emoji-zwj-family 1`] = `
+""👨‍👩‍👧‍👦 family"
+
+emoji   0..11  "👨‍👩‍👧‍👦""
+`;
+
+exports[`stripped corpus emphasis-adjacent-syntax 1`] = `
+""acode"
+
+strikethrough    0..1  "a"
+code             1..5  "code""
+`;
+
+exports[`stripped corpus emphasis-intraword 1`] = `
+""snake_case_word"
+
+(no ranges)"
+`;
+
+exports[`stripped corpus emphasis-nested 1`] = `
+""bold and italic here"
+
+bold     0..20  "bold and italic here"
+italic   5..15  "and italic""
+`;
+
+exports[`stripped corpus emphasis-unterminated 1`] = `
+""**not closed"
+
+(no ranges)"
+`;
+
+exports[`stripped corpus empty 1`] = `
+"""
+
+(no ranges)"
+`;
+
+exports[`stripped corpus escaped-emphasis 1`] = `
+""*not bold*"
+
+(no ranges)"
+`;
+
+exports[`stripped corpus hard-break 1`] = `
+""one\\ntwo"
+
+(no ranges)"
+`;
+
+exports[`stripped corpus heading-closed 1`] = `
+""Two "
+
+heading    0..4  "Two " depth=2"
+`;
+
+exports[`stripped corpus heading-h1 1`] = `
+""One"
+
+heading    0..3  "One" depth=1"
+`;
+
+exports[`stripped corpus heading-h3 1`] = `
+""Three"
+
+heading    0..5  "Three" depth=3"
+`;
+
+exports[`stripped corpus heading-h6 1`] = `
+""Six"
+
+heading    0..3  "Six" depth=6"
+`;
+
+exports[`stripped corpus heading-setext 1`] = `
+""Title\\n"
+
+heading    0..5  "Title" depth=1"
+`;
+
+exports[`stripped corpus heading-with-emphasis 1`] = `
+""A bold title"
+
+heading   0..12  "A bold title" depth=1
+bold       2..6  "bold""
+`;
+
+exports[`stripped corpus image-alt-emoji 1`] = `
+""party 🎉 time"
+
+inline-image   0..13  "party 🎉 time"
+alt-text       0..13  "party 🎉 time"
+emoji           6..8  "🎉""
+`;
+
+exports[`stripped corpus image-alt-markup 1`] = `
+""bold alt"
+
+inline-image    0..8  "bold alt"
+alt-text        0..8  "bold alt""
+`;
+
+exports[`stripped corpus image-in-blockquote 1`] = `
+""alt"
+
+inline-image    0..3  "alt"
+alt-text        0..3  "alt"
+blockquote      0..3  "alt" depth=1"
+`;
+
+exports[`stripped corpus image-in-text 1`] = `
+""an icon inline"
+
+inline-image    3..7  "icon"
+alt-text        3..7  "icon""
+`;
+
+exports[`stripped corpus image-inline 1`] = `
+""alt"
+
+inline-image    0..3  "alt"
+alt-text        0..3  "alt""
+`;
+
+exports[`stripped corpus image-title 1`] = `
+""alt"
+
+inline-image    0..3  "alt"
+alt-text        0..3  "alt""
+`;
+
+exports[`stripped corpus italic-star 1`] = `
+""italic"
+
+italic    0..6  "italic""
+`;
+
+exports[`stripped corpus italic-underscore 1`] = `
+""italic"
+
+italic    0..6  "italic""
+`;
+
+exports[`stripped corpus kitchen-sink 1`] = `
+""Heading\\n\\nSome bold, italic and struck text with code.\\n\\nA quote with a link\\n\\n- item one\\n- item two\\n  1. nested\\n\\nconst a = 1\\n\\nHey @someone 😀\\n"
+
+heading           0..7  "Heading" depth=1
+bold            14..18  "bold"
+italic          20..26  "italic"
+strikethrough   31..37  "struck"
+code            48..52  "code"
+link            70..74  "link"
+blockquote      55..74  "A quote with a link" depth=1
+syntax          76..77  "-"
+block-prefix    76..78  "- "
+list-unordered  76..86  "- item one" depth=1
+syntax          87..88  "-"
+block-prefix    87..89  "- "
+list-unordered  87..97  "- item two" depth=1
+syntax        100..101  "1"
+syntax        101..102  "."
+list-unordered 98..109  "  1. nested" depth=1
+block-prefix   98..103  "  1. "
+list-ordered   98..109  "  1. nested" depth=1
+codeblock     111..122  "const a = 1"
+pre           111..122  "const a = 1"
+mention       128..136  "@someone"
+emoji         137..139  "😀""
+`;
+
+exports[`stripped corpus link-image 1`] = `
+""alt"
+
+link            0..3  "alt"
+inline-image    0..3  "alt"
+alt-text        0..3  "alt""
+`;
+
+exports[`stripped corpus link-inline 1`] = `
+""text"
+
+link    0..4  "text""
+`;
+
+exports[`stripped corpus link-label-autolink 1`] = `
+""https://x.com"
+
+link   0..13  "https://x.com""
+`;
+
+exports[`stripped corpus link-label-image 1`] = `
+""a alt b"
+
+link            0..7  "a alt b"
+inline-image    2..5  "alt"
+alt-text        2..5  "alt""
+`;
+
+exports[`stripped corpus link-label-url 1`] = `
+""http://google.com"
+
+link   0..17  "http://google.com""
+`;
+
+exports[`stripped corpus link-markup 1`] = `
+""bold link"
+
+link    0..9  "bold link"
+bold    0..4  "bold""
+`;
+
+exports[`stripped corpus link-reference 1`] = `
+""textref\\n\\nref https://example.com"
+
+link    0..4  "text"
+link  13..32  "https://example.com""
+`;
+
+exports[`stripped corpus link-title 1`] = `
+""text"
+
+link    0..4  "text""
+`;
+
+exports[`stripped corpus list-dash 1`] = `
+""- one\\n- two"
+
+syntax            0..1  "-"
+block-prefix      0..2  "- "
+list-unordered    0..5  "- one" depth=1
+syntax            6..7  "-"
+block-prefix      6..8  "- "
+list-unordered   6..11  "- two" depth=1"
+`;
+
+exports[`stripped corpus list-in-blockquote 1`] = `
+""- item in a quote"
+
+syntax            0..1  "-"
+blockquote       0..17  "- item in a quote" depth=1
+block-prefix      0..2  "- "
+list-unordered   0..17  "- item in a quote" depth=1"
+`;
+
+exports[`stripped corpus list-item-multiline 1`] = `
+""- first line\\n  second line"
+
+syntax            0..1  "-"
+block-prefix      0..2  "- "
+list-unordered   0..12  "- first line" depth=1
+list-unordered  13..26  "  second line" depth=1"
+`;
+
+exports[`stripped corpus list-nested 1`] = `
+""- one\\n  - two\\n    - three"
+
+syntax            0..1  "-"
+block-prefix      0..2  "- "
+list-unordered    0..5  "- one" depth=1
+syntax            8..9  "-"
+block-prefix     6..10  "  - "
+list-unordered   6..13  "  - two" depth=2
+syntax          18..19  "-"
+block-prefix    14..20  "    - "
+list-unordered  14..25  "    - three" depth=3"
+`;
+
+exports[`stripped corpus list-nested-mixed 1`] = `
+""1. one\\n   - two\\n   - three"
+
+syntax            0..1  "1"
+syntax            1..2  "."
+block-prefix      0..3  "1. "
+list-ordered      0..6  "1. one" depth=1
+syntax          10..11  "-"
+list-ordered     7..15  "   - two" depth=1
+block-prefix     7..12  "   - "
+list-unordered   7..15  "   - two" depth=1
+syntax          19..20  "-"
+list-ordered    16..26  "   - three" depth=1
+block-prefix    16..21  "   - "
+list-unordered  16..26  "   - three" depth=1"
+`;
+
+exports[`stripped corpus list-ordered 1`] = `
+""1. one\\n2. two"
+
+syntax          0..1  "1"
+syntax          1..2  "."
+block-prefix    0..3  "1. "
+list-ordered    0..6  "1. one" depth=1
+syntax          7..8  "2"
+syntax          8..9  "."
+block-prefix   7..10  "2. "
+list-ordered   7..13  "2. two" depth=1"
+`;
+
+exports[`stripped corpus list-ordered-offset 1`] = `
+""3. three\\n4. four"
+
+syntax          0..1  "3"
+syntax          1..2  "."
+block-prefix    0..3  "3. "
+list-ordered    0..8  "3. three" depth=1
+syntax         9..10  "4"
+syntax        10..11  "."
+block-prefix   9..12  "4. "
+list-ordered   9..16  "4. four" depth=1"
+`;
+
+exports[`stripped corpus list-ordered-paren 1`] = `
+""1) one\\n2) two"
+
+syntax          0..1  "1"
+syntax          1..2  ")"
+block-prefix    0..3  "1) "
+list-ordered    0..6  "1) one" depth=1
+syntax          7..8  "2"
+syntax          8..9  ")"
+block-prefix   7..10  "2) "
+list-ordered   7..13  "2) two" depth=1"
+`;
+
+exports[`stripped corpus list-plus 1`] = `
+""+ one\\n+ two"
+
+syntax            0..1  "+"
+block-prefix      0..2  "+ "
+list-unordered    0..5  "+ one" depth=1
+syntax            6..7  "+"
+block-prefix      6..8  "+ "
+list-unordered   6..11  "+ two" depth=1"
+`;
+
+exports[`stripped corpus list-star 1`] = `
+""* one\\n* two"
+
+syntax            0..1  "*"
+block-prefix      0..2  "* "
+list-unordered    0..5  "* one" depth=1
+syntax            6..7  "*"
+block-prefix      6..8  "* "
+list-unordered   6..11  "* two" depth=1"
+`;
+
+exports[`stripped corpus mention 1`] = `
+""hey @someone"
+
+mention   4..12  "@someone""
+`;
+
+exports[`stripped corpus mention-at 1`] = `
+""hey @user@example.com"
+
+mention   4..21  "@user@example.com""
+`;
+
+exports[`stripped corpus mention-dot 1`] = `
+""@bullet. and @user.name"
+
+mention    0..8  "@bullet."
+mention  13..23  "@user.name""
+`;
+
+exports[`stripped corpus mention-double-dot 1`] = `
+""@bullet.. done"
+
+mention    0..8  "@bullet.""
+`;
+
+exports[`stripped corpus mention-hyphen 1`] = `
+""@some-one here"
+
+mention    0..9  "@some-one""
+`;
+
+exports[`stripped corpus mention-in-bold 1`] = `
+""@someone"
+
+bold       0..8  "@someone"
+mention    0..8  "@someone""
+`;
+
+exports[`stripped corpus mention-in-italic-underscore 1`] = `
+""@someone"
+
+italic     0..8  "@someone"
+mention    0..8  "@someone""
+`;
+
+exports[`stripped corpus mention-in-link 1`] = `
+""@user"
+
+link       0..5  "@user"
+mention    0..5  "@user""
+`;
+
+exports[`stripped corpus mention-leading-at 1`] = `
+""@@user here"
+
+(no ranges)"
+`;
+
+exports[`stripped corpus mention-mid-word 1`] = `
+""a@b and user@name"
+
+(no ranges)"
+`;
+
+exports[`stripped corpus mention-punctuation 1`] = `
+""hi @user, ok"
+
+mention    3..8  "@user""
+`;
+
+exports[`stripped corpus mention-trailing-at 1`] = `
+""@user@ here"
+
+mention    0..5  "@user""
+`;
+
+exports[`stripped corpus mention-trailing-hyphen 1`] = `
+""@someone- here"
+
+mention    0..8  "@someone""
+`;
+
+exports[`stripped corpus mention-underscore 1`] = `
+""@some_one here"
+
+mention    0..9  "@some_one""
+`;
+
+exports[`stripped corpus nesting-deep-mixed 1`] = `
+""- 1. deep\\n"
+
+syntax            0..1  "-"
+syntax            2..3  "1"
+syntax            3..4  "."
+blockquote        0..9  "- 1. deep" depth=2
+block-prefix      0..2  "- "
+list-unordered    0..9  "- 1. deep" depth=1
+block-prefix      2..5  "1. "
+list-ordered      0..9  "- 1. deep" depth=1"
+`;
+
+exports[`stripped corpus nesting-repeat-adjacent 1`] = `
+""- x"
+
+syntax            0..1  "-"
+blockquote        0..3  "- x" depth=2
+block-prefix      0..2  "- "
+list-unordered    0..3  "- x" depth=1"
+`;
+
+exports[`stripped corpus nesting-repeat-split 1`] = `
+""- x"
+
+syntax            0..1  "-"
+blockquote        0..3  "- x" depth=2
+block-prefix      0..2  "- "
+list-unordered    0..3  "- x" depth=1"
+`;
+
+exports[`stripped corpus nesting-repeat-split-mirrored 1`] = `
+""- x"
+
+syntax            0..1  "-"
+block-prefix      0..2  "- "
+list-unordered    0..3  "- x" depth=2
+blockquote        0..3  "- x" depth=1"
+`;
+
+exports[`stripped corpus plain-text 1`] = `
+""no markdown here"
+
+(no ranges)"
+`;
+
+exports[`stripped corpus rtl-arabic 1`] = `
+""مرحبا بالعالم"
+
+bold   0..13  "مرحبا بالعالم""
+`;
+
+exports[`stripped corpus rtl-arabic-indic-digits 1`] = `
+""١. عنصر"
+
+(no ranges)"
+`;
+
+exports[`stripped corpus rtl-blockquote 1`] = `
+""اقتباس"
+
+blockquote    0..6  "اقتباس" depth=1"
+`;
+
+exports[`stripped corpus rtl-code 1`] = `
+""عربي code"
+
+code    0..4  "عربي""
+`;
+
+exports[`stripped corpus rtl-heading 1`] = `
+""عنوان"
+
+heading    0..5  "عنوان" depth=1"
+`;
+
+exports[`stripped corpus rtl-hebrew 1`] = `
+""שלום עולם"
+
+bold    0..9  "שלום עולם""
+`;
+
+exports[`stripped corpus rtl-hebrew-niqqud 1`] = `
+""שָׁלוֹם test"
+
+italic   8..12  "test""
+`;
+
+exports[`stripped corpus rtl-isolates 1`] = `
+""⁦LTR⁩ عربي bold"
+
+bold  11..15  "bold""
+`;
+
+exports[`stripped corpus rtl-lam-alef 1`] = `
+""لا bold نص"
+
+bold    3..7  "bold""
+`;
+
+exports[`stripped corpus rtl-link 1`] = `
+""نص عربي"
+
+link    0..7  "نص عربي""
+`;
+
+exports[`stripped corpus rtl-list 1`] = `
+""- عنصر أول\\n- عنصر ثاني"
+
+syntax            0..1  "-"
+block-prefix      0..2  "- "
+list-unordered   0..10  "- عنصر أول" depth=1
+syntax          11..12  "-"
+block-prefix    11..13  "- "
+list-unordered  11..22  "- عنصر ثاني" depth=1"
+`;
+
+exports[`stripped corpus rtl-marks 1`] = `
+""‏مرحبا‎ bold"
+
+bold   8..12  "bold""
+`;
+
+exports[`stripped corpus rtl-mention 1`] = `
+""@مستخدم نص"
+
+mention    0..7  "@مستخدم""
+`;
+
+exports[`stripped corpus rtl-mixed 1`] = `
+""مرحبا hello عالم"
+
+bold   6..11  "hello""
+`;
+
+exports[`stripped corpus rtl-punctuation 1`] = `
+""عربي، نص"
+
+bold    0..4  "عربي""
+`;
+
+exports[`stripped corpus strikethrough 1`] = `
+""struck"
+
+strikethrough    0..6  "struck""
+`;
+
+exports[`stripped corpus tabs 1`] = `
+""-\\tone\\n-\\ttwo"
+
+syntax            0..1  "-"
+block-prefix      0..2  "-\\t"
+list-unordered    0..5  "-\\tone" depth=1
+syntax            6..7  "-"
+block-prefix      6..8  "-\\t"
+list-unordered   6..11  "-\\ttwo" depth=1"
+`;
+
+exports[`stripped corpus thematic-break 1`] = `
+""one\\n\\n\\ntwo"
+
+(no ranges)"
+`;
+
+exports[`stripped corpus unicode-astral 1`] = `
+""𝕳𝖊𝖑𝖑𝖔"
+
+bold   0..10  "𝕳𝖊𝖑𝖑𝖔""
+`;
+
+exports[`stripped corpus unicode-astral-in-list 1`] = `
+""- 𝕳𝖊𝖑𝖑𝖔"
+
+syntax            0..1  "-"
+block-prefix      0..2  "- "
+list-unordered   0..12  "- 𝕳𝖊𝖑𝖑𝖔" depth=1"
+`;
+
+exports[`stripped corpus unicode-astral-minimal 1`] = `
+""𝕳"
+
+bold    0..2  "𝕳""
+`;
+
+exports[`stripped corpus unicode-bom 1`] = `
+""﻿ heading"
+
+heading    1..9  " heading" depth=1"
+`;
+
+exports[`stripped corpus unicode-cjk 1`] = `
+""日本語のテキスト"
+
+bold    0..8  "日本語のテキスト""
+`;
+
+exports[`stripped corpus unicode-combining 1`] = `
+""éclair test"
+
+italic   7..11  "test""
+`;
+
+exports[`stripped corpus unicode-keycap 1`] = `
+""1️⃣ keycap"
+
+emoji    0..3  "1️⃣""
+`;
+
+exports[`stripped corpus unicode-line-separator 1`] = `
+""a b"
+
+(no ranges)"
+`;
+
+exports[`stripped corpus unicode-nbsp 1`] = `
+""a b bold"
+
+bold    4..8  "bold""
+`;
+
+exports[`stripped corpus unicode-nfd 1`] = `
+""café and café"
+
+(no ranges)"
+`;
+
+exports[`stripped corpus unicode-rtl 1`] = `
+""مرحبا world"
+
+bold    0..5  "مرحبا""
+`;
+
+exports[`stripped corpus unicode-soft-hyphen 1`] = `
+""soft­hyphen bold"
+
+bold  12..16  "bold""
+`;
+
+exports[`stripped corpus unicode-tag-sequence 1`] = `
+""🏴󠁧󠁢󠁳󠁣󠁴󠁿 flag"
+
+emoji   0..14  "🏴󠁧󠁢󠁳󠁣󠁴󠁿""
+`;
+
+exports[`stripped corpus unicode-variation-selector 1`] = `
+""❤️ red"
+
+emoji    0..2  "❤️"
+bold     3..6  "red""
+`;
+
+exports[`stripped corpus unicode-zwnj 1`] = `
+""a‌b test"
+
+italic    4..8  "test""
+`;
+
+exports[`stripped corpus whitespace-only 1`] = `
+""   \\n  \\n"
+
+(no ranges)"
+`;

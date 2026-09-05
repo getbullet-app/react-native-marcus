@@ -1,4 +1,6 @@
 export { default as MarkdownTextInput, getWorkletRuntime } from "./MarkdownTextInput"
 export type { MarkdownTextInputProps, MarkdownStyle } from "./MarkdownTextInput"
+export { default as MarkdownText } from "./MarkdownText"
+export type { MarkdownTextProps, OnLinkPress, RenderEmbed } from "./MarkdownText"
 export type { MarkdownType, MarkdownRange } from "./commonTypes"
 export { parse as parser } from "./parser"

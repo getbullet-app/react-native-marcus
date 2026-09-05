@@ -95,7 +95,7 @@ using namespace facebook::react;
   // whenever the props object is recreated -- but hand-written equality over
   // ~27 fields would rot silently the moment a style prop is added.
   _decorator.markdownStyle =
-    [[RCTMarcusStyle alloc] initWithStruct:newViewProps.markdownStyle];
+    RCTMarcusStyleFromStruct(newViewProps.markdownStyle);
 
   [_decorator applyNewStyles];
 

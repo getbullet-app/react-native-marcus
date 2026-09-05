@@ -1,0 +1,6 @@
+p[line] margin-bottom:0px margin-left:0px margin-right:0px margin-top:0px padding-bottom:0px padding-left:<measured> padding-right:0px padding-top:0px
+  span[text]
+    #text "a b "
+  span[bold] font-weight:bold
+    span[text]
+      #text "bold"

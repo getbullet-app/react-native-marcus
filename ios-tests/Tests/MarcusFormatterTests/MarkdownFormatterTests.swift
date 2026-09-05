@@ -82,7 +82,96 @@ final class MarkdownFormatterTests: XCTestCase {
     XCTAssertFalse(model.contains("color("), model)
   }
 
+  // MARK: - List markers
+
+  /// `- one` as a display is handed it: the syntax is gone, and the marker that
+  /// stands for the bullet is what is left of it.
+  private var bulletRanges: [MarcusRange] {
+    [
+      MarcusRange(type: "syntax", range: NSRange(location: 0, length: 1), depth: 0),
+      MarcusRange(type: "block-prefix", range: NSRange(location: 0, length: 2), depth: 0),
+      MarcusRange(type: "list-unordered", range: NSRange(location: 0, length: 5), depth: 1),
+    ]
+  }
+
+  /// The same for `1. one`, whose marker is the number and the dot after it.
+  private var numberRanges: [MarcusRange] {
+    [
+      MarcusRange(type: "syntax", range: NSRange(location: 0, length: 1), depth: 0),
+      MarcusRange(type: "syntax", range: NSRange(location: 1, length: 1), depth: 0),
+      MarcusRange(type: "block-prefix", range: NSRange(location: 0, length: 3), depth: 0),
+      MarcusRange(type: "list-ordered", range: NSRange(location: 0, length: 6), depth: 1),
+    ]
+  }
+
+  func testDrawsABulletInPlaceOfAnUnorderedMarker() {
+    let model = format("- one", ranges: bulletRanges, display: true)
+
+    XCTAssertTrue(model.contains("bullet"), model)
+  }
+
+  func testScalesAnOrderedMarkerToItsOwnSize() {
+    let model = format("1. one", ranges: numberRanges, display: true)
+
+    // 16 * orderedListMarkerScale, over the `1.` and nothing else.
+    XCTAssertTrue(model.contains("font-size(13)"), model)
+    XCTAssertFalse(model.contains("bullet"), model)
+  }
+
+  func testShowsTheMarkerAnInputWasTypedWith() {
+    let bullet = format("- one", ranges: bulletRanges, display: false)
+    let number = format("1. one", ranges: numberRanges, display: false)
+
+    XCTAssertFalse(bullet.contains("bullet"), bullet)
+    XCTAssertFalse(number.contains("font-size("), number)
+  }
+
+  func testIndentsPastTheBulletRatherThanPastTheMarker() {
+    // The circle is 16 * unorderedListMarkerScale wide and holds a marker's
+    // padding either side of it, so the text starts further in than the `-` it
+    // was written with would have put it.
+    let shown = indent(of: format("- one", ranges: bulletRanges, display: false))
+    let drawn = indent(of: format("- one", ranges: bulletRanges, display: true))
+
+    XCTAssertGreaterThan(drawn, shown)
+  }
+
   // MARK: - Support
+
+  private func format(
+    _ markdown: String,
+    ranges: [MarcusRange],
+    display: Bool
+  ) -> String {
+    let attributed = NSMutableAttributedString(string: markdown)
+
+    MarkdownFormatter.format(
+      attributed,
+      defaultTextAttributes: defaultAttributes,
+      ranges: ranges,
+      style: style,
+      fonts: fonts,
+      display: display
+    )
+
+    return RenderModel.dump(attributed, defaults: defaultAttributes)
+  }
+
+  /// The head indent the first `indent(first,rest)` in a dump reports.
+  private func indent(of model: String) -> Int {
+    guard
+      let line = model.split(separator: "\n").first(where: { $0.contains("indent(") }),
+      let opened = line.range(of: "indent("),
+      let comma = line[opened.upperBound...].firstIndex(of: ","),
+      let indent = Int(line[opened.upperBound..<comma])
+    else {
+      XCTFail("no indent in \n\(model)")
+      return 0
+    }
+
+    return indent
+  }
+
 
   /// Predictable font resolution, so the baseline records what the formatter
   /// asked for rather than what a device happened to have installed.

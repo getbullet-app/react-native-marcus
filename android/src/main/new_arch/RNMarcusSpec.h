@@ -16,6 +16,7 @@
 #include <jsi/jsi.h>
 
 #include <react/renderer/components/RNMarcusSpec/MarcusTextInputDecoratorViewComponentDescriptor.h>
+#include <react/renderer/components/RNMarcusSpec/MarcusTextDecoratorViewComponentDescriptor.h>
 
 namespace facebook {
 namespace react {

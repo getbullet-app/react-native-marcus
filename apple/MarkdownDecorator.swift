@@ -10,7 +10,7 @@ import UIKit
 /// implemented in Swift.
 @objc public final class MarkdownDecorator: NSObject {
 
-  private var markdownUtils = RCTMarcusUtils()
+  private var markdownUtils = MarkdownUtils()
 
   private weak var textView: RCTUITextView?
   private weak var textField: RCTUITextField?
@@ -44,7 +44,7 @@ import UIKit
 
   /// Drops all per-mount state so the view can be recycled.
   @objc public func reset() {
-    markdownUtils = RCTMarcusUtils()
+    markdownUtils = MarkdownUtils()
   }
 
   // MARK: - Attach / detach

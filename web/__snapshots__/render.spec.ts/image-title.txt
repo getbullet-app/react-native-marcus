@@ -1,0 +1,34 @@
+p[line] margin-bottom:0px margin-left:0px margin-right:0px margin-top:0px padding-bottom:0px padding-left:<measured> padding-right:0px padding-top:0px
+  span[inline-image]
+    span[syntax] color:gray
+      span[text]
+        #text "!"
+    span[syntax] color:gray
+      span[text]
+        #text "["
+    span[alt-text]
+      span[text]
+        #text "alt"
+    span[syntax] color:gray
+      span[text]
+        #text "]"
+    span[syntax] color:gray
+      span[text]
+        #text "("
+    span[link] color:blue text-decoration-color:initial text-decoration-line:underline text-decoration-style:initial text-decoration-thickness:initial
+      span[text]
+        #text "https://example.com/a.png"
+    span[text]
+      #text " "
+    span[syntax] color:gray
+      span[text]
+        #text "\""
+    span[title]
+      span[text]
+        #text "Title"
+    span[syntax] color:gray
+      span[text]
+        #text "\""
+    span[syntax] color:gray
+      span[text]
+        #text ")"

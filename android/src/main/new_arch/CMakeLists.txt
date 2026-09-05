@@ -43,6 +43,23 @@ target_link_libraries(
   ReactAndroid::reactnative
 )
 
+# `ParagraphProps.h`, which the paragraph shadow node pulls in, includes
+# `HostPlatformParagraphProps.h` -- a header React Native ships once per
+# platform, under an include root the prefab module does not put on the search
+# path. Add Android's, or including the paragraph at all fails to compile.
+get_target_property(
+  REACTNATIVE_INCLUDE_DIRS ReactAndroid::reactnative INTERFACE_INCLUDE_DIRECTORIES
+)
+
+foreach(include_dir ${REACTNATIVE_INCLUDE_DIRS})
+  set(HOST_PLATFORM_TEXT_DIR
+    "${include_dir}/react/renderer/components/text/platform/android"
+  )
+  if(EXISTS "${HOST_PLATFORM_TEXT_DIR}")
+    target_include_directories(${LIB_TARGET_NAME} PRIVATE "${HOST_PLATFORM_TEXT_DIR}")
+  endif()
+endforeach()
+
 if (ReactAndroid_VERSION_MINOR LESS_EQUAL 80)
   target_compile_options(
     ${LIB_TARGET_NAME}

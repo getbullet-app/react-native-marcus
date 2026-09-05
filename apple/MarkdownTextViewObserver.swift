@@ -7,9 +7,9 @@ import UIKit
 
   // Strong on purpose -- see MarkdownTextStorageDelegate.
   private let textView: RCTUITextView
-  private let markdownUtils: RCTMarcusUtils
+  private let markdownUtils: MarkdownUtils
 
-  @objc public init(textView: RCTUITextView, markdownUtils: RCTMarcusUtils) {
+  @objc public init(textView: RCTUITextView, markdownUtils: MarkdownUtils) {
     self.textView = textView
     self.markdownUtils = markdownUtils
     super.init()

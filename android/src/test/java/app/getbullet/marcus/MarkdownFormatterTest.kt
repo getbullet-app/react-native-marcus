@@ -1,7 +1,9 @@
 package app.getbullet.marcus
 
 import android.text.SpannableStringBuilder
+import android.text.Spanned
 import android.text.TextPaint
+import android.text.style.AbsoluteSizeSpan
 import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.ReadableMap
 import com.facebook.react.uimanager.DisplayMetricsHolder
@@ -9,6 +11,8 @@ import java.io.File
 import org.json.JSONArray
 import org.json.JSONObject
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -26,6 +30,8 @@ import org.robolectric.annotation.Config
  * so the Android and iOS outputs stay diffable against each other in a single
  * comparison. Regenerate with `-Dmarcus.updateBaselines=true`.
  */
+private val INDENT = Regex("""indent\((-?\d+),""")
+
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34])
 class MarkdownFormatterTest {
@@ -104,6 +110,74 @@ class MarkdownFormatterTest {
     )
   }
 
+  // The ranges a display is handed for `- one` and `1. one`: the syntax is gone,
+  // and what is left of it is the marker that stands for the bullet or numbers
+  // the item.
+  private val bulletRanges = listOf(
+    MarkdownRange("syntax", 0, 1, 0),
+    MarkdownRange("block-prefix", 0, 2, 0),
+    MarkdownRange("list-unordered", 0, 5, 1),
+  )
+
+  private val numberRanges = listOf(
+    MarkdownRange("syntax", 0, 1, 0),
+    MarkdownRange("syntax", 1, 1, 0),
+    MarkdownRange("block-prefix", 0, 3, 0),
+    MarkdownRange("list-ordered", 0, 6, 1),
+  )
+
+  @Test
+  fun `draws a bullet in place of an unordered marker`() {
+    val model = format("- one", bulletRanges, display = true)
+
+    assertTrue(model, model.contains("bullet"))
+  }
+
+  @Test
+  fun `scales an ordered marker to its own size`() {
+    val model = format("1. one", numberRanges, display = true)
+
+    // 16 * orderedListMarkerScale, over the `1.` and nothing else.
+    assertTrue(model, model.contains("font-size(12)"))
+    assertFalse(model, model.contains("bullet"))
+  }
+
+  @Test
+  fun `shows the marker an input was typed with`() {
+    val bullet = format("- one", bulletRanges, display = false)
+    val number = format("1. one", numberRanges, display = false)
+
+    assertFalse(bullet, bullet.contains("bullet"))
+    assertFalse(number, number.contains("font-size("))
+  }
+
+  @Test
+  fun `indents past the bullet rather than past the marker`() {
+    // The circle is 16 * unorderedListMarkerScale wide and holds a marker's
+    // padding either side of it, so the text starts further in than the `-` it
+    // was written with would have put it.
+    val shown = indentOf(format("- one", bulletRanges, display = false))
+    val drawn = indentOf(format("- one", bulletRanges, display = true))
+
+    assertTrue("$drawn is not past $shown", drawn > shown)
+  }
+
+  @Test
+  fun `takes the base font from the spannable when there is no view to ask`() {
+    // The measure pass runs before there is a view, so the size the text will be
+    // drawn at is only on the spannable. Reading it there is what keeps the
+    // bullet the same size in both passes -- and the paragraph the same height.
+    val measured = SpannableStringBuilder("- one")
+    measured.setSpan(AbsoluteSizeSpan(16, false), 0, measured.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+    MarkdownFormatter(RuntimeEnvironment.getApplication().assets, null, true)
+      .format(measured, bulletRanges, style, null)
+
+    assertEquals(
+      indentOf(format("- one", bulletRanges, display = true)),
+      indentOf(RenderModel.dump("- one", measured)),
+    )
+  }
+
   @Test
   fun `leaves plain text unspanned`() {
     val ssb = SpannableStringBuilder("no markdown here")
@@ -113,6 +187,23 @@ class MarkdownFormatterTest {
   }
 
   private fun textPaint() = TextPaint().apply { textSize = 16f }
+
+  private fun format(markdown: String, ranges: List<MarkdownRange>, display: Boolean): String {
+    val ssb = SpannableStringBuilder(markdown)
+    MarkdownFormatter(RuntimeEnvironment.getApplication().assets, null, display)
+      .format(ssb, ranges, style, textPaint())
+
+    return RenderModel.dump(markdown, ssb)
+  }
+
+  /** The leading margin the first `indent(first,rest)` in a dump reports. */
+  private fun indentOf(model: String): Int {
+    val indent = model.lineSequence()
+      .mapNotNull { INDENT.find(it) }
+      .firstOrNull()
+
+    return requireNotNull(indent) { "no indent in\n$model" }.groupValues[1].toInt()
+  }
 
   private fun rangesOf(array: JSONArray): List<MarkdownRange> =
     (0 until array.length()).map { i ->
@@ -156,8 +247,24 @@ class MarkdownFormatterTest {
           "paddingLeft" to 6.0,
         ),
       )
-      putMap("orderedList", group("marginLeft" to 6.0, "paddingLeft" to 18.0))
-      putMap("unorderedList", group("marginLeft" to 6.0, "paddingLeft" to 18.0))
+      putMap(
+        "orderedList",
+        group(
+          "marginLeft" to 6.0,
+          "paddingLeft" to 18.0,
+          "markerScale" to 0.8,
+          "markerPadding" to 2.0,
+        ),
+      )
+      putMap(
+        "unorderedList",
+        group(
+          "marginLeft" to 6.0,
+          "paddingLeft" to 18.0,
+          "markerScale" to 0.3,
+          "markerPadding" to 2.0,
+        ),
+      )
       putMap(
         "code",
         group(
@@ -165,6 +272,9 @@ class MarkdownFormatterTest {
           "fontSize" to 16.0,
           "color" to 0xFF000000.toInt(),
           "backgroundColor" to 0xFFD3D3D3.toInt(),
+          "borderRadius" to 4.0,
+          "padding" to 2.0,
+          "margin" to 2.0,
         ),
       )
       putMap(
@@ -174,30 +284,19 @@ class MarkdownFormatterTest {
           "fontSize" to 16.0,
           "color" to 0xFF000000.toInt(),
           "backgroundColor" to 0xFFD3D3D3.toInt(),
+          "borderRadius" to 4.0,
+          "padding" to 8.0,
+          "margin" to 4.0,
         ),
       )
       putMap(
-        "mentionHere",
-        group(
-          "color" to 0xFF008000.toInt(),
-          "backgroundColor" to 0xFF00FF00.toInt(),
-          "borderRadius" to 5.0,
-        ),
-      )
-      putMap(
-        "mentionUser",
+        "mention",
         group(
           "color" to 0xFF0000FF.toInt(),
           "backgroundColor" to 0xFF00FFFF.toInt(),
           "borderRadius" to 5.0,
-        ),
-      )
-      putMap(
-        "mentionReport",
-        group(
-          "color" to 0xFFFF0000.toInt(),
-          "backgroundColor" to 0xFFFFC0CB.toInt(),
-          "borderRadius" to 5.0,
+          "padding" to 2.0,
+          "margin" to 0.0,
         ),
       )
     }

@@ -10,9 +10,9 @@ public final class MarkdownTextStorageDelegate: NSObject, NSTextStorageDelegate
   // let the text view deallocate while this object is still installed as its
   // storage delegate and while KVO observers are registered on it.
   private let textView: RCTUITextView
-  private let markdownUtils: RCTMarcusUtils
+  private let markdownUtils: MarkdownUtils
 
-  @objc public init(textView: RCTUITextView, markdownUtils: RCTMarcusUtils) {
+  @objc public init(textView: RCTUITextView, markdownUtils: MarkdownUtils) {
     self.textView = textView
     self.markdownUtils = markdownUtils
     super.init()

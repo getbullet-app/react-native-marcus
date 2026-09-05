@@ -1,8 +1,8 @@
 import UIKit
 
 /// Draws the parts of markdown rendering that plain attributed-string attributes
-/// can't express: blockquote ribbons down the left edge, and rounded background
-/// pills behind mentions.
+/// can't express: the box behind a code block, blockquote ribbons down the left
+/// edge, and rounded background pills behind mentions.
 ///
 /// Only constructed by `MarkdownTextLayoutManagerDelegate`, so it stays internal
 /// to the Swift half of the module.
@@ -15,12 +15,26 @@ final class MarkdownTextLayoutFragment: NSTextLayoutFragment {
   /// list marker drawn in front of the ribbons.
   var outerIndent: CGFloat = 0
   var mentions: [MarkdownTextBackgroundWithRange] = []
+  /// The box this line belongs to, if it is part of a code block, and which of
+  /// the block's ends it is: a fragment is one line of the block, so the
+  /// corners are only rounded on the two that terminate it.
+  var codeBlock: MarkdownCodeBlock?
+  var opensCodeBlock = false
+  var closesCodeBlock = false
 
   // MARK: - NSTextLayoutFragment
 
   override var renderingSurfaceBounds: CGRect {
-    guard depth > 0 else { return super.renderingSurfaceBounds }
-    return boundingRect.union(super.renderingSurfaceBounds)
+    var bounds = super.renderingSurfaceBounds
+
+    if depth > 0 {
+      bounds = boundingRect.union(bounds)
+    }
+    if let codeBlockRect {
+      bounds = codeBlockRect.union(bounds)
+    }
+
+    return bounds
   }
 
   override func draw(at point: CGPoint, in context: CGContext) {
@@ -29,10 +43,65 @@ final class MarkdownTextLayoutFragment: NSTextLayoutFragment {
       return
     }
 
+    // Before the ribbons: a quoted block's box would otherwise cover the bar
+    // drawn beside it.
+    drawCodeBlock()
     drawBlockquoteRibbons()
     drawMentions()
 
     super.draw(at: point, in: context)
+  }
+
+  // MARK: - Code block box
+
+  /// This line's slice of the box behind the block it is part of.
+  ///
+  /// The fragment's own frame rather than the text in it: the frame spans the
+  /// width the line was laid out in and carries the paragraph spacing that
+  /// holds the box's padding open, which is exactly what the box covers. The
+  /// paragraph is drawn the same way, one rect over all its lines, in
+  /// `MarkdownParagraphLayoutManager`.
+  private var codeBlockRect: CGRect? {
+    guard let block = codeBlock else { return nil }
+
+    let frame = layoutFragmentFrame
+    // The frame is in the container's coordinates and everything drawn here is
+    // in the fragment's own, so the container's edges arrive shifted by where
+    // the fragment sits in it.
+    let width = textLayoutManager?.textContainer?.size.width ?? frame.width
+    let left = block.leftInset - frame.origin.x
+    let right = width - frame.origin.x - block.margin
+    let top = opensCodeBlock ? block.margin : 0
+    let bottom = frame.height - (closesCodeBlock ? block.margin : 0)
+
+    guard right > left, bottom > top else { return nil }
+
+    return CGRect(x: left, y: top, width: right - left, height: bottom - top)
+  }
+
+  private func drawCodeBlock() {
+    guard let block = codeBlock, let rect = codeBlockRect else { return }
+
+    var corners: UIRectCorner = []
+    if opensCodeBlock {
+      corners.insert([.topLeft, .topRight])
+    }
+    if closesCodeBlock {
+      corners.insert([.bottomLeft, .bottomRight])
+    }
+
+    let radius = block.borderRadius
+    let path =
+      corners.isEmpty || radius <= 0
+      ? UIBezierPath(rect: rect)
+      : UIBezierPath(
+        roundedRect: rect,
+        byRoundingCorners: corners,
+        cornerRadii: CGSize(width: radius, height: radius)
+      )
+
+    block.color.setFill()
+    path.fill()
   }
 
   // MARK: - Custom elements
@@ -41,8 +110,7 @@ final class MarkdownTextLayoutFragment: NSTextLayoutFragment {
     guard depth > 0, let style = markdownStyle else { return }
 
     let borderWidth = style.blockquoteBorderWidth
-    let shift =
-      style.blockquoteMarginLeft + borderWidth + style.blockquotePaddingLeft
+    let shift = style.blockquoteShift
 
     style.blockquoteBorderColor.setFill()
 
@@ -124,18 +192,26 @@ final class MarkdownTextLayoutFragment: NSTextLayoutFragment {
           ) as? UIFont
         else { continue }
 
+        // Where the run's own ends fall on this line, which is what the kerning
+        // reserved space against and what the corners are rounded on.
+        let opens = intersection.location == mention.range.location
+        let closes = NSMaxRange(intersection) == NSMaxRange(mention.range)
+        let padding = mention.textBackground.padding
+        let left = startLocation.x - (opens ? padding : 0)
+        let right = endLocation.x - (closes ? mention.textBackground.margin : 0)
+
         let backgroundRect = CGRect(
-          x: lineBounds.origin.x + startLocation.x,
-          y: lineBounds.origin.y + startLocation.y - font.ascender,
-          width: endLocation.x - startLocation.x,
-          height: font.lineHeight
+          x: lineBounds.origin.x + left,
+          y: lineBounds.origin.y + startLocation.y - font.ascender - padding,
+          width: right - left,
+          height: font.lineHeight + 2 * padding
         )
 
         var corners: UIRectCorner = []
-        if intersection.location == mention.range.location {
+        if opens {
           corners.insert([.topLeft, .bottomLeft])
         }
-        if NSMaxRange(intersection) == NSMaxRange(mention.range) {
+        if closes {
           corners.insert([.topRight, .bottomRight])
         }
 
@@ -173,8 +249,7 @@ final class MarkdownTextLayoutFragment: NSTextLayoutFragment {
     guard !bounds.isNull, let style = markdownStyle else { return bounds }
 
     let borderWidth = style.blockquoteBorderWidth
-    let shift =
-      style.blockquoteMarginLeft + borderWidth + style.blockquotePaddingLeft
+    let shift = style.blockquoteShift
 
     // The ribbons sit at a fixed offset from the paragraph's own left edge,
     // which is the text origin less however far this line is indented. Walking

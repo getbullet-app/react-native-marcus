@@ -91,8 +91,10 @@ const markdownStyle: MarkdownStyle = {
   link: {
     color: "blue",
   },
-  h1: {
+  heading: {
+    // Level N is this size scaled N-1 times, so one pair of values covers all six.
     fontSize: 25,
+    scale: 0.85,
   },
   emoji: {
     fontSize: 20,
@@ -104,25 +106,57 @@ const markdownStyle: MarkdownStyle = {
     marginLeft: 6,
     paddingLeft: 6,
   },
+  // A list's indent, and the marker `MarkdownText` draws in the gutter it opens.
+  // Both markers are sized from the base font -- whatever the wrapped `Text`
+  // renders at -- and drawn in `syntax.color`. A `MarkdownTextInput` shows the
+  // marker you typed instead, in the base font: there it is text being edited.
+  orderedList: {
+    marginLeft: 6,
+    paddingLeft: 18,
+    // The item's number, at this fraction of the base font size.
+    markerScale: 0.8,
+    // Room held open either side of the marker.
+    markerPadding: 2,
+  },
+  unorderedList: {
+    marginLeft: 6,
+    paddingLeft: 18,
+    // The bullet's diameter, as a fraction of the base font size. A circle,
+    // centred on the line rather than sat on the baseline.
+    markerScale: 0.3,
+    markerPadding: 2,
+  },
   code: {
     fontFamily: FONT_FAMILY_MONOSPACE,
     fontSize: 20,
     color: "black",
     backgroundColor: "lightgray",
+    // An inline run is drawn as a box too, so it takes the same three lengths.
+    // Its padding and margin hold space open on either side of the run and grow
+    // into the line's spacing above and below it.
+    borderRadius: 4,
+    padding: 2,
+    margin: 2,
   },
   pre: {
     fontFamily: FONT_FAMILY_MONOSPACE,
     fontSize: 20,
     color: "black",
     backgroundColor: "lightgray",
+    // A block is drawn as a box behind the whole of it: `padding` is the space
+    // inside the box, `margin` the space around it.
+    borderRadius: 4,
+    padding: 8,
+    margin: 4,
   },
-  mentionHere: {
-    color: "green",
-    backgroundColor: "lime",
-  },
-  mentionUser: {
+  // A name with an `@` in front of it, drawn as a pill: the same inline box a
+  // run of code sits in, and so the same three lengths.
+  mention: {
     color: "blue",
     backgroundColor: "cyan",
+    borderRadius: 5,
+    padding: 2,
+    margin: 0,
   },
 }
 ```
@@ -163,11 +197,20 @@ type MarkdownType =
   | "emoji"
   | "mention"
   | "link"
+  | "label"
+  | "alt-text"
+  | "title"
   | "code"
   | "pre"
   | "blockquote"
-  | "h1"
+  | "list-ordered"
+  | "list-unordered"
+  | "block-prefix"
+  | "heading"
   | "syntax"
+  | "inline-image"
+  | "codeblock"
+  | "codeblock-language"
 ```
 
 Parser needs to be marked as a [worklet](https://docs.swmansion.com/react-native-worklets/docs/fundamentals/glossary#worklet) because it's executed on the UI thread as the user types.
@@ -196,6 +239,12 @@ function parser(input: string) {
 ## Markdown flavors support
 
 Currently, `react-native-marcus` supports only [CommonMark](https://spec.commonmark.org/0.31.2/) flavor with [GFM (Github Flavored Markdown)](https://github.github.com/gfm/) extensions out-of-the-box. You can customize the behavior by passing a custom parser worklet function via the `parser` prop, as detailed in the [Parsing logic](#parsing-logic) section.
+
+On top of that it recognises two things CommonMark has no notion of: emoji, and mentions.
+
+A mention is an `@` followed by a name. The name starts with a letter and is made of letters, digits and marks, with `-`, `_` and another `@` joining two parts of it -- each needs a part on either side, so `@user@example.com` is a single mention while the `@` in `@user@ ` is left out of it. A `.` may appear anywhere, the last character included, so `@bullet.` is one mention; only the first of a run of dots belongs to the name, so `@bullet..` is `@bullet.` followed by a full stop.
+
+A mention cannot begin inside a word, or straight after another `@`: that is what keeps `user@example.com` an email address rather than an address with a mention buried in it. Anything else may sit against one -- `**@someone**`, `_@someone_`, `[@user](/u)` and `(@user)` all hold a mention, since the markup is gone by the time a display draws it and punctuation was never part of a name.
 
 ## API reference
 

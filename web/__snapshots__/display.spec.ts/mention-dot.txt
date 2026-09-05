@@ -1,0 +1,9 @@
+p[line] margin-bottom:0px margin-left:0px margin-right:0px margin-top:0px padding-bottom:0px padding-left:<measured> padding-right:0px padding-top:0px
+  span[mention] background-color:cyan border-bottom-left-radius:5px border-bottom-right-radius:5px border-top-left-radius:5px border-top-right-radius:5px color:blue margin-bottom:0px margin-left:0px margin-right:0px margin-top:0px padding-bottom:2px padding-left:<measured> padding-right:2px padding-top:2px
+    span[text]
+      #text "@bullet."
+  span[text]
+    #text " and "
+  span[mention] background-color:cyan border-bottom-left-radius:5px border-bottom-right-radius:5px border-top-left-radius:5px border-top-right-radius:5px color:blue margin-bottom:0px margin-left:0px margin-right:0px margin-top:0px padding-bottom:2px padding-left:<measured> padding-right:2px padding-top:2px
+    span[text]
+      #text "@user.name"

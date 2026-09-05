@@ -6,14 +6,30 @@ import android.text.style.ReplacementSpan
 import androidx.annotation.ColorInt
 
 /**
- * Widens the character it covers by [gap] pixels, leaving the glyph where it is.
+ * Widens the character it covers, leaving the glyph where it belongs.
  *
- * Applied to the last character of a container's marker so that the container
- * nested inside it can put its gutter between that marker and the next one.
+ * Two things need this. A container's marker holds [trailing] space after its
+ * last character, so the container nested inside it can put its gutter between
+ * that marker and the next one. And an inline run of code holds space on both
+ * sides -- [leading] on the character it starts with, [trailing] on the one it
+ * ends with -- so the box drawn behind it has room to breathe without sitting
+ * over the words either side of it.
+ *
+ * The character is drawn here rather than by the layout, because a replacement
+ * takes over its own drawing: metric spans still reach the paint, so whatever
+ * font and size the character had are already in it, but its colour has to be
+ * put back by hand. [color] is the colour that character should have -- a
+ * marker's syntax colour, or the colour of the code it belongs to.
+ *
+ * [trailing] is a `var` because two things can want space after the same
+ * character: the padding around a list's marker, and then the gutter of the
+ * container nested inside it. Only one replacement span on a character is ever
+ * asked for a width, so the second has to add to the first rather than join it.
  */
 class MarkdownGapSpan(
-  private val gap: Float,
-  @ColorInt private val syntaxColor: Int
+  var trailing: Float = 0f,
+  private val leading: Float = 0f,
+  @ColorInt private val color: Int
 ) : ReplacementSpan(), MarkdownSpan {
 
   override fun getSize(
@@ -32,7 +48,7 @@ class MarkdownGapSpan(
       fm.leading = metrics.leading
     }
 
-    return (paint.measureText(text, start, end) + gap).toInt()
+    return (leading + paint.measureText(text, start, end) + trailing).toInt()
   }
 
   override fun draw(
@@ -46,12 +62,9 @@ class MarkdownGapSpan(
     bottom: Int,
     paint: Paint
   ) {
-    // Spans inside a replacement are not applied, so the one colour a marker's
-    // last character can have is restored by hand. It is whitespace whenever the
-    // marker is followed by any, and a syntax character otherwise.
     val originalColor = paint.color
-    paint.color = syntaxColor
-    canvas.drawText(text, start, end, x, y.toFloat(), paint)
+    paint.color = color
+    canvas.drawText(text, start, end, x + leading, y.toFloat(), paint)
     paint.color = originalColor
   }
 }

@@ -23,6 +23,7 @@ import androidx.annotation.Nullable;
 
 import com.facebook.jni.annotations.DoNotStrip;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.common.mapbuffer.ReadableMapBuffer;
 import com.facebook.react.fabric.FabricUIManager;
@@ -43,15 +44,19 @@ public class CustomFabricUIManager extends FabricUIManager {
     ViewManagerRegistry viewManagerRegistry,
     BatchEventDispatchedListener batchEventDispatchedListener,
     ReadableMap markdownProps,
-    int parserId
+    int parserId,
+    @Nullable ReadableArray ranges
   ) {
     super(reactContext, viewManagerRegistry, batchEventDispatchedListener);
 
     this.mReactApplicationContext = reactContext;
 
-    this.mMarkdownUtils = new MarkdownUtils(reactContext);
+    // A `Text` is the one caller that arrives with ranges, and the one whose list
+    // markers are rendered rather than shown.
+    this.mMarkdownUtils = new MarkdownUtils(reactContext, null, null, ranges != null);
     this.mMarkdownUtils.setMarkdownStyle(new MarkdownStyle(markdownProps, reactContext));
     this.mMarkdownUtils.setParserId(parserId);
+    this.mMarkdownUtils.setRanges(ranges == null ? null : MarkdownRanges.read(ranges));
   }
 
   @Override
@@ -78,7 +83,20 @@ public class CustomFabricUIManager extends FabricUIManager {
       attachmentsPositions);
   }
 
+
+  // Two ways in. A `TextInput` supplies a parser id and the text is parsed here, on the background
+  // thread that measures it. A `Text` supplies finished ranges: its content only changes by a
+  // re-render, so JavaScript already knows the string and has already stripped the syntax out of
+  // it. Everything past that point is the same formatting.
   public static FabricUIManager create(FabricUIManager source, ReadableMap markdownProps, int parserId) {
+    return create(source, markdownProps, parserId, null);
+  }
+
+  public static FabricUIManager createForText(FabricUIManager source, ReadableMap markdownProps, ReadableArray ranges) {
+    return create(source, markdownProps, 0, ranges);
+  }
+
+  private static FabricUIManager create(FabricUIManager source, ReadableMap markdownProps, int parserId, @Nullable ReadableArray ranges) {
     try {
       ReactApplicationContext reactContext = readPrivateField(source, "mReactApplicationContext");
       ViewManagerRegistry viewManagerRegistry = readPrivateField(source, "mViewManagerRegistry");
@@ -89,7 +107,8 @@ public class CustomFabricUIManager extends FabricUIManager {
         viewManagerRegistry,
         batchEventDispatchedListener,
         markdownProps,
-        parserId
+        parserId,
+        ranges
       );
     } catch (NoSuchFieldException | IllegalAccessException e) {
       throw new RuntimeException("[Marcus] Cannot read data from FabricUIManager", e);

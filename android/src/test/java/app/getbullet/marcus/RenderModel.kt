@@ -8,6 +8,8 @@ import android.text.style.ForegroundColorSpan
 import android.text.style.LeadingMarginSpan
 import app.getbullet.marcus.spans.MarkdownBackgroundSpan
 import app.getbullet.marcus.spans.MarkdownBoldSpan
+import app.getbullet.marcus.spans.MarkdownBulletSpan
+import app.getbullet.marcus.spans.MarkdownCodeBlockSpan
 import app.getbullet.marcus.spans.MarkdownFontFamilySpan
 import app.getbullet.marcus.spans.MarkdownGapSpan
 import app.getbullet.marcus.spans.MarkdownItalicSpan
@@ -60,6 +62,12 @@ object RenderModel {
     // The rounded rectangle drawn behind a mention, not a plain background
     // colour -- iOS models the same thing as `MarkdownTextBackground`.
     is MarkdownBackgroundSpan -> "background-shape"
+    // The box behind a whole code block, which iOS models as the
+    // `MarkdownCodeBlock` it stores under `.marcusCodeBlock`.
+    is MarkdownCodeBlockSpan -> "code-block"
+    // The circle drawn in place of an unordered item's marker, which iOS models
+    // as the `MarkdownListBullet` it stores under `.marcusListBullet`.
+    is MarkdownBulletSpan -> "bullet"
     // The space held open after a marker so the next container's gutter lands
     // between the two.
     is MarkdownGapSpan -> "gap"

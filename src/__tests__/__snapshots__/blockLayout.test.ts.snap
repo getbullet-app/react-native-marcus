@@ -64,7 +64,23 @@ code-in-blockquote
     0: first=18 indent=38 ribbons=[6] gaps={}
     6: first=18 indent=38 ribbons=[6] gaps={}
     15: first=18 indent=38 ribbons=[6] gaps={}
+link-markup
+    (none)
+image-alt-markup
+    (none)
+image-in-blockquote
+    0: first=18 indent=38 ribbons=[6] gaps={}
+link-label-autolink
+    (none)
+link-label-image
+    (none)
+link-image
+    (none)
 mention-in-bold
+    (none)
+mention-in-italic-underscore
+    (none)
+mention-in-link
     (none)
 unicode-astral-in-list
     0: first=24 indent=44 ribbons=[] gaps={}
